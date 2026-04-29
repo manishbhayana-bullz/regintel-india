@@ -1,0 +1,101 @@
+SECURITIES AND EXCHANGE BOARD OF INDIA
+Investment Advisers (Amendment) Regulations 2020
+Master Circular for Investment Advisers - 2023
+(Extracts for Testing RegIntel India)
+
+---
+
+PART A: REGISTRATION AND ELIGIBILITY
+
+1. Registration Requirements
+No person shall act as an investment adviser or hold itself out as an investment adviser unless it has obtained a certificate of registration from SEBI under these regulations. Existing unregistered entities providing investment advice must register within 3 months of these amendments or cease operations immediately.
+
+2. Eligibility Criteria
+An applicant for registration as investment adviser must fulfill:
+(a) Minimum qualification: Post-graduate degree or diploma in finance, accountancy, business management, or related field from a recognised institution
+(b) NISM Series X-A: Investment Adviser Level 1 certification (mandatory)
+(c) NISM Series X-B: Investment Adviser Level 2 certification for persons giving advice on complex products
+(d) Net worth requirement: Rs. 50 lakhs for individuals; Rs. 150 lakhs for non-individual entities
+
+---
+
+PART B: CONDUCT OBLIGATIONS
+
+3. Fiduciary Duty
+Investment advisers shall act in a fiduciary capacity towards their clients. This means:
+(a) Advice must be in the best interest of the client, not influenced by commissions or incentives
+(b) Conflicts of interest must be disclosed upfront in writing
+(c) Investment advisers cannot receive commissions from product manufacturers — fee-only model is mandatory
+
+4. Segregation of Advisory and Distribution
+Investment advisers are prohibited from providing both advisory and distribution services. An entity registered as an investment adviser cannot simultaneously hold a mutual fund distributor ARN code. Deadline for compliance with this segregation: 30 September 2024 (now passed — any non-compliant entity is in breach).
+
+5. Risk Profiling Mandatory
+Investment advisers must conduct a risk profiling of every client before providing any advice. Risk profiling must be:
+(a) Conducted using a standardised questionnaire
+(b) Reviewed at least annually or on material change in client circumstances
+(c) Documented and retained for 5 years
+(d) Used as basis for suitability assessment of all recommendations
+
+Failure to conduct risk profiling before providing advice is a direct violation attracting monetary penalty and potential deregistration.
+
+6. Client Agreement
+A written agreement must be executed with every client before commencement of advisory services. Agreement must include:
+(a) Scope of services and exclusions
+(b) Fee structure — fixed fee or percentage AUM, clearly stated
+(c) Conflict of interest disclosure
+(d) Termination clauses
+
+---
+
+PART C: FEE REGULATIONS
+
+7. Fee Caps — Individual Clients
+Investment advisers serving retail individual clients are subject to fee caps:
+(a) Fixed fee model: Maximum Rs. 1,25,000 per annum per family across all services
+(b) AUM-based fee: Maximum 2.5% of AUM per annum
+(c) No performance fees are permitted for retail individual clients
+
+8. Advance Fee Restrictions
+Investment advisers shall not charge advance fees for more than:
+(a) 2 quarters in case of fees charged on a quarterly basis
+(b) 6 months in case of fees charged on monthly basis
+Advance fees in excess of this limit must be refunded to clients within 15 days.
+
+---
+
+PART D: RECORD-KEEPING AND REPORTING
+
+9. Record Retention
+Investment advisers must maintain the following records for a minimum of 5 years:
+(a) All client communications including emails, WhatsApp messages, call recordings where applicable
+(b) Risk profile assessments and suitability rationale for each recommendation
+(c) Signed client agreements
+(d) Fee receipts and invoices
+(e) Complaint register with resolution status
+
+10. Annual Compliance Audit
+Every investment adviser must appoint an independent compliance auditor and submit an annual compliance audit report to SEBI by 30th April each year. The audit must cover client onboarding processes, risk profiling quality, fee compliance, and record-keeping adequacy.
+
+Non-submission of audit report is treated as a serious violation. SEBI may suspend or cancel registration of defaulting advisers.
+
+11. Complaint Redressal
+Investment advisers must:
+(a) Acknowledge all client complaints within 2 business days
+(b) Resolve complaints within 30 calendar days
+(c) Register on SEBI SCORES platform mandatorily
+(d) Report complaint data as part of annual compliance audit
+
+---
+
+PART E: PENALTIES
+
+12. Penal Actions
+SEBI may take the following actions against non-compliant investment advisers:
+(a) Monetary penalty up to Rs. 25 crore or 3 times the unlawful gain, whichever is higher
+(b) Suspension of certificate of registration
+(c) Cancellation of certificate of registration
+(d) Debarment of key management personnel
+(e) Direction to refund fees to affected clients with interest
+
+All penalty orders are published on SEBI website and are permanent record. SEBI refers serious cases to SFIO and enforcement agencies where fraud or investor harm is established.

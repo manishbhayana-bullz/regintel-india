@@ -1,0 +1,82 @@
+RESERVE BANK OF INDIA
+Master Direction on Digital Lending - 2022
+(Extracts for Testing RegIntel India)
+
+---
+
+SECTION 1: REGULATORY FRAMEWORK FOR DIGITAL LENDING
+
+1.1 Scope and Applicability
+These guidelines apply to all Regulated Entities (REs) including Scheduled Commercial Banks, Non-Banking Financial Companies (NBFCs), and Co-operative Banks engaged in digital lending either directly or through Lending Service Providers (LSPs).
+
+1.2 Key Definitions
+"Digital Lending" means a remote and automated lending process, largely by use of seamless digital technologies for customer acquisition, credit assessment, loan approval, disbursement, recovery, and associated customer service.
+
+"Lending Service Provider (LSP)" means an agent of a Regulated Entity who carries out one or more of lender's functions or part thereof in customer acquisition, underwriting support, pricing support, servicing, monitoring, recovery of specific loan or loan portfolio on behalf of Regulated Entities.
+
+---
+
+SECTION 2: MANDATORY COMPLIANCE REQUIREMENTS
+
+2.1 Loan Disbursement and Repayment
+All loan disbursements and repayments shall be executed only between the bank accounts of borrower and the Regulated Entity, without any pass-through or pool account of the LSP or any third party. Breach of this requirement will be treated as a violation of RBI guidelines and may attract penal action including cancellation of license.
+
+Effective Date: This provision is effective immediately from the date of this circular. No exemption will be granted to existing arrangements.
+
+2.2 Key Fact Statement (KFS)
+Regulated Entities must provide borrowers a Key Fact Statement (KFS) before execution of the loan contract in a standardised format as specified by RBI. The KFS must include:
+(a) Annual Percentage Rate (APR) expressed as an annualised rate
+(b) Recovery mechanism and grievance redressal mechanism
+(c) Details of LSP involved and their role
+(d) Cooling-off period available to borrower
+
+Penalty for non-compliance: Monetary penalty up to Rs. 1 crore per instance plus reputational action.
+
+2.3 Data Privacy and Storage
+All data collected by LSPs on behalf of REs must be stored only in India. Data collected by LSPs shall be need-based and with explicit borrower consent. LSPs are prohibited from storing biometric data of borrowers. REs must ensure LSP contracts include data localisation obligations.
+
+Deadline: All REs must audit existing LSP contracts and ensure compliance within 90 days of this circular.
+
+2.4 Cooling-Off Period
+Regulated Entities must offer borrowers a cooling-off or look-up period during which the borrower can exit the digital loan without any penalty, provided the principal and proportionate APR is paid back. The cooling-off period shall be minimum 3 days for loans with tenure of 7 days or more.
+
+---
+
+SECTION 3: FAIR PRACTICES CODE FOR DIGITAL LENDING
+
+3.1 Transparency in Interest Rates
+No capitalisation of unpaid interest shall be permitted unless it is in line with the applicable laws. Regulated Entities shall not charge foreclosure charges / pre-payment penalties on floating rate loans to individual borrowers. All fees and charges must be disclosed upfront in the KFS.
+
+3.2 Recovery Practices
+Recovery agents engaged by LSPs or REs must comply with RBI's guidelines on fair recovery practices. Any recovery communication must identify the RE on whose behalf recovery is being done. Harassment, including calling borrower before 8:00 AM and after 7:00 PM, is strictly prohibited. Violation will invite supervisory action.
+
+3.3 Grievance Redressal
+All Regulated Entities must designate a Nodal Grievance Redressal Officer for digital lending complaints. Complaints must be acknowledged within 3 business days and resolved within 30 calendar days. Unresolved complaints must be escalated to RBI Integrated Ombudsman Scheme.
+
+---
+
+SECTION 4: REPORTING REQUIREMENTS
+
+4.1 Credit Information Reporting
+All digital lending entities must report credit information to Credit Information Companies (CICs) — CIBIL, Experian, Equifax, CRIF — at intervals not exceeding one month. Reporting must include loan origination, disbursement, repayment, and default information.
+
+4.2 Supervisory Reporting to RBI
+REs must submit a quarterly return on digital lending operations in the format prescribed by RBI. First return to be submitted within 30 days of end of first quarter following these guidelines. Returns must include: total disbursements, LSP-wise breakup, complaint data, and APR ranges.
+
+4.3 Board Oversight
+Board or Board-level Committee must review digital lending operations at least on a quarterly basis. Board must approve the list of approved LSPs and review it annually. Any material changes to LSP arrangements must be reported to RBI within 15 days.
+
+---
+
+SECTION 5: PENALTIES AND ENFORCEMENT
+
+5.1 Penal Framework
+Non-compliance with these directions shall attract penalty under Section 47A(1)(b) read with Section 46(4)(i) of the Banking Regulation Act, 1949 for banks, and Section 58G(1)(b) read with Section 58B(5) of the Reserve Bank of India Act, 1934 for NBFCs.
+
+The RBI reserves the right to:
+(a) Impose monetary penalty up to Rs. 2 crore per violation
+(b) Cancel Certificate of Registration for NBFCs
+(c) Issue public notices naming non-compliant entities
+(d) Direct wind-down of non-compliant digital lending operations
+
+Entities must note that these are not exhaustive and RBI may take any additional action it deems appropriate.

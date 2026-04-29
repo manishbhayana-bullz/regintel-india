@@ -1,0 +1,110 @@
+RESERVE BANK OF INDIA
+Master Direction - Know Your Customer (KYC) Direction, 2016
+Updated as of January 2024
+(Extracts for Testing RegIntel India)
+
+---
+
+CHAPTER 1: CUSTOMER DUE DILIGENCE (CDD)
+
+1.1 Mandatory Customer Identification
+All Regulated Entities (REs) are required to undertake Customer Due Diligence (CDD) measures while:
+(a) Establishing a business relationship with a customer
+(b) Carrying out transactions of Rs. 50,000 or above in cash
+(c) Carrying out wire transfers of Rs. 50,000 or above
+(d) When there is suspicion of money laundering or financing of terrorism
+(e) When the RE has doubts about the veracity of previously obtained KYC data
+
+1.2 Officially Valid Documents (OVDs)
+The following are Officially Valid Documents for KYC purposes:
+- Passport
+- Driving Licence
+- Proof of possession of Aadhaar number (with redaction of first 8 digits)
+- Voter's Identity Card issued by Election Commission of India
+- Job card issued by NREGA
+- Letter issued by National Population Register
+
+Regulated Entities shall not insist on Aadhaar unless customer voluntarily submits it. Insisting on Aadhaar as the only OVD is a violation of these directions and the Aadhaar Act.
+
+1.3 Video-based Customer Identification Process (V-CIP)
+REs may use V-CIP as a consent-based alternate method of CDD. Requirements for V-CIP:
+(a) Process must be live — pre-recorded video is not permitted
+(b) Facial match between live video and OVD photograph
+(c) PAN card must be verified in real-time through NSDL/UTIISL
+(d) Geotagging of customer location during V-CIP (must be India only)
+(e) Entire V-CIP session to be recorded and stored securely for 5 years
+(f) Process must include random questions to establish liveness
+
+---
+
+CHAPTER 2: ENHANCED DUE DILIGENCE (EDD)
+
+2.1 High Risk Categories Requiring EDD
+The following customer categories require Enhanced Due Diligence:
+(a) Politically Exposed Persons (PEPs) — current and former
+(b) Non-Resident Indians (NRIs) and foreign nationals
+(c) Customers with complex business structures or multiple beneficial owners
+(d) High net worth individuals with cash-intensive businesses
+(e) Customers from high-risk jurisdictions as notified by FATF
+
+2.2 EDD Requirements
+For high-risk customers, REs must:
+(a) Obtain senior management approval before establishing the relationship
+(b) Establish source of funds and source of wealth
+(c) Conduct enhanced monitoring of the business relationship on an ongoing basis
+(d) Review EDD status at least annually — more frequently if risk level increases
+
+2.3 Beneficial Ownership
+For legal entities, REs must identify and verify beneficial owners — persons who ultimately own or control 25% or more of shares/voting rights, or exercise control through other means. Beneficial ownership information must be:
+(a) Collected at onboarding
+(b) Updated when there is a change
+(c) Re-verified at least every 2 years for high-risk entities
+(d) Reported to Central Registry of Securitisation Asset Reconstruction and Security Interest (CERSAI) for certain categories
+
+---
+
+CHAPTER 3: ONGOING MONITORING AND PERIODIC UPDATE
+
+3.1 Periodic KYC Update
+REs must ensure periodic update of KYC data:
+(a) High-risk customers: Every 2 years
+(b) Medium-risk customers: Every 8 years
+(c) Low-risk customers: Every 10 years
+
+Failure to complete periodic KYC update does not entitle REs to freeze accounts or stop services without following due process. Accounts may be restricted but not closed without giving customer opportunity to complete update.
+
+3.2 Transaction Monitoring
+REs must put in place a robust transaction monitoring system to identify unusual or suspicious transactions. The system must:
+(a) Flag transactions inconsistent with customer's profile or known business
+(b) Monitor for structuring (breaking large transactions into smaller ones to avoid reporting)
+(c) Monitor for round-trip transactions
+(d) Generate alerts for cash transactions above Rs. 10 lakhs in a month
+
+3.3 Suspicious Transaction Reporting (STR)
+REs must file Suspicious Transaction Reports with Financial Intelligence Unit — India (FIU-IND) within 7 working days of forming a suspicion. Key requirements:
+(a) STRs must be filed even if the transaction has not taken place
+(b) STR filing is confidential — tipping off the subject of an STR is a criminal offence
+(c) REs must designate a Principal Officer for STR filing
+(d) Principal Officer must have direct access to senior management and Board
+
+---
+
+CHAPTER 4: RECORD KEEPING
+
+4.1 Retention Period
+All KYC records must be retained for at least 5 years after the business relationship ends, or 5 years after the date of the transaction, whichever is later. For accounts under investigation, records must be retained until the investigation is concluded regardless of the above timeline.
+
+4.2 Accessibility
+Records must be retrievable on request from regulatory and law enforcement authorities within 24 hours for urgent requests and within 72 hours for routine requests. REs must maintain records in electronic form and ensure they are tamper-proof.
+
+---
+
+CHAPTER 5: PENALTIES
+
+5.1 Consequences of Non-Compliance
+Non-compliance with KYC/AML directions attracts penalties under:
+(a) Prevention of Money Laundering Act (PMLA) 2002 — imprisonment up to 7 years and fine up to Rs. 5 lakhs
+(b) Banking Regulation Act 1949 — monetary penalty up to Rs. 1 crore per violation
+(c) RBI Act 1934 — penalty up to Rs. 2 crore for NBFCs
+
+Systemic or wilful non-compliance may result in cancellation of banking license or NBFC registration. RBI has historically named non-compliant banks in public orders — creating severe reputational damage.
