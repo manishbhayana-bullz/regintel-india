@@ -242,6 +242,32 @@
     .header { padding: 12px 16px; }
     .tabs { padding: 0 16px; }
   }
+
+  /* FRAMEWORKS TAB */
+  .fw-item {
+    font-size:11px; color:var(--text-secondary); padding:5px 10px;
+    background:var(--surface-2); border-radius:6px; line-height:1.4;
+  }
+
+  /* ABOUT TAB */
+  .about-stat-row { display:flex; gap:12px; align-items:flex-start; padding:6px 0; border-bottom:1px solid var(--border); }
+  .about-stat-row:last-child { border-bottom:none; }
+  .about-stat { font-size:18px; font-weight:700; color:var(--primary); min-width:52px; }
+  .about-stat-label { font-size:11px; color:var(--text-secondary); line-height:1.4; padding-top:3px; }
+  .about-user-row { display:flex; gap:10px; align-items:flex-start; padding:5px 0; border-bottom:1px solid var(--border); }
+  .about-user-row:last-child { border-bottom:none; }
+  .about-user-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+  .tech-chip { font-size:11px; padding:4px 10px; border-radius:20px; background:var(--surface-2); border:1px solid var(--border); color:var(--text-secondary); font-weight:500; }
+  .roadmap-row { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border); }
+  .roadmap-phase { font-size:10px; font-weight:700; padding:3px 8px; border-radius:20px; min-width:56px; text-align:center; flex-shrink:0; }
+  .roadmap-phase.done { background:var(--success-bg); color:var(--success); }
+  .roadmap-phase.next { background:var(--primary-light); color:var(--primary); }
+  .roadmap-phase.plan { background:var(--surface-2); color:var(--text-tertiary); }
+  .roadmap-content { flex:1; }
+  .roadmap-status { font-size:10px; font-weight:600; padding:3px 8px; border-radius:20px; flex-shrink:0; height:fit-content; }
+  .done-badge { background:var(--success-bg); color:var(--success); }
+  .next-badge { background:var(--primary-light); color:var(--primary); }
+  .plan-badge { background:var(--surface-2); color:var(--text-tertiary); }
 </style>
 </head>
 <body>
@@ -267,13 +293,13 @@
 </div>
 
 <div class="tabs">
-  <div class="tab active">Analyse Document</div>
-  <div class="tab">History</div>
-  <div class="tab">Frameworks</div>
-  <div class="tab">About</div>
+  <div class="tab active" onclick="switchTab('analyse')">Analyse Document</div>
+  <div class="tab" onclick="switchTab('history')">History</div>
+  <div class="tab" onclick="switchTab('frameworks')">Frameworks</div>
+  <div class="tab" onclick="switchTab('about')">About</div>
 </div>
 
-<div class="container">
+<div class="container" id="analyse-main">
 
   <!-- INPUT PANEL -->
   <div id="input-panel">
@@ -431,9 +457,316 @@
   </div>
 </div>
 
+<!-- HISTORY PANEL -->
+<div id="history-panel" class="container hidden">
+  <div class="section-label">Recent analyses</div>
+  <div id="history-list">
+    <div style="text-align:center;padding:48px 0;color:var(--text-tertiary);">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" style="margin:0 auto 12px;display:block">
+        <circle cx="18" cy="18" r="16" stroke="#ccc" stroke-width="1.5"/>
+        <path d="M18 10v8l5 3" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div style="font-size:14px;font-weight:500;margin-bottom:4px">No analyses yet</div>
+      <div style="font-size:12px">Your past analyses will appear here once you run your first one</div>
+    </div>
+  </div>
+</div>
+
+<!-- FRAMEWORKS PANEL -->
+<div id="frameworks-panel" class="container hidden">
+  <div class="section-label">Supported regulatory frameworks</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+
+    <div class="panel">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:32px;height:32px;border-radius:8px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#e65100">RBI</div>
+        <div>
+          <div style="font-size:13px;font-weight:600">Reserve Bank of India</div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Banking & NBFC regulations</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="fw-item">Master Direction — Digital Lending 2022</div>
+        <div class="fw-item">KYC Master Direction 2016 (updated 2024)</div>
+        <div class="fw-item">Cybersecurity Framework for Banks</div>
+        <div class="fw-item">Fair Practices Code for NBFCs</div>
+        <div class="fw-item">Priority Sector Lending Guidelines</div>
+        <div class="fw-item">Liquidity Risk Management Framework</div>
+        <div class="fw-item">RBI Outsourcing Guidelines</div>
+        <div class="fw-item">Basel III Capital Regulations (India)</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:32px;height:32px;border-radius:8px;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#2e7d32">SEBI</div>
+        <div>
+          <div style="font-size:13px;font-weight:600">Securities & Exchange Board</div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Capital markets regulations</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="fw-item">Investment Adviser Regulations 2013 (amended 2020)</div>
+        <div class="fw-item">SEBI (Brokers) Regulations 1992</div>
+        <div class="fw-item">Mutual Fund Regulations 1996</div>
+        <div class="fw-item">Listing Obligations & Disclosure (LODR)</div>
+        <div class="fw-item">Algo Trading & HFT Framework</div>
+        <div class="fw-item">Research Analyst Regulations</div>
+        <div class="fw-item">Portfolio Manager Regulations</div>
+        <div class="fw-item">ESG Disclosure Framework 2023</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:32px;height:32px;border-radius:8px;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--purple)">IRDAI</div>
+        <div>
+          <div style="font-size:13px;font-weight:600">Insurance Regulatory Authority</div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Insurance sector regulations</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="fw-item">Insurance Act 1938 (amended 2021)</div>
+        <div class="fw-item">IRDAI Investment Regulations 2016</div>
+        <div class="fw-item">Corporate Governance Guidelines 2016</div>
+        <div class="fw-item">Outsourcing of Activities Regulations</div>
+        <div class="fw-item">Information & Cybersecurity Guidelines</div>
+        <div class="fw-item">Banca Assurance Guidelines</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:32px;height:32px;border-radius:8px;background:var(--danger-bg);display:flex;align-items:center;justify-content:position;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--danger)">OTHER</div>
+        <div>
+          <div style="font-size:13px;font-weight:600">Cross-cutting Regulations</div>
+          <div style="font-size:11px;color:var(--text-tertiary)">AML, tax, accounting</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="fw-item">Prevention of Money Laundering Act (PMLA) 2002</div>
+        <div class="fw-item">Foreign Exchange Management Act (FEMA)</div>
+        <div class="fw-item">IndAS / IFRS Accounting Standards</div>
+        <div class="fw-item">Information Technology Act 2000</div>
+        <div class="fw-item">DPDP Act 2023 (Digital Personal Data)</div>
+        <div class="fw-item">GST on Financial Services</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:var(--primary-light);border:1px solid #b5d4f4;border-radius:10px;padding:14px 16px;font-size:12px;color:var(--primary-dark)">
+    <strong>How to use:</strong> Go to "Analyse Document" tab → paste any extract from these frameworks → select your institution type → click Analyse. RegIntel will extract obligations, deadlines, and penalties in plain English.
+  </div>
+</div>
+
+<!-- ABOUT PANEL -->
+<div id="about-panel" class="container hidden">
+
+  <div class="panel" style="margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div style="width:48px;height:48px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 18 18" fill="none" width="22" height="22">
+          <rect x="2" y="2" width="6" height="8" rx="1" fill="white" opacity="0.9"/>
+          <rect x="10" y="2" width="6" height="5" rx="1" fill="white" opacity="0.6"/>
+          <rect x="2" y="12" width="14" height="4" rx="1" fill="white" opacity="0.75"/>
+        </svg>
+      </div>
+      <div>
+        <div style="font-size:16px;font-weight:600">RegIntel India</div>
+        <div style="font-size:12px;color:var(--text-tertiary)">Version 1.0 · Built April 2026</div>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7">
+      RegIntel India is an AI-powered regulatory compliance intelligence tool built specifically for the Indian banking and financial services industry. It reads RBI circulars, SEBI regulations, and IRDAI guidelines and extracts what your team actually needs to do — in plain English, with deadlines and penalty amounts clearly highlighted.
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+    <div class="panel">
+      <div style="font-size:12px;font-weight:600;margin-bottom:12px;color:var(--text-primary)">The problem we solve</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="about-stat-row">
+          <div class="about-stat">3–4 hrs</div>
+          <div class="about-stat-label">time a compliance analyst spends reading one regulatory document manually</div>
+        </div>
+        <div class="about-stat-row">
+          <div class="about-stat">2 min</div>
+          <div class="about-stat-label">time RegIntel takes to extract all key obligations from the same document</div>
+        </div>
+        <div class="about-stat-row">
+          <div class="about-stat">47+</div>
+          <div class="about-stat-label">RBI Master Directions issued in FY24 alone — compliance teams are overwhelmed</div>
+        </div>
+        <div class="about-stat-row">
+          <div class="about-stat">₹2 Cr</div>
+          <div class="about-stat-label">maximum penalty per RBI violation — the cost of missing a compliance obligation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="font-size:12px;font-weight:600;margin-bottom:12px;color:var(--text-primary)">Who this is built for</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="about-user-row">
+          <div class="about-user-dot" style="background:var(--primary)"></div>
+          <div>
+            <div style="font-size:12px;font-weight:500">Compliance teams</div>
+            <div style="font-size:11px;color:var(--text-tertiary)">HDFC, ICICI, Kotak, Axis, Yes Bank, Federal Bank</div>
+          </div>
+        </div>
+        <div class="about-user-row">
+          <div class="about-user-dot" style="background:#2e7d32"></div>
+          <div>
+            <div style="font-size:12px;font-weight:500">NBFC compliance officers</div>
+            <div style="font-size:11px;color:var(--text-tertiary)">Bajaj Finance, Muthoot, Shriram, Mahindra Finance</div>
+          </div>
+        </div>
+        <div class="about-user-row">
+          <div class="about-user-dot" style="background:var(--purple)"></div>
+          <div>
+            <div style="font-size:12px;font-weight:500">Fintech compliance PMs</div>
+            <div style="font-size:11px;color:var(--text-tertiary)">Razorpay, Groww, Zerodha, Paytm, PhonePe</div>
+          </div>
+        </div>
+        <div class="about-user-row">
+          <div class="about-user-dot" style="background:var(--amber)"></div>
+          <div>
+            <div style="font-size:12px;font-weight:500">RegTech consultants</div>
+            <div style="font-size:11px;color:var(--text-tertiary)">Big 4 India — Deloitte, PwC, EY, KPMG advisory</div>
+          </div>
+        </div>
+        <div class="about-user-row">
+          <div class="about-user-dot" style="background:var(--danger)"></div>
+          <div>
+            <div style="font-size:12px;font-weight:500">Investment banks</div>
+            <div style="font-size:11px;color:var(--text-tertiary)">Goldman Sachs India, Nomura, Kotak IB, Morgan Stanley</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:16px">
+    <div style="font-size:12px;font-weight:600;margin-bottom:12px">Technology stack</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <span class="tech-chip">Claude AI (Anthropic)</span>
+      <span class="tech-chip">Vanilla HTML / CSS / JS</span>
+      <span class="tech-chip">Vercel (hosting)</span>
+      <span class="tech-chip">GitHub (version control)</span>
+      <span class="tech-chip">Zero backend infrastructure</span>
+      <span class="tech-chip">No database required</span>
+      <span class="tech-chip">Cost to run: ₹0</span>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:16px">
+    <div style="font-size:12px;font-weight:600;margin-bottom:12px">Roadmap</div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div class="roadmap-row">
+        <div class="roadmap-phase done">Phase 1</div>
+        <div class="roadmap-content">
+          <div style="font-size:12px;font-weight:500">Working prototype — current version</div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Document analysis, institution filter, export, live deployment</div>
+        </div>
+        <div class="roadmap-status done-badge">Live ✓</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-phase next">Phase 2</div>
+        <div class="roadmap-content">
+          <div style="font-size:12px;font-weight:500">Live Claude AI integration</div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Real AI processing of any pasted document via Anthropic API</div>
+        </div>
+        <div class="roadmap-status next-badge">Next</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-phase plan">Phase 3</div>
+        <div class="roadmap-content">
+          <div style="font-size:12px;font-weight:500">Analysis history + PDF export</div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Save past analyses, board-ready PDF reports, user login</div>
+        </div>
+        <div class="roadmap-status plan-badge">Planned</div>
+      </div>
+      <div class="roadmap-row" style="border-bottom:none">
+        <div class="roadmap-phase plan">Phase 4</div>
+        <div class="roadmap-content">
+          <div style="font-size:12px;font-weight:500">Enterprise GRC integration</div>
+          <div style="font-size:11px;color:var(--text-tertiary)">API integration with bank GRC platforms, audit trails, role-based access</div>
+        </div>
+        <div class="roadmap-status plan-badge">Planned</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div style="font-size:12px;font-weight:600;margin-bottom:10px">Built by</div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7">
+      This tool was designed and built by a senior Product Manager with experience across banking, fintech, and regulatory domains. Built end-to-end without an engineering team — demonstrating how AI-enabled PMs can ship production-grade products independently.
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <a href="https://linkedin.com" target="_blank" style="font-size:12px;color:var(--primary);text-decoration:none;border:1px solid var(--border);padding:5px 12px;border-radius:6px">LinkedIn ↗</a>
+      <a href="https://github.com/manishbhayana-bullz" target="_blank" style="font-size:12px;color:var(--primary);text-decoration:none;border:1px solid var(--border);padding:5px 12px;border-radius:6px">GitHub ↗</a>
+    </div>
+  </div>
+
+</div>
+
 <script>
 // ─── STATE ───────────────────────────────────────────────
 let selInst = 'pvt', selFocus = 'all', hasContent = false;
+let analysisHistory = JSON.parse(localStorage.getItem('regintel_history') || '[]');
+
+// ─── TAB SWITCHING ────────────────────────────────────────
+function switchTab(tab) {
+  const panels = { analyse: 'analyse-main', history: 'history-panel', frameworks: 'frameworks-panel', about: 'about-panel' };
+  Object.values(panels).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const tabMap = { analyse: 0, history: 1, frameworks: 2, about: 3 };
+  document.querySelectorAll('.tab')[tabMap[tab]].classList.add('active');
+  if (tab === 'analyse') {
+    document.getElementById('analyse-main').classList.remove('hidden');
+  } else {
+    document.getElementById(tab + '-panel').classList.remove('hidden');
+  }
+  if (tab === 'history') renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('history-list');
+  if (!analysisHistory.length) {
+    el.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--text-tertiary)">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" style="margin:0 auto 12px;display:block"><circle cx="18" cy="18" r="16" stroke="#ccc" stroke-width="1.5"/><path d="M18 10v8l5 3" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div style="font-size:14px;font-weight:500;margin-bottom:4px">No analyses yet</div>
+      <div style="font-size:12px">Your past analyses will appear here once you run your first one</div>
+    </div>`;
+    return;
+  }
+  el.innerHTML = analysisHistory.slice().reverse().map((h, i) => `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="replayHistory(${analysisHistory.length - 1 - i})">
+      <div style="width:36px;height:36px;border-radius:8px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="var(--primary)" stroke-width="1"/><path d="M4.5 5h7M4.5 8h7M4.5 11h4" stroke="var(--primary)" stroke-width="0.8" stroke-linecap="round"/></svg>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${h.docName}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">${h.inst} · ${h.date} · ${h.count} obligations found</div>
+      </div>
+      <div style="font-size:11px;color:var(--primary);flex-shrink:0">View ›</div>
+    </div>`).join('');
+}
+
+function replayHistory(idx) {
+  const h = analysisHistory[idx];
+  selInst = h.instKey;
+  switchTab('analyse');
+  document.querySelectorAll('#inst-pills .pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.v === h.instKey);
+  });
+  showResults();
+}
 
 // ─── PILL HANDLERS ───────────────────────────────────────
 document.querySelectorAll('#inst-pills .pill').forEach(p => {
@@ -657,6 +990,15 @@ function showResults() {
 
   document.getElementById('cta-ask-btn').onclick = () => alert('In the deployed version, this connects to Claude AI for live follow-up analysis. See README for deployment instructions.');
   document.getElementById('export-btn').onclick = () => exportReport(d);
+
+  // Save to history
+  analysisHistory.push({
+    docName: d.docName, inst: d.inst, instKey: selInst,
+    date: new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}),
+    count: d.obligations.length
+  });
+  if (analysisHistory.length > 20) analysisHistory.shift();
+  try { localStorage.setItem('regintel_history', JSON.stringify(analysisHistory)); } catch(e) {}
 }
 
 function resetApp() {
@@ -668,6 +1010,7 @@ function resetApp() {
   document.getElementById('upload-title').textContent = 'Drop regulatory document here';
   document.getElementById('upload-sub').textContent = 'PDF, TXT or DOCX · or click to browse';
   document.getElementById('ob-list').innerHTML = '';
+  document.getElementById('file-in').value = '';
   hasContent = false;
 }
 
