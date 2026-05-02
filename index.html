@@ -56,6 +56,16 @@
     font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px;
     background: var(--success-bg); color: var(--success);
   }
+  .edition-switcher {
+    display: flex; background: var(--surface-2); border-radius: 8px;
+    border: 1px solid var(--border); padding: 3px; gap: 2px;
+  }
+  .ed-btn {
+    padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
+    border: none; background: transparent; cursor: pointer; color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+  .ed-btn.active { background: var(--surface); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
   /* TABS */
   .tabs {
@@ -272,6 +282,33 @@
 </head>
 <body>
 
+<!-- DISCLAIMER MODAL -->
+<div id="disclaimer-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:14px;max-width:520px;width:100%;padding:28px;box-shadow:0 8px 32px rgba(0,0,0,0.18)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:36px;height:36px;border-radius:8px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">⚖️</div>
+      <div>
+        <div style="font-size:15px;font-weight:600;color:#1a1a1a">Important notice before you proceed</div>
+        <div style="font-size:11px;color:#888;margin-top:1px">Please read — takes 30 seconds</div>
+      </div>
+    </div>
+    <div style="font-size:13px;color:#444;line-height:1.7;margin-bottom:16px">
+      <strong style="color:#1a1a1a">RegIntel is a research and exploration tool</strong>, not a substitute for qualified legal or compliance advice.
+    </div>
+    <div style="background:#f8f8f6;border-radius:8px;padding:14px;margin-bottom:16px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#185FA5;font-weight:700;flex-shrink:0">✓</span><span>Outputs are AI-generated summaries intended to <strong>help you start your research faster</strong> — not to replace it.</span></div>
+      <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#185FA5;font-weight:700;flex-shrink:0">✓</span><span>Regulatory obligations are complex and context-specific. <strong>Always verify against the official source document</strong> and consult your legal or compliance team before acting.</span></div>
+      <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#185FA5;font-weight:700;flex-shrink:0">✓</span><span>RegIntel does not store any document you upload or paste. Your data stays in your browser session only.</span></div>
+      <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#e65100;font-weight:700;flex-shrink:0">✗</span><span>Do not use this tool as the sole basis for compliance decisions, board submissions, or regulatory filings.</span></div>
+    </div>
+    <div style="font-size:11px;color:#888;margin-bottom:18px;line-height:1.5">
+      By continuing, you acknowledge that RegIntel is provided as-is for research purposes. The creators accept no liability for compliance decisions made based on this tool's outputs.
+    </div>
+    <button onclick="acceptDisclaimer()" style="width:100%;padding:11px;background:#185FA5;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">I understand — continue to RegIntel</button>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:#aaa">This notice appears once per session</div>
+  </div>
+</div>
+
 <div class="header">
   <div class="logo">
     <div class="logo-mark">
@@ -282,12 +319,15 @@
       </svg>
     </div>
     <div>
-      <div class="logo-name">RegIntel India</div>
-      <div class="logo-tag">RBI · SEBI · IRDAI Compliance Intelligence</div>
+      <div class="logo-name" id="logo-name">RegIntel</div>
+      <div class="logo-tag" id="logo-tag">RBI · SEBI · IRDAI Compliance Intelligence</div>
     </div>
   </div>
   <div class="header-right">
-    <span class="badge-india">🇮🇳 India Edition</span>
+    <div class="edition-switcher" id="edition-switcher">
+      <button class="ed-btn active" id="btn-india" onclick="switchEdition('india')">🇮🇳 India</button>
+      <button class="ed-btn" id="btn-us" onclick="switchEdition('us')">🇺🇸 US</button>
+    </div>
     <span class="badge-ai">AI Powered</span>
   </div>
 </div>
@@ -315,7 +355,7 @@
       </div>
       <div class="upload-title" id="upload-title">Drop regulatory document here</div>
       <div class="upload-sub" id="upload-sub">PDF, TXT or DOCX · or click to browse</div>
-      <div class="chips">
+      <div class="chips" id="format-chips">
         <span class="chip rbi">RBI Master Direction</span>
         <span class="chip rbi">RBI Circular</span>
         <span class="chip sebi">SEBI Regulation</span>
@@ -474,91 +514,7 @@
 
 <!-- FRAMEWORKS PANEL -->
 <div id="frameworks-panel" class="container hidden">
-  <div class="section-label">Supported regulatory frameworks</div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
-
-    <div class="panel">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="width:32px;height:32px;border-radius:8px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#e65100">RBI</div>
-        <div>
-          <div style="font-size:13px;font-weight:600">Reserve Bank of India</div>
-          <div style="font-size:11px;color:var(--text-tertiary)">Banking & NBFC regulations</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="fw-item">Master Direction — Digital Lending 2022</div>
-        <div class="fw-item">KYC Master Direction 2016 (updated 2024)</div>
-        <div class="fw-item">Cybersecurity Framework for Banks</div>
-        <div class="fw-item">Fair Practices Code for NBFCs</div>
-        <div class="fw-item">Priority Sector Lending Guidelines</div>
-        <div class="fw-item">Liquidity Risk Management Framework</div>
-        <div class="fw-item">RBI Outsourcing Guidelines</div>
-        <div class="fw-item">Basel III Capital Regulations (India)</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="width:32px;height:32px;border-radius:8px;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#2e7d32">SEBI</div>
-        <div>
-          <div style="font-size:13px;font-weight:600">Securities & Exchange Board</div>
-          <div style="font-size:11px;color:var(--text-tertiary)">Capital markets regulations</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="fw-item">Investment Adviser Regulations 2013 (amended 2020)</div>
-        <div class="fw-item">SEBI (Brokers) Regulations 1992</div>
-        <div class="fw-item">Mutual Fund Regulations 1996</div>
-        <div class="fw-item">Listing Obligations & Disclosure (LODR)</div>
-        <div class="fw-item">Algo Trading & HFT Framework</div>
-        <div class="fw-item">Research Analyst Regulations</div>
-        <div class="fw-item">Portfolio Manager Regulations</div>
-        <div class="fw-item">ESG Disclosure Framework 2023</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="width:32px;height:32px;border-radius:8px;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--purple)">IRDAI</div>
-        <div>
-          <div style="font-size:13px;font-weight:600">Insurance Regulatory Authority</div>
-          <div style="font-size:11px;color:var(--text-tertiary)">Insurance sector regulations</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="fw-item">Insurance Act 1938 (amended 2021)</div>
-        <div class="fw-item">IRDAI Investment Regulations 2016</div>
-        <div class="fw-item">Corporate Governance Guidelines 2016</div>
-        <div class="fw-item">Outsourcing of Activities Regulations</div>
-        <div class="fw-item">Information & Cybersecurity Guidelines</div>
-        <div class="fw-item">Banca Assurance Guidelines</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="width:32px;height:32px;border-radius:8px;background:var(--danger-bg);display:flex;align-items:center;justify-content:position;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--danger)">OTHER</div>
-        <div>
-          <div style="font-size:13px;font-weight:600">Cross-cutting Regulations</div>
-          <div style="font-size:11px;color:var(--text-tertiary)">AML, tax, accounting</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="fw-item">Prevention of Money Laundering Act (PMLA) 2002</div>
-        <div class="fw-item">Foreign Exchange Management Act (FEMA)</div>
-        <div class="fw-item">IndAS / IFRS Accounting Standards</div>
-        <div class="fw-item">Information Technology Act 2000</div>
-        <div class="fw-item">DPDP Act 2023 (Digital Personal Data)</div>
-        <div class="fw-item">GST on Financial Services</div>
-      </div>
-    </div>
-
-  </div>
-
-  <div style="background:var(--primary-light);border:1px solid #b5d4f4;border-radius:10px;padding:14px 16px;font-size:12px;color:var(--primary-dark)">
-    <strong>How to use:</strong> Go to "Analyse Document" tab → paste any extract from these frameworks → select your institution type → click Analyse. RegIntel will extract obligations, deadlines, and penalties in plain English.
-  </div>
+  <div id="frameworks-content"></div>
 </div>
 
 <!-- ABOUT PANEL -->
@@ -710,29 +666,164 @@
     </div>
   </div>
 
+  <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:16px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="font-size:16px">⚖️</span>
+      <div style="font-size:12px;font-weight:600;color:var(--text-primary)">Legal notice & disclaimer</div>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;display:flex;flex-direction:column;gap:8px">
+      <p><strong style="color:var(--text-primary)">For research and exploration only.</strong> RegIntel is an AI-assisted tool designed to help compliance professionals begin their regulatory research faster. It is not a substitute for qualified legal, compliance, or regulatory advice.</p>
+      <p>All outputs are AI-generated summaries based on the text you provide. They may be incomplete, out of date, or context-specific. <strong style="color:var(--text-primary)">Always verify any obligation, deadline, or penalty amount against the official source document</strong> published by the relevant regulator (RBI, SEBI, IRDAI, Fed, SEC, OCC, FINRA).</p>
+      <p>RegIntel does not store, log, or transmit any document text you paste or upload. All processing occurs within your browser session and is discarded when you close the tab.</p>
+      <p style="color:var(--text-tertiary)">The creators and contributors of RegIntel accept no liability for regulatory, legal, financial, or compliance decisions made on the basis of this tool's outputs. Use of this tool constitutes acceptance of these terms.</p>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:gap">
+      <div style="font-size:11px;color:var(--text-tertiary)">Version 1.0 · India + US Edition · Built 2026</div>
+      <button onclick="document.getElementById('disclaimer-overlay').style.display='flex'" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;text-decoration:underline">View full disclaimer ↗</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
 // ─── STATE ───────────────────────────────────────────────
 let selInst = 'pvt', selFocus = 'all', hasContent = false;
-let analysisHistory = JSON.parse(localStorage.getItem('regintel_history') || '[]');
+let currentEdition = 'india';
+let analysisHistory = [];
+try { analysisHistory = JSON.parse(localStorage.getItem('regintel_history') || '[]'); } catch(e) {}
+
+// ─── DISCLAIMER ──────────────────────────────────────────
+function acceptDisclaimer() {
+  document.getElementById('disclaimer-overlay').style.display = 'none';
+  try { sessionStorage.setItem('regintel_accepted', '1'); } catch(e) {}
+}
+try {
+  if (sessionStorage.getItem('regintel_accepted')) {
+    document.getElementById('disclaimer-overlay').style.display = 'none';
+  }
+} catch(e) { document.getElementById('disclaimer-overlay').style.display = 'none'; }
+
+// ─── EDITION SWITCHER ─────────────────────────────────────
+const EDITIONS = {
+  india: {
+    logoName: 'RegIntel India',
+    logoTag: 'RBI · SEBI · IRDAI Compliance Intelligence',
+    placeholder: 'Paste any RBI circular, SEBI regulation, or IRDAI guideline here...',
+    chips: [
+      {cls:'rbi',l:'RBI Master Direction'},{cls:'rbi',l:'RBI Circular'},
+      {cls:'sebi',l:'SEBI Regulation'},{cls:'sebi',l:'SEBI Circular'},
+      {cls:'irdai',l:'IRDAI Guidelines'},{cls:'',l:'PMLA'},{cls:'',l:'FEMA'},{cls:'',l:'IndAS'}
+    ],
+    instPills: [
+      {v:'pvt',l:'Private bank'},{v:'psu',l:'PSU bank'},{v:'nbfc',l:'NBFC'},
+      {v:'fintech',l:'Fintech'},{v:'broker',l:'Broker / MF'},{v:'invest',l:'Investment bank'}
+    ],
+    focusPills: [
+      {v:'all',l:'All areas'},{v:'kyc',l:'KYC / AML'},{v:'capital',l:'Capital'},
+      {v:'conduct',l:'Conduct'},{v:'reporting',l:'Reporting'},{v:'digital',l:'Digital / IT'}
+    ],
+    defaultInst: 'pvt'
+  },
+  us: {
+    logoName: 'RegIntel US',
+    logoTag: 'Fed · OCC · SEC · FINRA Compliance Intelligence',
+    placeholder: 'Paste any Federal Reserve regulation, OCC guidance, SEC rule, Dodd-Frank provision, or FINRA circular here...',
+    chips: [
+      {cls:'rbi',l:'Dodd-Frank'},{cls:'rbi',l:'Basel III (US)'},
+      {cls:'sebi',l:'SEC Rule'},{cls:'sebi',l:'FINRA Circular'},
+      {cls:'irdai',l:'OCC Guidance'},{cls:'',l:'BSA / AML'},{cls:'',l:'CCAR'},{cls:'',l:'Volcker Rule'}
+    ],
+    instPills: [
+      {v:'gsib',l:'G-SIB bank'},{v:'regional',l:'Regional bank'},{v:'broker_dealer',l:'Broker-dealer'},
+      {v:'hedge',l:'Hedge fund'},{v:'asset_mgr',l:'Asset manager'},{v:'fintech_us',l:'Fintech / BNPL'}
+    ],
+    focusPills: [
+      {v:'all',l:'All areas'},{v:'kyc',l:'BSA / AML'},{v:'capital',l:'Capital (Basel)'},
+      {v:'conduct',l:'Conduct'},{v:'reporting',l:'Reporting'},{v:'digital',l:'Cyber / IT'}
+    ],
+    defaultInst: 'gsib'
+  }
+};
+
+function switchEdition(ed) {
+  currentEdition = ed;
+  document.getElementById('btn-india').classList.toggle('active', ed === 'india');
+  document.getElementById('btn-us').classList.toggle('active', ed === 'us');
+  const cfg = EDITIONS[ed];
+  document.getElementById('logo-name').textContent = cfg.logoName;
+  document.getElementById('logo-tag').textContent = cfg.logoTag;
+  document.getElementById('doc-text').placeholder = cfg.placeholder;
+
+  // Update chips
+  document.getElementById('format-chips').innerHTML = cfg.chips.map(c =>
+    `<span class="chip ${c.cls}">${c.l}</span>`).join('');
+
+  // Update institution pills
+  const instEl = document.getElementById('inst-pills');
+  instEl.innerHTML = cfg.instPills.map((p, i) =>
+    `<div class="pill ${i===0?'active':''}" data-v="${p.v}">${p.l}</div>`).join('');
+  instEl.querySelectorAll('.pill').forEach(p => {
+    p.onclick = () => { instEl.querySelectorAll('.pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); selInst = p.dataset.v; };
+  });
+  selInst = cfg.defaultInst;
+
+  // Update focus pills
+  const focEl = document.getElementById('focus-pills');
+  focEl.innerHTML = cfg.focusPills.map((p, i) =>
+    `<div class="pill ${i===0?'active':''}" data-v="${p.v}">${p.l}</div>`).join('');
+  focEl.querySelectorAll('.pill').forEach(p => {
+    p.onclick = () => { focEl.querySelectorAll('.pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); selFocus = p.dataset.v; };
+  });
+
+  // Reset the form
+  resetApp();
+  switchTab('analyse');
+}
 
 // ─── TAB SWITCHING ────────────────────────────────────────
 function switchTab(tab) {
-  const panels = { analyse: 'analyse-main', history: 'history-panel', frameworks: 'frameworks-panel', about: 'about-panel' };
-  Object.values(panels).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add('hidden');
-  });
+  const allPanels = ['analyse-main','history-panel','frameworks-panel','about-panel'];
+  allPanels.forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const tabMap = { analyse: 0, history: 1, frameworks: 2, about: 3 };
+  const tabMap = { analyse:0, history:1, frameworks:2, about:3 };
   document.querySelectorAll('.tab')[tabMap[tab]].classList.add('active');
-  if (tab === 'analyse') {
-    document.getElementById('analyse-main').classList.remove('hidden');
-  } else {
-    document.getElementById(tab + '-panel').classList.remove('hidden');
-  }
+  if (tab === 'analyse') document.getElementById('analyse-main').classList.remove('hidden');
+  else document.getElementById(tab+'-panel').classList.remove('hidden');
   if (tab === 'history') renderHistory();
+  if (tab === 'frameworks') renderFrameworks();
+}
+
+function renderFrameworks() {
+  const isUS = currentEdition === 'us';
+  const fwData = isUS ? [
+    { code:'Fed', bg:'#E3F2FD', color:'#1565C0', name:'Federal Reserve', sub:'Bank holding company supervision', items:['Regulation Y — BHC activities','Regulation YY — Enhanced prudential standards','SR 11-7 Model Risk Management','CCAR / DFAST stress testing framework','Volcker Rule implementation guidance','SR 15-18 Shared national credits'] },
+    { code:'SEC', bg:'#e8f5e9', color:'#2e7d32', name:'Securities & Exchange Commission', sub:'Capital markets & investment advisers', items:['Regulation Best Interest (Reg BI)','Investment Adviser Act — Marketing Rule','SEC Private Fund Adviser Rules 2023','Regulation S-P (customer data privacy)','Rule 15c3-3 (customer protection rule)','Regulation SCI (systems compliance)'] },
+    { code:'OCC', bg:'var(--purple-bg)', color:'var(--purple)', name:'Office of the Comptroller', sub:'National bank supervision', items:['Basel III Endgame (US NPR)','OCC Third-party risk management 2023','Community Reinvestment Act (revised)','OCC Climate risk guidance','Heightened standards (12 CFR Part 30)','Fair lending — ECOA / HMDA'] },
+    { code:'CFPB', bg:'var(--danger-bg)', color:'var(--danger)', name:'CFPB + FinCEN + FINRA', sub:'Consumer, AML, broker rules', items:['BSA / AML programme requirements','CFPB UDAAP enforcement','FinCEN beneficial ownership rule (CDD)','FINRA Rule 2111 / Reg BI alignment','Regulation E (electronic fund transfers)','CFPB Section 1071 (small business data)'] }
+  ] : [
+    { code:'RBI', bg:'#fff3e0', color:'#e65100', name:'Reserve Bank of India', sub:'Banking & NBFC regulations', items:['Master Direction — Digital Lending 2022','KYC Master Direction 2024','Cybersecurity Framework for Banks','Fair Practices Code for NBFCs','Priority Sector Lending Guidelines','Basel III Capital Regulations (India)','RBI Outsourcing Guidelines'] },
+    { code:'SEBI', bg:'#e8f5e9', color:'#2e7d32', name:'Securities & Exchange Board', sub:'Capital markets regulations', items:['Investment Adviser Regulations (amended 2020)','SEBI Broker Regulations 1992','Mutual Fund Regulations 1996','LODR — Listing Obligations & Disclosure','Algo Trading & HFT Framework','ESG Disclosure Framework 2023','Research Analyst Regulations'] },
+    { code:'IRDAI', bg:'var(--purple-bg)', color:'var(--purple)', name:'IRDAI', sub:'Insurance sector regulations', items:['Insurance Act 1938 (amended 2021)','IRDAI Investment Regulations 2016','Corporate Governance Guidelines','Outsourcing of Activities Regulations','Information & Cybersecurity Guidelines','Banca Assurance Guidelines'] },
+    { code:'Other', bg:'var(--danger-bg)', color:'var(--danger)', name:'Cross-cutting Laws', sub:'AML, data, accounting', items:['PMLA 2002 — Money Laundering Prevention','FEMA — Foreign Exchange Management','IndAS / IFRS Accounting Standards','IT Act 2000 + CERT-IN Rules','DPDP Act 2023 — Digital Personal Data','GST on Financial Services'] }
+  ];
+
+  document.getElementById('frameworks-content').innerHTML = `
+    <div class="section-label">Supported frameworks — ${isUS ? '🇺🇸 US Edition' : '🇮🇳 India Edition'}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      ${fwData.map(f => `
+        <div class="panel">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="width:32px;height:32px;border-radius:8px;background:${f.bg};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${f.color};flex-shrink:0">${f.code}</div>
+            <div><div style="font-size:13px;font-weight:600">${f.name}</div><div style="font-size:11px;color:var(--text-tertiary)">${f.sub}</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            ${f.items.map(i=>`<div class="fw-item">${i}</div>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>
+    <div style="background:var(--primary-light);border:1px solid #b5d4f4;border-radius:10px;padding:14px 16px;font-size:12px;color:var(--primary-dark)">
+      <strong>How to use:</strong> Go to "Analyse Document" → paste any extract from these frameworks → select your institution type → click Analyse. Switch between 🇮🇳 India and 🇺🇸 US editions using the toggle in the header.
+    </div>`;
 }
 
 function renderHistory() {
@@ -906,6 +997,106 @@ DATA.psu = { ...DATA.pvt, inst: 'PSU bank', docName: 'RBI Digital Lending Master
 DATA.fintech = { ...DATA.pvt, inst: 'Fintech / NBFC-P2P', docName: 'RBI Digital Lending Master Direction 2022' };
 DATA.invest = { ...DATA.nbfc, inst: 'Investment bank / merchant bank', docName: 'SEBI + RBI Combined Obligations' };
 
+// ─── US EDITION DATA ─────────────────────────────────────
+const DATA_US = {
+  gsib: {
+    docName: 'Dodd-Frank Act — Title I & Volcker Rule',
+    inst: 'G-SIB (Global Systemically Important Bank)',
+    penalty: '$25M+ / violation',
+    deadline: 'Annual (CCAR)',
+    highCount: 4,
+    showBanner: true,
+    bannerTitle: 'SIFI designation — enhanced prudential standards apply',
+    bannerBody: 'As a G-SIB, your institution is subject to enhanced capital surcharges, resolution planning (living will), and stress testing requirements under Dodd-Frank Title I. Non-compliance triggers Fed enforcement action.',
+    obligations: [
+      { t: 'Annual CCAR stress test submission to Federal Reserve', d: 'Comprehensive Capital Analysis and Review submission required annually. Must include severely adverse scenario projections. Fed may object to capital plan, restricting dividends and buybacks.', tags: ['capital','report'], sev: 'high', dl: 'Annual (April)' },
+      { t: 'Volcker Rule — proprietary trading prohibition', d: 'No proprietary trading in securities, derivatives, or commodity futures for the bank\'s own account. Permitted market-making and hedging activities must be documented and monitored with CEO attestation annually.', tags: ['conduct','ops'], sev: 'high', dl: 'Ongoing' },
+      { t: 'Resolution plan (Living Will) filing', d: 'Annual resolution plan must demonstrate how the firm could be wound down in an orderly manner without taxpayer bailout. Fed and FDIC may jointly find plans deficient, triggering capital surcharges.', tags: ['report','ops'], sev: 'high', dl: 'Annual (July)' },
+      { t: 'G-SIB capital surcharge maintenance', d: 'Additional CET1 capital buffer of 1.0%–4.5% above base Basel III minimum based on systemic risk score. Breach triggers automatic restrictions on capital distributions and discretionary bonuses.', tags: ['capital'], sev: 'high', dl: 'Ongoing' },
+      { t: 'Swap dealer registration with CFTC / SEC', d: 'All swap dealing activity above de minimis threshold requires registration. Registered swap dealers face margin, reporting, and business conduct obligations under Dodd-Frank Title VII.', tags: ['report','conduct'], sev: 'med', dl: 'Ongoing' },
+      { t: 'Enhanced counterparty credit limits', d: 'Single counterparty credit limits restrict net credit exposure to any one counterparty to 15% of tier 1 capital (25% for non-G-SIB counterparties). Monitoring and breach reporting required.', tags: ['capital','ops'], sev: 'med', dl: 'Ongoing' },
+    ],
+    risks: [
+      { t: 'CCAR capital plan objection by Fed — restricts buybacks', l: 'high', p: 'Penalty: restricted capital distributions, reputational damage' },
+      { t: 'Volcker Rule documentation gaps in market-making desks', l: 'high', p: 'Penalty: $25M+ per violation + consent order risk' },
+      { t: 'Living will found deficient by Fed + FDIC jointly', l: 'high', p: 'Penalty: capital surcharge increase, activity restrictions' },
+      { t: 'G-SIB surcharge breach under stress scenario', l: 'high', p: 'Automatic dividend / bonus restrictions triggered' },
+      { t: 'CFTC swap reporting latency exceeds 24-hour window', l: 'med', p: 'Penalty: up to $1M per day per violation' },
+    ],
+    timeline: [
+      { d: 'April (annual)', t: 'CCAR capital plan submission to Federal Reserve' },
+      { d: 'July (annual)', t: 'Resolution plan (Living Will) filing deadline' },
+      { d: 'Ongoing', t: 'G-SIB surcharge monitoring — quarterly Board review' },
+      { d: 'T+1 business day', t: 'Swap trade reporting to SDR (DTCC / ICE)' },
+      { d: 'Annual (Dec)', t: 'Volcker Rule CEO attestation' },
+    ]
+  },
+  broker_dealer: {
+    docName: 'SEC Regulation Best Interest (Reg BI) + FINRA Rules',
+    inst: 'Broker-dealer',
+    penalty: '$10M+ / violation',
+    deadline: 'Ongoing',
+    highCount: 3,
+    showBanner: true,
+    bannerTitle: 'Reg BI — best interest standard strictly enforced from 2020',
+    bannerBody: 'SEC Regulation Best Interest replaced the suitability standard. Broker-dealers must act in the retail customer\'s best interest, not merely make suitable recommendations. SEC has brought multiple enforcement actions since 2023.',
+    obligations: [
+      { t: 'Best interest obligation — all retail recommendations', d: 'Every recommendation to a retail customer must be in their best interest, considering cost, risk, and the customer\'s investment profile. Cannot prioritize firm revenue over customer outcome.', tags: ['conduct'], sev: 'high', dl: 'Ongoing' },
+      { t: 'Form CRS — relationship summary disclosure', d: 'A standardised 2-page Client Relationship Summary must be delivered to all retail customers at or before relationship initiation. Must be filed with SEC and updated within 30 days of material changes.', tags: ['report','conduct'], sev: 'high', dl: 'Ongoing' },
+      { t: 'Conflict of interest identification and mitigation', d: 'All material conflicts of interest affecting retail recommendations must be identified, disclosed, and mitigated. Financial incentives (sales contests, differential compensation) must be reviewed annually.', tags: ['conduct'], sev: 'high', dl: 'Annual review' },
+      { t: 'SAR filing with FinCEN within 30 days', d: 'Suspicious Activity Reports must be filed within 30 calendar days of detecting suspicious activity. 60-day extension available if no suspect is identified. Tipping off the subject is a federal crime.', tags: ['kyc','report'], sev: 'med', dl: '30 days' },
+      { t: 'Books and records retention — 6 years', d: 'All order tickets, confirmations, customer account records, and communications must be retained for 6 years (3 years easily accessible). SEC Rule 17a-4 compliance required including WORM storage for electronic records.', tags: ['ops','report'], sev: 'med', dl: 'Ongoing' },
+    ],
+    risks: [
+      { t: 'Differential compensation steering retail clients to higher-cost products', l: 'high', p: 'SEC enforcement: disgorgement + $10M+ penalty' },
+      { t: 'Form CRS not delivered at account opening', l: 'high', p: 'Penalty: $97,523 per violation (inflation-adjusted)' },
+      { t: 'SAR filings delayed beyond 30-day window', l: 'high', p: 'FinCEN penalty: up to $1M per violation' },
+      { t: 'Electronic communications on personal devices not archived', l: 'med', p: 'SEC / FINRA: recordkeeping violation, $125M+ (industry-wide fines)' },
+      { t: 'Annual conflict review not documented with sign-off', l: 'med', p: 'FINRA 2020 / Reg BI enforcement finding' },
+    ],
+    timeline: [
+      { d: 'Ongoing', t: 'Best interest standard — applies to every retail recommendation' },
+      { d: '30 days', t: 'Form CRS update after any material change' },
+      { d: '30 days', t: 'SAR filing window from suspicion detection' },
+      { d: 'Annual', t: 'Conflict of interest review and CEO sign-off' },
+      { d: 'Q1 each year', t: 'FINRA annual compliance report to board' },
+    ]
+  },
+  regional: {
+    docName: 'Basel III Endgame (US Implementation) — OCC / Fed Proposal',
+    inst: 'Regional bank ($100B+ assets)',
+    penalty: '$5M+ / violation',
+    deadline: 'July 2025 (phased)',
+    highCount: 3,
+    showBanner: false,
+    bannerTitle: '', bannerBody: '',
+    obligations: [
+      { t: 'Expanded risk-based capital requirements', d: 'Basel III Endgame requires regional banks ($100B+) to calculate capital using both standardised and internal model approaches, holding the higher amount. Estimated 16–19% capital increase industry-wide.', tags: ['capital'], sev: 'high', dl: 'Phased to 2028' },
+      { t: 'Long-term debt (LTD) requirement', d: 'Banks with $100B+ in assets must maintain long-term debt of at least 6% of risk-weighted assets to improve resolvability. New issuance required for most regional banks.', tags: ['capital','report'], sev: 'high', dl: '3 years after final rule' },
+      { t: 'Stress testing — expanded scope', d: 'Dodd-Frank Act Stress Testing (DFAST) expanded to $100B+ institutions under revised rules. Annual submission to Fed required with severely adverse scenario including 10% unemployment.', tags: ['capital','report'], sev: 'high', dl: 'Annual (April)' },
+      { t: 'Enhanced liquidity reporting (FR 2052a)', d: 'Daily liquidity reporting on FR 2052a required for $100B+ institutions. Must report inflows, outflows, and collateral positions by legal entity. Breach of LCR triggers supervisory dialogue.', tags: ['report','capital'], sev: 'med', dl: 'Daily' },
+      { t: 'Third-party risk management — OCC guidance', d: 'Comprehensive third-party risk management programme required covering all vendor relationships. Annual reviews, due diligence documentation, and Board oversight required for critical activities.', tags: ['ops'], sev: 'med', dl: 'Ongoing' },
+    ],
+    risks: [
+      { t: 'Capital shortfall under Basel III Endgame expanded RWA', l: 'high', p: 'Penalty: restricted capital distributions + Fed supervisory action' },
+      { t: 'Long-term debt issuance plan not in place', l: 'high', p: 'Non-compliance with final rule once effective' },
+      { t: 'FR 2052a daily reporting data quality gaps', l: 'high', p: 'Fed MRA (Matter Requiring Attention) + potential enforcement' },
+      { t: 'Critical vendor contracts missing OCC-required clauses', l: 'med', p: 'OCC examination finding + remediation requirement' },
+      { t: 'DFAST model documentation not at SR 11-7 standard', l: 'med', p: 'Fed model risk management finding' },
+    ],
+    timeline: [
+      { d: 'July 2025', t: 'Basel III Endgame effective date (phased implementation starts)' },
+      { d: 'April (annual)', t: 'DFAST stress test submission' },
+      { d: 'Daily', t: 'FR 2052a liquidity reporting' },
+      { d: '3 years post-rule', t: 'Full long-term debt requirement compliance' },
+      { d: 'Annual', t: 'Third-party risk programme board review' },
+    ]
+  }
+};
+DATA_US.hedge = { ...DATA_US.broker_dealer, inst: 'Hedge fund / Private fund adviser', docName: 'SEC Private Fund Adviser Rules 2023' };
+DATA_US.asset_mgr = { ...DATA_US.broker_dealer, inst: 'Asset manager (RIA)', docName: 'SEC Investment Adviser Act — Marketing Rule' };
+DATA_US.fintech_us = { ...DATA_US.regional, inst: 'Fintech / BNPL', docName: 'CFPB Supervision + State licensing' };
+
 // ─── LOADING STEPS ────────────────────────────────────────
 const steps = [
   'Parsing document structure...',
@@ -941,7 +1132,8 @@ function startAnalysis() {
 function showResults() {
   document.getElementById('loading-panel').classList.add('hidden');
   document.getElementById('results-panel').classList.remove('hidden');
-  const d = DATA[selInst] || DATA.pvt;
+  const dataset = currentEdition === 'us' ? DATA_US : DATA;
+  const d = dataset[selInst] || (currentEdition === 'us' ? DATA_US.gsib : DATA.pvt);
 
   document.getElementById('res-docname').textContent = d.docName;
   document.getElementById('res-instname').textContent = '· ' + d.inst;
