@@ -4,7 +4,14 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>RegIntel — Regulatory Intelligence</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23185FA5'/><rect x='5' y='5' width='9' height='12' rx='1.5' fill='white' opacity='0.9'/><rect x='18' y='5' width='9' height='7' rx='1.5' fill='white' opacity='0.6'/><rect x='5' y='20' width='22' height='7' rx='1.5' fill='white' opacity='0.75'/></svg>"><style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23185FA5'/><rect x='5' y='5' width='9' height='12' rx='1.5' fill='white' opacity='0.9'/><rect x='18' y='5' width='9' height='7' rx='1.5' fill='white' opacity='0.6'/><rect x='5' y='20' width='22' height='7' rx='1.5' fill='white' opacity='0.75'/></svg>">
+
+<!-- PDF.js for PDF file reading (client-side, zero backend) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- Mammoth.js for DOCX file reading (client-side) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+<style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --primary: #185FA5;
@@ -33,179 +40,163 @@
   }
   body { font-family: var(--font); background: var(--bg); color: var(--text-primary); min-height: 100vh; }
 
-  /* HEADER */
+  /* ── HEADER ── */
   .header {
     background: var(--surface); border-bottom: 1px solid var(--border);
     padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 100;
   }
   .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-mark {
-    width: 34px; height: 34px; border-radius: 8px; background: var(--primary);
-    display: flex; align-items: center; justify-content: center;
-  }
+  .logo-mark { width: 34px; height: 34px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; }
   .logo-mark svg { width: 18px; height: 18px; }
   .logo-name { font-size: 16px; font-weight: 600; color: var(--text-primary); }
   .logo-tag { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
   .header-right { display: flex; align-items: center; gap: 12px; }
-  .badge-india {
-    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
-    background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; letter-spacing: 0.3px;
-  }
-  .badge-ai {
-    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px;
-    background: var(--success-bg); color: var(--success);
-  }
-  .edition-switcher {
-    display: flex; background: var(--surface-2); border-radius: 8px;
-    border: 1px solid var(--border); padding: 3px; gap: 2px;
-  }
-  .ed-btn {
-    padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
-    border: none; background: transparent; cursor: pointer; color: var(--text-secondary);
-    transition: all 0.15s;
-  }
+  .badge-ai { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; background: var(--success-bg); color: var(--success); }
+  .edition-switcher { display: flex; background: var(--surface-2); border-radius: 8px; border: 1px solid var(--border); padding: 3px; gap: 2px; }
+  .ed-btn { padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; border: none; background: transparent; cursor: pointer; color: var(--text-secondary); transition: all 0.15s; }
   .ed-btn.active { background: var(--surface); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-  /* TABS */
-  .tabs {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 0 32px; display: flex; gap: 0;
-  }
-  .tab {
-    padding: 13px 18px; font-size: 13px; color: var(--text-secondary);
-    border-bottom: 2px solid transparent; cursor: pointer; transition: color 0.15s;
-    margin-bottom: -1px; user-select: none;
-  }
+  /* ── TABS ── */
+  .tabs { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; }
+  .tab { padding: 13px 18px; font-size: 13px; color: var(--text-secondary); border-bottom: 2px solid transparent; cursor: pointer; transition: color 0.15s; margin-bottom: -1px; user-select: none; }
   .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 500; }
   .tab:hover { color: var(--text-primary); }
 
-  /* MAIN LAYOUT */
+  /* ── LAYOUT ── */
   .container { max-width: 900px; margin: 0 auto; padding: 28px 24px; }
-
-  /* INPUT PANEL */
   .section-label { font-size: 11px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
 
-  .upload-zone {
-    border: 2px dashed var(--border-strong); border-radius: 12px;
-    padding: 28px 24px; text-align: center; cursor: pointer;
-    transition: all 0.15s; background: var(--surface-2); margin-bottom: 14px;
-  }
+  /* ── UPLOAD ZONE ── */
+  .upload-zone { border: 2px dashed var(--border-strong); border-radius: 12px; padding: 28px 24px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--surface-2); margin-bottom: 14px; }
   .upload-zone:hover, .upload-zone.drag { border-color: var(--primary); background: var(--primary-light); }
-  .upload-icon {
-    width: 42px; height: 42px; border-radius: 10px; background: var(--surface);
-    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 10px;
-  }
+  .upload-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
   .upload-title { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
   .upload-sub { font-size: 12px; color: var(--text-secondary); }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
-  .chip {
-    font-size: 11px; padding: 3px 10px; border-radius: 20px;
-    background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary);
-  }
+  .chip { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); }
   .chip.rbi { background: #fff3e0; border-color: #ffcc80; color: #e65100; }
   .chip.sebi { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; }
   .chip.irdai { background: var(--purple-bg); border-color: #b39ddb; color: var(--purple); }
+  .chip.dpdp { background: #f3e5f5; border-color: #ce93d8; color: #7b1fa2; }
 
   .divider { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
   .divider-line { flex: 1; height: 1px; background: var(--border); }
   .divider-text { font-size: 12px; color: var(--text-tertiary); }
 
   .text-box { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
-  .text-box textarea {
-    width: 100%; border: none; outline: none; resize: none; padding: 12px 14px;
-    font-size: 13px; line-height: 1.6; font-family: var(--font);
-    color: var(--text-primary); background: var(--surface); min-height: 110px;
-  }
-  .text-box-footer {
-    padding: 8px 12px; background: var(--surface-2); border-top: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  .text-box textarea { width: 100%; border: none; outline: none; resize: none; padding: 12px 14px; font-size: 13px; line-height: 1.6; font-family: var(--font); color: var(--text-primary); background: var(--surface); min-height: 110px; }
+  .text-box-footer { padding: 8px 12px; background: var(--surface-2); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
   .text-box-footer span { font-size: 11px; color: var(--text-tertiary); }
 
   .pills-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
-  .pill {
-    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
-    border: 1px solid var(--border-strong); cursor: pointer; color: var(--text-secondary);
-    background: var(--surface); transition: all 0.15s; user-select: none;
-  }
+  .pill { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1px solid var(--border-strong); cursor: pointer; color: var(--text-secondary); background: var(--surface); transition: all 0.15s; user-select: none; }
   .pill.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
   .pill:hover { border-color: var(--primary-mid); color: var(--text-primary); }
 
   .row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 
-  .analyse-btn {
-    width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none;
-    border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
-    transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
+  /* ── API KEY ROW ── */
+  .api-key-section { margin-bottom: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .api-key-section .section-label { margin-bottom: 6px; }
+  .api-key-note { font-size: 11px; color: var(--text-tertiary); margin-bottom: 10px; line-height: 1.5; }
+  .api-key-note a { color: var(--primary); }
+  .api-key-controls { display: flex; gap: 8px; align-items: center; }
+  .api-key-controls input { flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; font-family: var(--font); outline: none; }
+  .api-key-controls input:focus { border-color: var(--primary); }
+  .btn-sm { padding: 8px 14px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 12px; background: var(--surface); cursor: pointer; color: var(--text-secondary); font-weight: 500; white-space: nowrap; transition: background 0.12s; }
+  .btn-sm:hover { background: var(--surface-2); }
+  .api-key-status { font-size: 11px; margin-top: 7px; color: var(--text-tertiary); min-height: 16px; }
+
+  /* ── ANALYSE BUTTON ── */
+  .analyse-btn { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .analyse-btn:hover { background: var(--primary-dark); }
   .analyse-btn:disabled { background: var(--surface-2); color: var(--text-tertiary); cursor: not-allowed; }
 
-  /* LOADING */
-  .loading-wrap { text-align: center; padding: 20px 0; }
+  /* ── LOADING ── */
+  .loading-wrap { text-align: center; padding: 60px 0; }
   .loading-status { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; display: inline-block; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .progress-bar { height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--primary); border-radius: 3px; animation: prog 3s ease-in-out forwards; }
-  @keyframes prog { from { width: 0 } to { width: 100% } }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; max-width: 360px; margin: 0 auto; }
+  .progress-fill { height: 100%; background: var(--primary); border-radius: 3px; }
+  @keyframes prog { from { width: 5% } to { width: 90% } }
+  .loading-subtitle { font-size: 11px; color: var(--text-tertiary); margin-top: 10px; }
 
-  /* RESULTS */
-  .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-  .doc-tag {
-    display: flex; align-items: center; gap: 8px; background: var(--surface-2);
-    border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px;
-  }
+  /* ── ERROR ── */
+  .error-banner { background: var(--danger-bg); border: 1px solid #f7c1c1; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .error-banner-title { font-weight: 700; margin-bottom: 3px; font-size: 13px; color: var(--danger); }
+  .error-banner-text { font-size: 12px; color: var(--danger); line-height: 1.5; }
+
+  /* ── RESULTS ── */
+  .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+  .doc-tag { display: flex; align-items: center; gap: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; }
   .doc-tag-name { font-size: 13px; font-weight: 500; }
   .doc-tag-sub { font-size: 12px; color: var(--text-secondary); }
-  .btn-outline {
-    padding: 7px 16px; border: 1px solid var(--border-strong); border-radius: 8px;
-    font-size: 12px; background: var(--surface); cursor: pointer; color: var(--text-secondary);
-    transition: background 0.15s; font-weight: 500;
-  }
+  .btn-outline { padding: 7px 16px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 12px; background: var(--surface); cursor: pointer; color: var(--text-secondary); transition: background 0.15s; font-weight: 500; }
   .btn-outline:hover { background: var(--surface-2); }
 
   .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 22px; }
-  .metric {
-    background: var(--surface-2); border-radius: 10px; padding: 14px 12px;
-  }
+  .metric { background: var(--surface-2); border-radius: 10px; padding: 14px 12px; }
   .metric-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
   .metric-val { font-size: 24px; font-weight: 600; color: var(--text-primary); }
   .metric-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 3px; }
 
-  .block-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+  /* ── COMPLIANCE TRACKER ── */
+  .tracker-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; display: flex; align-items: center; gap: 16px; }
+  .tracker-label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+  .tracker-progress { flex: 1; height: 8px; background: var(--border); border-radius: 8px; overflow: hidden; }
+  .tracker-fill { height: 100%; background: var(--success); border-radius: 8px; transition: width 0.4s ease; }
+  .tracker-count { font-size: 12px; font-weight: 600; color: var(--text-primary); white-space: nowrap; }
 
+  .block-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+
+  /* ── OBLIGATION CARDS ── */
   .obligations { display: flex; flex-direction: column; gap: 9px; margin-bottom: 22px; }
-  .ob-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 13px 15px; display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: start;
-  }
-  .ob-num {
-    width: 26px; height: 26px; border-radius: 50%; background: var(--primary-light);
-    color: var(--primary); font-size: 11px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
-  }
+  .ob-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: start; transition: border-color 0.15s; }
+  .ob-card.done-card { border-color: var(--success); background: #fcfffa; }
+  .ob-num { width: 26px; height: 26px; border-radius: 50%; background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
   .ob-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
   .ob-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
   .ob-meta { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap; align-items: center; }
+  .ob-clause { font-size: 10px; color: var(--text-tertiary); padding: 2px 7px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; }
+  .ob-team { font-size: 10px; color: var(--purple); padding: 2px 7px; background: var(--purple-bg); border-radius: 20px; font-weight: 500; }
+  .ob-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+
+  /* ── TAGS ── */
   .tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
   .tag-rbi { background: #fff3e0; color: #e65100; }
   .tag-sebi { background: #e8f5e9; color: #2e7d32; }
+  .tag-irdai { background: var(--purple-bg); color: var(--purple); }
   .tag-kyc { background: var(--primary-light); color: var(--primary); }
   .tag-cap { background: var(--purple-bg); color: var(--purple); }
   .tag-report { background: var(--success-bg); color: var(--success); }
   .tag-conduct { background: var(--amber-bg); color: var(--amber); }
   .tag-ops { background: #f3e5f5; color: #7b1fa2; }
   .tag-penalty { background: var(--danger-bg); color: var(--danger); }
+  .tag-digital { background: #e3f2fd; color: #1565c0; }
+  .tag-pmla { background: var(--danger-bg); color: var(--danger); }
+  .tag-fema { background: var(--amber-bg); color: var(--amber); }
+  .tag-dpdp { background: #f3e5f5; color: #7b1fa2; }
   .deadline-chip { font-size: 10px; padding: 2px 8px; border-radius: 20px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-tertiary); font-weight: 500; }
+  .confidence-chip { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .conf-high { background: var(--success-bg); color: var(--success); }
+  .conf-medium { background: var(--warning-bg); color: var(--warning); }
 
-  .sev { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; flex-shrink: 0; height: fit-content; }
+  .sev { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; flex-shrink: 0; }
   .sev-high { background: var(--danger-bg); color: var(--danger); }
   .sev-med { background: var(--warning-bg); color: var(--warning); }
   .sev-low { background: var(--success-bg); color: var(--success); }
 
+  /* ── STATUS TOGGLE ── */
+  .status-toggle { display: flex; gap: 3px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .st-btn { padding: 3px 7px; font-size: 10px; font-weight: 500; border: none; cursor: pointer; background: var(--surface-2); color: var(--text-tertiary); transition: all 0.12s; white-space: nowrap; }
+  .st-btn:hover { background: var(--border); }
+  .st-btn.active-ack { background: var(--primary-light); color: var(--primary); }
+  .st-btn.active-prog { background: var(--warning-bg); color: var(--warning); }
+  .st-btn.active-done { background: var(--success-bg); color: var(--success); }
+
+  /* ── TWO-COL PANELS ── */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 
@@ -223,66 +214,106 @@
   .tl-date { font-weight: 600; color: var(--primary); min-width: 75px; font-size: 11px; padding-top: 1px; }
   .tl-text { color: var(--text-secondary); line-height: 1.4; }
 
-  .cta-box {
-    background: var(--primary-light); border: 1px solid #b5d4f4; border-radius: 12px;
-    padding: 16px; display: flex; align-items: center; gap: 16px;
-  }
-  .cta-text { font-size: 13px; color: var(--primary-dark); line-height: 1.5; flex: 1; }
-  .cta-btn {
-    padding: 9px 18px; background: var(--primary); color: #fff; border: none;
-    border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-  }
-  .cta-btn:hover { background: var(--primary-dark); }
+  /* ── BANNERS ── */
+  .dpdp-banner { background: #f3e5f5; border: 1px solid #ce93d8; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; }
+  .dpdp-banner-badge { font-size: 10px; font-weight: 700; background: #7b1fa2; color: white; padding: 3px 8px; border-radius: 20px; flex-shrink: 0; margin-top: 1px; }
+  .dpdp-banner-text { font-size: 12px; color: #4a148c; line-height: 1.5; }
 
-  .penalty-banner {
-    background: var(--danger-bg); border: 1px solid #f7c1c1; border-radius: 10px;
-    padding: 12px 16px; margin-bottom: 14px; display: flex; gap: 10px; align-items: flex-start;
-  }
+  .penalty-banner { background: var(--danger-bg); border: 1px solid #f7c1c1; border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; display: flex; gap: 10px; align-items: flex-start; }
   .penalty-banner-icon { font-size: 16px; flex-shrink: 0; }
   .penalty-banner-text { font-size: 12px; color: var(--danger); line-height: 1.5; }
   .penalty-banner-title { font-weight: 700; margin-bottom: 2px; }
 
+  /* ── CTA & CHAT ── */
+  .cta-box { background: var(--primary-light); border: 1px solid #b5d4f4; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+  .cta-text { font-size: 13px; color: var(--primary-dark); line-height: 1.5; flex: 1; }
+  .cta-btn { padding: 9px 18px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .cta-btn:hover { background: var(--primary-dark); }
+
+  .chat-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 22px; }
+  .chat-header { padding: 12px 16px; background: var(--primary); display: flex; align-items: center; justify-content: space-between; }
+  .chat-header-title { font-size: 13px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 7px; }
+  .chat-close { background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 20px; line-height: 1; padding: 0 4px; }
+  .chat-close:hover { color: #fff; }
+  .chat-messages { padding: 16px; display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; }
+  .chat-msg { display: flex; gap: 8px; align-items: flex-start; }
+  .chat-msg.user { flex-direction: row-reverse; }
+  .chat-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .ai-avatar { background: var(--primary-light); color: var(--primary); }
+  .user-avatar { background: var(--primary); color: #fff; }
+  .chat-bubble { max-width: 80%; padding: 10px 13px; border-radius: 10px; font-size: 12px; line-height: 1.6; }
+  .ai-bubble { background: var(--surface-2); color: var(--text-primary); border-bottom-left-radius: 3px; }
+  .user-bubble { background: var(--primary); color: #fff; border-bottom-right-radius: 3px; }
+  .ai-bubble p { margin-bottom: 6px; }
+  .ai-bubble p:last-child { margin-bottom: 0; }
+  .ai-bubble ul { padding-left: 16px; margin: 4px 0; }
+  .ai-bubble li { margin-bottom: 3px; }
+  .ai-bubble strong { font-weight: 600; }
+  .chat-input-row { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .chat-input { flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; font-family: var(--font); outline: none; resize: none; }
+  .chat-input:focus { border-color: var(--primary); }
+  .chat-send-btn { padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
+  .chat-send-btn:disabled { background: var(--surface-2); color: var(--text-tertiary); cursor: not-allowed; }
+  .chat-suggestions { padding: 0 16px 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chat-suggest-btn { font-size: 11px; padding: 5px 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; cursor: pointer; color: var(--text-secondary); transition: all 0.12s; }
+  .chat-suggest-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+
+  /* ── FRAMEWORKS & ABOUT ── */
+  .fw-item { font-size: 11px; color: var(--text-secondary); padding: 5px 10px; background: var(--surface-2); border-radius: 6px; line-height: 1.4; }
+  .about-stat-row { display: flex; gap: 12px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .about-stat-row:last-child { border-bottom: none; }
+  .about-stat { font-size: 18px; font-weight: 700; color: var(--primary); min-width: 52px; }
+  .about-stat-label { font-size: 11px; color: var(--text-secondary); line-height: 1.4; padding-top: 3px; }
+  .about-user-row { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .about-user-row:last-child { border-bottom: none; }
+  .about-user-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .tech-chip { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-secondary); font-weight: 500; }
+  .roadmap-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .roadmap-row:last-child { border-bottom: none; }
+  .roadmap-phase { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; min-width: 56px; text-align: center; flex-shrink: 0; }
+  .roadmap-phase.done { background: var(--success-bg); color: var(--success); }
+  .roadmap-phase.next { background: var(--primary-light); color: var(--primary); }
+  .roadmap-phase.plan { background: var(--surface-2); color: var(--text-tertiary); }
+  .roadmap-content { flex: 1; }
+  .roadmap-status { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; flex-shrink: 0; height: fit-content; }
+  .done-badge { background: var(--success-bg); color: var(--success); }
+  .next-badge { background: var(--primary-light); color: var(--primary); }
+  .plan-badge { background: var(--surface-2); color: var(--text-tertiary); }
+
+  /* ── HISTORY ITEMS ── */
+  .history-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: border-color 0.15s; }
+  .history-item:hover { border-color: var(--primary-mid); }
+  .history-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); flex-shrink: 0; }
+  .history-info { flex: 1; }
+  .history-name { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .history-meta { font-size: 11px; color: var(--text-tertiary); }
+  .history-count { font-size: 12px; font-weight: 600; color: var(--primary); }
+
   .hidden { display: none !important; }
 
+  /* ── MOBILE ── */
   @media (max-width: 640px) {
     .container { padding: 16px; }
     .metrics { grid-template-columns: repeat(2, 1fr); }
     .two-col { grid-template-columns: 1fr; }
     .row-2col { grid-template-columns: 1fr; }
     .header { padding: 12px 16px; }
-    .tabs { padding: 0 16px; }
+    .tabs { padding: 0 16px; overflow-x: auto; }
+    .header-right { gap: 8px; }
+    .badge-ai { display: none; }
+    .ob-card { grid-template-columns: 26px 1fr; }
+    .ob-right { flex-direction: row; align-items: center; }
+    .tracker-bar { flex-wrap: wrap; }
+    .cta-box { flex-direction: column; gap: 10px; }
+    .api-key-controls { flex-wrap: wrap; }
   }
-
-  /* FRAMEWORKS TAB */
-  .fw-item {
-    font-size:11px; color:var(--text-secondary); padding:5px 10px;
-    background:var(--surface-2); border-radius:6px; line-height:1.4;
-  }
-
-  /* ABOUT TAB */
-  .about-stat-row { display:flex; gap:12px; align-items:flex-start; padding:6px 0; border-bottom:1px solid var(--border); }
-  .about-stat-row:last-child { border-bottom:none; }
-  .about-stat { font-size:18px; font-weight:700; color:var(--primary); min-width:52px; }
-  .about-stat-label { font-size:11px; color:var(--text-secondary); line-height:1.4; padding-top:3px; }
-  .about-user-row { display:flex; gap:10px; align-items:flex-start; padding:5px 0; border-bottom:1px solid var(--border); }
-  .about-user-row:last-child { border-bottom:none; }
-  .about-user-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
-  .tech-chip { font-size:11px; padding:4px 10px; border-radius:20px; background:var(--surface-2); border:1px solid var(--border); color:var(--text-secondary); font-weight:500; }
-  .roadmap-row { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border); }
-  .roadmap-phase { font-size:10px; font-weight:700; padding:3px 8px; border-radius:20px; min-width:56px; text-align:center; flex-shrink:0; }
-  .roadmap-phase.done { background:var(--success-bg); color:var(--success); }
-  .roadmap-phase.next { background:var(--primary-light); color:var(--primary); }
-  .roadmap-phase.plan { background:var(--surface-2); color:var(--text-tertiary); }
-  .roadmap-content { flex:1; }
-  .roadmap-status { font-size:10px; font-weight:600; padding:3px 8px; border-radius:20px; flex-shrink:0; height:fit-content; }
-  .done-badge { background:var(--success-bg); color:var(--success); }
-  .next-badge { background:var(--primary-light); color:var(--primary); }
-  .plan-badge { background:var(--surface-2); color:var(--text-tertiary); }
 </style>
 </head>
 <body>
 
-<!-- DISCLAIMER MODAL -->
+<!-- ═══════════════════════════════════════════════════════
+     DISCLAIMER MODAL
+═══════════════════════════════════════════════════════ -->
 <div id="disclaimer-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:#fff;border-radius:14px;max-width:520px;width:100%;padding:28px;box-shadow:0 8px 32px rgba(0,0,0,0.18)">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
@@ -297,18 +328,19 @@
     </div>
     <div style="background:#f8f8f6;border-radius:8px;padding:14px;margin-bottom:16px;display:flex;flex-direction:column;gap:8px">
       <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#185FA5;font-weight:700;flex-shrink:0">✓</span><span>Outputs are AI-generated summaries intended to <strong>help you start your research faster</strong> — not to replace it.</span></div>
-      <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#185FA5;font-weight:700;flex-shrink:0">✓</span><span>Regulatory obligations are complex and context-specific. <strong>Always verify against the official source document</strong> and consult your legal or compliance team before acting.</span></div>
+      <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#185FA5;font-weight:700;flex-shrink:0">✓</span><span>Always verify against the official source document and consult your legal or compliance team before acting.</span></div>
       <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#185FA5;font-weight:700;flex-shrink:0">✓</span><span>RegIntel does not store any document you upload or paste. Your data stays in your browser session only.</span></div>
       <div style="display:flex;gap:8px;font-size:12px;color:#555;line-height:1.5"><span style="color:#e65100;font-weight:700;flex-shrink:0">✗</span><span>Do not use this tool as the sole basis for compliance decisions, board submissions, or regulatory filings.</span></div>
     </div>
-    <div style="font-size:11px;color:#888;margin-bottom:18px;line-height:1.5">
-      By continuing, you acknowledge that RegIntel is provided as-is for research purposes. The creators accept no liability for compliance decisions made based on this tool's outputs.
-    </div>
+    <div style="font-size:11px;color:#888;margin-bottom:18px;line-height:1.5">By continuing, you acknowledge that RegIntel is provided as-is for research purposes. The creators accept no liability for compliance decisions made based on this tool's outputs.</div>
     <button onclick="acceptDisclaimer()" style="width:100%;padding:11px;background:#185FA5;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">I understand — continue to RegIntel</button>
     <div style="text-align:center;margin-top:10px;font-size:11px;color:#aaa">This notice appears once per session</div>
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════ -->
 <div class="header">
   <div class="logo">
     <div class="logo-mark">
@@ -320,18 +352,21 @@
     </div>
     <div>
       <div class="logo-name" id="logo-name">RegIntel</div>
-      <div class="logo-tag" id="logo-tag">RBI · SEBI · IRDAI Compliance Intelligence</div>
+      <div class="logo-tag" id="logo-tag">RBI · SEBI · IRDAI · DPDP Compliance Intelligence</div>
     </div>
   </div>
   <div class="header-right">
-    <div class="edition-switcher" id="edition-switcher">
+    <div class="edition-switcher">
       <button class="ed-btn active" id="btn-india" onclick="switchEdition('india')">🇮🇳 India</button>
       <button class="ed-btn" id="btn-us" onclick="switchEdition('us')">🇺🇸 US</button>
     </div>
-    <span class="badge-ai">AI Powered</span>
+    <span class="badge-ai">✦ Live AI</span>
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════
+     TABS
+═══════════════════════════════════════════════════════ -->
 <div class="tabs">
   <div class="tab active" onclick="switchTab('analyse')">Analyse Document</div>
   <div class="tab" onclick="switchTab('history')">History</div>
@@ -339,6 +374,9 @@
   <div class="tab" onclick="switchTab('about')">About</div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════
+     ANALYSE TAB
+═══════════════════════════════════════════════════════ -->
 <div class="container" id="analyse-main">
 
   <!-- INPUT PANEL -->
@@ -354,14 +392,14 @@
         </svg>
       </div>
       <div class="upload-title" id="upload-title">Drop regulatory document here</div>
-      <div class="upload-sub" id="upload-sub">PDF, TXT or DOCX · or click to browse</div>
+      <div class="upload-sub" id="upload-sub">PDF, DOCX, or TXT · or click to browse</div>
       <div class="chips" id="format-chips">
         <span class="chip rbi">RBI Master Direction</span>
         <span class="chip rbi">RBI Circular</span>
         <span class="chip sebi">SEBI Regulation</span>
         <span class="chip sebi">SEBI Circular</span>
         <span class="chip irdai">IRDAI Guidelines</span>
-        <span class="chip">IndAS / IFRS</span>
+        <span class="chip dpdp">DPDP Act 2023</span>
         <span class="chip">PMLA</span>
         <span class="chip">FEMA</span>
       </div>
@@ -374,10 +412,10 @@
     </div>
 
     <div class="text-box">
-      <textarea id="doc-text" placeholder="Paste any RBI circular, SEBI regulation, or compliance guideline here. For example: an extract from RBI's Digital Lending Master Direction, SEBI Investment Adviser Regulations, RBI KYC Master Direction, PMLA guidelines..."></textarea>
+      <textarea id="doc-text" placeholder="Paste any RBI circular, SEBI regulation, IRDAI guideline, DPDP Act section, or compliance document here. Even 2–3 paragraphs gives useful results." rows="5"></textarea>
       <div class="text-box-footer">
         <span id="char-count">0 characters</span>
-        <span>Tip: Even 2–3 paragraphs gives useful results</span>
+        <span>Min ~100 characters for meaningful analysis</span>
       </div>
     </div>
 
@@ -406,27 +444,55 @@
       </div>
     </div>
 
-    <button class="analyse-btn" onclick="startAnalysis()">
+    <!-- GEMINI API KEY -->
+    <div class="api-key-section">
+      <div class="section-label">
+        Gemini API key
+        <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-tertiary)"> — stored in your browser only, never sent to any server</span>
+      </div>
+      <div class="api-key-note">
+        Powers the live AI analysis. Free at
+        <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>
+        — 1,500 requests/day, no credit card needed. Your key is stored only in localStorage and sent directly from your browser to Google's API.
+      </div>
+      <div class="api-key-controls">
+        <input type="password" id="AIzaSyC74KBI72_RLf-0X7CLpZndgNHro9euj9s" placeholder="AIza..." oninput="onApiKeyInput()"/>
+        <button class="btn-sm" onclick="testApiKey()">Test key</button>
+        <button class="btn-sm" onclick="toggleKeyVisibility()" id="key-vis-btn">Show</button>
+      </div>
+      <div class="api-key-status" id="api-key-status">Enter your Gemini API key above to enable live analysis.</div>
+    </div>
+
+    <button class="analyse-btn" id="analyse-btn" onclick="startAnalysis()">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
         <circle cx="7.5" cy="7.5" r="6.5" stroke="white" stroke-width="1.3"/>
         <path d="M5.5 7.5l2 2 3-3" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       Analyse with AI
     </button>
-  </div>
+  </div><!-- /input-panel -->
 
-  <!-- LOADING -->
+  <!-- LOADING PANEL -->
   <div id="loading-panel" class="hidden">
     <div class="loading-wrap">
-      <div class="loading-status">
-        <div class="spinner"></div>
-        <span id="load-text">Parsing document structure...</span>
+      <div class="loading-status"><div class="spinner"></div><span id="load-text">Sending to AI engine...</span></div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill" style="animation: prog 22s ease-in-out forwards;"></div>
       </div>
-      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <div class="loading-subtitle">Powered by Gemini 2.0 Flash · Analysing your document</div>
     </div>
   </div>
 
-  <!-- RESULTS -->
+  <!-- ERROR PANEL -->
+  <div id="error-panel" class="hidden">
+    <div class="error-banner">
+      <div class="error-banner-title">⚠️ Analysis failed</div>
+      <div class="error-banner-text" id="error-msg">Something went wrong. Please check your API key and try again.</div>
+    </div>
+    <button class="btn-outline" onclick="resetApp()" style="margin-top:8px">← Try again</button>
+  </div>
+
+  <!-- RESULTS PANEL -->
   <div id="results-panel" class="hidden">
 
     <div class="results-header">
@@ -435,23 +501,31 @@
           <rect x="2" y="1" width="10" height="12" rx="1.5" stroke="#888" stroke-width="1"/>
           <path d="M4.5 4.5h5M4.5 7h5M4.5 9.5h3" stroke="#888" stroke-width="0.8" stroke-linecap="round"/>
         </svg>
-        <span class="doc-tag-name" id="res-docname">RBI Digital Lending Guidelines</span>
-        <span class="doc-tag-sub" id="res-instname">· Private bank</span>
+        <span class="doc-tag-name" id="res-docname">—</span>
+        <span class="doc-tag-sub" id="res-instname">—</span>
       </div>
-      <div style="display:flex;gap:8px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn-outline" onclick="resetApp()">← New analysis</button>
         <button class="btn-outline" id="export-btn">Export report ↗</button>
       </div>
     </div>
 
+    <!-- PENALTY BANNER -->
     <div id="penalty-banner" class="penalty-banner hidden">
       <div class="penalty-banner-icon">⚠️</div>
       <div class="penalty-banner-text">
         <div class="penalty-banner-title" id="penalty-title">High penalty risk detected</div>
-        <div id="penalty-body">This document contains provisions with significant monetary penalties. Immediate compliance review recommended.</div>
+        <div id="penalty-body">This document contains provisions with significant monetary penalties.</div>
       </div>
     </div>
 
+    <!-- DPDP BANNER -->
+    <div id="dpdp-banner" class="dpdp-banner hidden">
+      <div class="dpdp-banner-badge">DPDP</div>
+      <div class="dpdp-banner-text" id="dpdp-text">This document has Digital Personal Data Protection Act 2023 implications.</div>
+    </div>
+
+    <!-- METRICS -->
     <div class="metrics">
       <div class="metric">
         <div class="metric-label">Obligations found</div>
@@ -465,19 +539,31 @@
       </div>
       <div class="metric">
         <div class="metric-label">Max penalty</div>
-        <div class="metric-val" id="m3" style="font-size:16px">—</div>
+        <div class="metric-val" id="m3" style="font-size:15px;line-height:1.3">—</div>
         <div class="metric-sub">per violation</div>
       </div>
       <div class="metric">
         <div class="metric-label">Nearest deadline</div>
-        <div class="metric-val" id="m4" style="font-size:16px">—</div>
+        <div class="metric-val" id="m4" style="font-size:15px;line-height:1.3">—</div>
         <div class="metric-sub">compliance cutoff</div>
       </div>
     </div>
 
-    <div class="block-title">Key obligations — plain English</div>
+    <!-- COMPLIANCE TRACKER -->
+    <div class="tracker-bar">
+      <span class="tracker-label">Compliance progress</span>
+      <div class="tracker-progress"><div class="tracker-fill" id="tracker-fill" style="width:0%"></div></div>
+      <span class="tracker-count" id="tracker-count">0 / 0 actioned</span>
+    </div>
+
+    <!-- OBLIGATIONS LIST -->
+    <div class="block-title">
+      Key obligations — plain English
+      <span style="font-size:11px;font-weight:400;color:var(--text-tertiary)">Toggle status per obligation below</span>
+    </div>
     <div class="obligations" id="ob-list"></div>
 
+    <!-- RISK + TIMELINE -->
     <div class="two-col">
       <div class="panel">
         <div class="block-title">Compliance risk areas</div>
@@ -489,37 +575,66 @@
       </div>
     </div>
 
-    <div class="cta-box">
-      <div class="cta-text">Want to go deeper? Ask RegIntel to map these obligations to your team structure, identify gaps vs your current policies, or generate a board-ready compliance summary.</div>
-      <button class="cta-btn" id="cta-ask-btn">Ask follow-up ↗</button>
+    <!-- FOLLOW-UP CTA -->
+    <div class="cta-box" id="cta-box">
+      <div class="cta-text">Want to go deeper? Ask RegIntel to map these obligations to your team, identify gaps vs current policies, or prepare a board-ready summary.</div>
+      <button class="cta-btn" id="cta-ask-btn" onclick="openChat()">Ask follow-up ↗</button>
     </div>
 
-  </div>
-</div>
+    <!-- FOLLOW-UP CHAT (hidden by default) -->
+    <div class="chat-panel hidden" id="chat-panel">
+      <div class="chat-header">
+        <div class="chat-header-title">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="6" stroke="white" stroke-width="1.2"/>
+            <path d="M4.5 5.5h5M4.5 7.5h3" stroke="white" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+          Ask RegIntel — document context retained
+        </div>
+        <button class="chat-close" onclick="closeChat()">×</button>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-msg">
+          <div class="chat-avatar ai-avatar">RI</div>
+          <div class="chat-bubble ai-bubble">
+            <p>I've analysed your document and have the full context. What would you like to explore? You can ask me to map obligations to teams, identify board-level items, check gaps, or summarise for a specific audience.</p>
+          </div>
+        </div>
+      </div>
+      <div class="chat-suggestions" id="chat-suggestions">
+        <button class="chat-suggest-btn" onclick="sendSuggestion(this)">Map obligations to compliance teams</button>
+        <button class="chat-suggest-btn" onclick="sendSuggestion(this)">Which items need board approval?</button>
+        <button class="chat-suggest-btn" onclick="sendSuggestion(this)">What are the immediate 30-day priorities?</button>
+        <button class="chat-suggest-btn" onclick="sendSuggestion(this)">Summarise for a non-technical CEO</button>
+      </div>
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chat-input" placeholder="Ask anything about this document..." rows="1" onkeydown="chatKeydown(event)"></textarea>
+        <button class="chat-send-btn" id="chat-send-btn" onclick="sendChat()">Send</button>
+      </div>
+    </div>
 
-<!-- HISTORY PANEL -->
+  </div><!-- /results-panel -->
+</div><!-- /analyse-main -->
+
+<!-- ═══════════════════════════════════════════════════════
+     HISTORY TAB
+═══════════════════════════════════════════════════════ -->
 <div id="history-panel" class="container hidden">
-  <div class="section-label">Recent analyses</div>
-  <div id="history-list">
-    <div style="text-align:center;padding:48px 0;color:var(--text-tertiary);">
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" style="margin:0 auto 12px;display:block">
-        <circle cx="18" cy="18" r="16" stroke="#ccc" stroke-width="1.5"/>
-        <path d="M18 10v8l5 3" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <div style="font-size:14px;font-weight:500;margin-bottom:4px">No analyses yet</div>
-      <div style="font-size:12px">Your past analyses will appear here once you run your first one</div>
-    </div>
-  </div>
+  <div class="section-label" style="margin-bottom:16px">Recent analyses</div>
+  <div id="history-list"></div>
 </div>
 
-<!-- FRAMEWORKS PANEL -->
+<!-- ═══════════════════════════════════════════════════════
+     FRAMEWORKS TAB
+═══════════════════════════════════════════════════════ -->
 <div id="frameworks-panel" class="container hidden">
   <div id="frameworks-content"></div>
 </div>
 
-<!-- ABOUT PANEL -->
+<!-- ═══════════════════════════════════════════════════════
+     ABOUT TAB
+═══════════════════════════════════════════════════════ -->
 <div id="about-panel" class="container hidden">
-
   <div class="panel" style="margin-bottom:16px">
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
       <div style="width:48px;height:48px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center">
@@ -531,75 +646,30 @@
       </div>
       <div>
         <div style="font-size:16px;font-weight:600">RegIntel India</div>
-        <div style="font-size:12px;color:var(--text-tertiary)">Version 1.0 · Built April 2026</div>
+        <div style="font-size:12px;color:var(--text-tertiary)">Version 2.0 · Built 2026 · Live AI Engine</div>
       </div>
     </div>
-    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7">
-      RegIntel India is an AI-powered regulatory compliance intelligence tool built specifically for the Indian banking and financial services industry. It reads RBI circulars, SEBI regulations, and IRDAI guidelines and extracts what your team actually needs to do — in plain English, with deadlines and penalty amounts clearly highlighted.
-    </div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7">RegIntel India is an AI-powered regulatory compliance intelligence tool for the Indian BFSI sector. It reads RBI circulars, SEBI regulations, IRDAI guidelines, and DPDP Act provisions — and extracts what your team actually needs to do, in plain English, with deadlines, penalties, and responsible teams clearly mapped.</div>
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
     <div class="panel">
-      <div style="font-size:12px;font-weight:600;margin-bottom:12px;color:var(--text-primary)">The problem we solve</div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:12px">The problem we solve</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="about-stat-row">
-          <div class="about-stat">3–4 hrs</div>
-          <div class="about-stat-label">time a compliance analyst spends reading one regulatory document manually</div>
-        </div>
-        <div class="about-stat-row">
-          <div class="about-stat">2 min</div>
-          <div class="about-stat-label">time RegIntel takes to extract all key obligations from the same document</div>
-        </div>
-        <div class="about-stat-row">
-          <div class="about-stat">47+</div>
-          <div class="about-stat-label">RBI Master Directions issued in FY24 alone — compliance teams are overwhelmed</div>
-        </div>
-        <div class="about-stat-row">
-          <div class="about-stat">₹2 Cr</div>
-          <div class="about-stat-label">maximum penalty per RBI violation — the cost of missing a compliance obligation</div>
-        </div>
+        <div class="about-stat-row"><div class="about-stat">3–4 hrs</div><div class="about-stat-label">time a compliance analyst spends reading one regulatory document manually</div></div>
+        <div class="about-stat-row"><div class="about-stat">2 min</div><div class="about-stat-label">time RegIntel takes to extract all key obligations from the same document</div></div>
+        <div class="about-stat-row"><div class="about-stat">47+</div><div class="about-stat-label">RBI Master Directions issued in FY24 alone — compliance teams are overwhelmed</div></div>
+        <div class="about-stat-row"><div class="about-stat">₹2 Cr</div><div class="about-stat-label">maximum penalty per RBI violation — the cost of missing one obligation</div></div>
       </div>
     </div>
-
     <div class="panel">
-      <div style="font-size:12px;font-weight:600;margin-bottom:12px;color:var(--text-primary)">Who this is built for</div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:12px">Who this is built for</div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <div class="about-user-row">
-          <div class="about-user-dot" style="background:var(--primary)"></div>
-          <div>
-            <div style="font-size:12px;font-weight:500">Compliance teams</div>
-            <div style="font-size:11px;color:var(--text-tertiary)">HDFC, ICICI, Kotak, Axis, Yes Bank, Federal Bank</div>
-          </div>
-        </div>
-        <div class="about-user-row">
-          <div class="about-user-dot" style="background:#2e7d32"></div>
-          <div>
-            <div style="font-size:12px;font-weight:500">NBFC compliance officers</div>
-            <div style="font-size:11px;color:var(--text-tertiary)">Bajaj Finance, Muthoot, Shriram, Mahindra Finance</div>
-          </div>
-        </div>
-        <div class="about-user-row">
-          <div class="about-user-dot" style="background:var(--purple)"></div>
-          <div>
-            <div style="font-size:12px;font-weight:500">Fintech compliance PMs</div>
-            <div style="font-size:11px;color:var(--text-tertiary)">Razorpay, Groww, Zerodha, Paytm, PhonePe</div>
-          </div>
-        </div>
-        <div class="about-user-row">
-          <div class="about-user-dot" style="background:var(--amber)"></div>
-          <div>
-            <div style="font-size:12px;font-weight:500">RegTech consultants</div>
-            <div style="font-size:11px;color:var(--text-tertiary)">Big 4 India — Deloitte, PwC, EY, KPMG advisory</div>
-          </div>
-        </div>
-        <div class="about-user-row">
-          <div class="about-user-dot" style="background:var(--danger)"></div>
-          <div>
-            <div style="font-size:12px;font-weight:500">Investment banks</div>
-            <div style="font-size:11px;color:var(--text-tertiary)">Goldman Sachs India, Nomura, Kotak IB, Morgan Stanley</div>
-          </div>
-        </div>
+        <div class="about-user-row"><div class="about-user-dot" style="background:var(--primary)"></div><div><div style="font-size:12px;font-weight:500">Compliance teams</div><div style="font-size:11px;color:var(--text-tertiary)">HDFC, ICICI, Kotak, Axis, Yes Bank</div></div></div>
+        <div class="about-user-row"><div class="about-user-dot" style="background:#2e7d32"></div><div><div style="font-size:12px;font-weight:500">NBFC compliance officers</div><div style="font-size:11px;color:var(--text-tertiary)">Bajaj Finance, Muthoot, Shriram</div></div></div>
+        <div class="about-user-row"><div class="about-user-dot" style="background:var(--purple)"></div><div><div style="font-size:12px;font-weight:500">Fintech compliance PMs</div><div style="font-size:11px;color:var(--text-tertiary)">Razorpay, Groww, Zerodha, PhonePe</div></div></div>
+        <div class="about-user-row"><div class="about-user-dot" style="background:var(--amber)"></div><div><div style="font-size:12px;font-weight:500">RegTech consultants</div><div style="font-size:11px;color:var(--text-tertiary)">Big 4 India — Deloitte, PwC, EY, KPMG</div></div></div>
+        <div class="about-user-row"><div class="about-user-dot" style="background:var(--danger)"></div><div><div style="font-size:12px;font-weight:500">Investment banks</div><div style="font-size:11px;color:var(--text-tertiary)">Goldman India, Nomura, Kotak IB</div></div></div>
       </div>
     </div>
   </div>
@@ -607,59 +677,30 @@
   <div class="panel" style="margin-bottom:16px">
     <div style="font-size:12px;font-weight:600;margin-bottom:12px">Technology stack</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px">
-      <span class="tech-chip">Claude AI (Anthropic)</span>
+      <span class="tech-chip">Google Gemini 2.0 Flash (AI engine)</span>
+      <span class="tech-chip">Direct browser API calls (zero backend)</span>
+      <span class="tech-chip">PDF.js (client-side PDF reading)</span>
+      <span class="tech-chip">Mammoth.js (client-side DOCX reading)</span>
       <span class="tech-chip">Vanilla HTML / CSS / JS</span>
-      <span class="tech-chip">Vercel (hosting)</span>
-      <span class="tech-chip">GitHub (version control)</span>
+      <span class="tech-chip">localStorage (obligation tracker)</span>
       <span class="tech-chip">Zero backend infrastructure</span>
-      <span class="tech-chip">No database required</span>
       <span class="tech-chip">Cost to run: ₹0</span>
     </div>
   </div>
 
   <div class="panel" style="margin-bottom:16px">
     <div style="font-size:12px;font-weight:600;margin-bottom:12px">Roadmap</div>
-    <div style="display:flex;flex-direction:column;gap:0">
-      <div class="roadmap-row">
-        <div class="roadmap-phase done">Phase 1</div>
-        <div class="roadmap-content">
-          <div style="font-size:12px;font-weight:500">Working prototype — current version</div>
-          <div style="font-size:11px;color:var(--text-tertiary)">Document analysis, institution filter, export, live deployment</div>
-        </div>
-        <div class="roadmap-status done-badge">Live ✓</div>
-      </div>
-      <div class="roadmap-row">
-        <div class="roadmap-phase next">Phase 2</div>
-        <div class="roadmap-content">
-          <div style="font-size:12px;font-weight:500">Live Claude AI integration</div>
-          <div style="font-size:11px;color:var(--text-tertiary)">Real AI processing of any pasted document via Anthropic API</div>
-        </div>
-        <div class="roadmap-status next-badge">Next</div>
-      </div>
-      <div class="roadmap-row">
-        <div class="roadmap-phase plan">Phase 3</div>
-        <div class="roadmap-content">
-          <div style="font-size:12px;font-weight:500">Analysis history + PDF export</div>
-          <div style="font-size:11px;color:var(--text-tertiary)">Save past analyses, board-ready PDF reports, user login</div>
-        </div>
-        <div class="roadmap-status plan-badge">Planned</div>
-      </div>
-      <div class="roadmap-row" style="border-bottom:none">
-        <div class="roadmap-phase plan">Phase 4</div>
-        <div class="roadmap-content">
-          <div style="font-size:12px;font-weight:500">Enterprise GRC integration</div>
-          <div style="font-size:11px;color:var(--text-tertiary)">API integration with bank GRC platforms, audit trails, role-based access</div>
-        </div>
-        <div class="roadmap-status plan-badge">Planned</div>
-      </div>
+    <div style="display:flex;flex-direction:column">
+      <div class="roadmap-row"><div class="roadmap-phase done">Phase 1</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Working prototype</div><div style="font-size:11px;color:var(--text-tertiary)">Document analysis UI, institution filter, export, live deployment</div></div><div class="roadmap-status done-badge">Live ✓</div></div>
+      <div class="roadmap-row"><div class="roadmap-phase done">Phase 2</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Live AI engine — current version</div><div style="font-size:11px;color:var(--text-tertiary)">Real Gemini AI, obligation tracker, follow-up chat, DPDP module, HTML export</div></div><div class="roadmap-status done-badge">Live ✓</div></div>
+      <div class="roadmap-row"><div class="roadmap-phase next">Phase 3</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Multi-doc comparison + gap analysis</div><div style="font-size:11px;color:var(--text-tertiary)">Upload two documents, compare obligations, identify compliance gaps</div></div><div class="roadmap-status next-badge">Next</div></div>
+      <div class="roadmap-row"><div class="roadmap-phase plan">Phase 4</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Enterprise GRC integration</div><div style="font-size:11px;color:var(--text-tertiary)">API integration with bank GRC platforms, audit trails, role-based access</div></div><div class="roadmap-status plan-badge">Planned</div></div>
     </div>
   </div>
 
   <div class="panel">
     <div style="font-size:12px;font-weight:600;margin-bottom:10px">Built by</div>
-    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7">
-      This tool was designed and built by a senior Product Manager with experience across banking, fintech, and regulatory domains. Built end-to-end without an engineering team — demonstrating how AI-enabled PMs can ship production-grade products independently.
-    </div>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7">Designed and built by a senior Product Manager with experience across banking, fintech, and regulatory domains. Built end-to-end without an engineering team — demonstrating how AI-enabled PMs can ship production-grade products independently.</div>
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
       <a href="https://linkedin.com" target="_blank" style="font-size:12px;color:var(--primary);text-decoration:none;border:1px solid var(--border);padding:5px 12px;border-radius:6px">LinkedIn ↗</a>
       <a href="https://github.com/manishbhayana-bullz" target="_blank" style="font-size:12px;color:var(--primary);text-decoration:none;border:1px solid var(--border);padding:5px 12px;border-radius:6px">GitHub ↗</a>
@@ -669,50 +710,73 @@
   <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:16px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <span style="font-size:16px">⚖️</span>
-      <div style="font-size:12px;font-weight:600;color:var(--text-primary)">Legal notice & disclaimer</div>
+      <div style="font-size:12px;font-weight:600">Legal notice &amp; disclaimer</div>
     </div>
     <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;display:flex;flex-direction:column;gap:8px">
       <p><strong style="color:var(--text-primary)">For research and exploration only.</strong> RegIntel is an AI-assisted tool designed to help compliance professionals begin their regulatory research faster. It is not a substitute for qualified legal, compliance, or regulatory advice.</p>
-      <p>All outputs are AI-generated summaries based on the text you provide. They may be incomplete, out of date, or context-specific. <strong style="color:var(--text-primary)">Always verify any obligation, deadline, or penalty amount against the official source document</strong> published by the relevant regulator (RBI, SEBI, IRDAI, Fed, SEC, OCC, FINRA).</p>
-      <p>RegIntel does not store, log, or transmit any document text you paste or upload. All processing occurs within your browser session and is discarded when you close the tab.</p>
-      <p style="color:var(--text-tertiary)">The creators and contributors of RegIntel accept no liability for regulatory, legal, financial, or compliance decisions made on the basis of this tool's outputs. Use of this tool constitutes acceptance of these terms.</p>
+      <p>All outputs are AI-generated summaries. They may be incomplete, out of date, or context-specific. <strong style="color:var(--text-primary)">Always verify against the official source document.</strong></p>
+      <p>RegIntel does not store, log, or transmit any document text you paste or upload. All processing occurs directly in your browser via a client-side Gemini API call.</p>
+      <p style="color:var(--text-tertiary)">The creators of RegIntel accept no liability for regulatory, legal, financial, or compliance decisions made on the basis of this tool's outputs.</p>
     </div>
-    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:gap">
-      <div style="font-size:11px;color:var(--text-tertiary)">Version 1.0 · India + US Edition · Built 2026</div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div style="font-size:11px;color:var(--text-tertiary)">Version 2.0 · India + US Edition · Built 2026</div>
       <button onclick="document.getElementById('disclaimer-overlay').style.display='flex'" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;text-decoration:underline">View full disclaimer ↗</button>
     </div>
   </div>
+</div><!-- /about-panel -->
 
-</div>
-
+<!-- ═══════════════════════════════════════════════════════
+     PART 2: ALL JAVASCRIPT GOES HERE
+     Replace this comment block with the <script>...</script>
+     from Part 2 before deploying.
+═══════════════════════════════════════════════════════ -->
 <script>
-// ─── STATE ───────────────────────────────────────────────
-let selInst = 'pvt', selFocus = 'all', hasContent = false;
+// ═══════════════════════════════════════════════════════
+// REGINTEL — PART 2: COMPLETE JS ENGINE
+// Zero backend. Direct Gemini API. All localStorage prefixed regintel_
+// ═══════════════════════════════════════════════════════
+
+// ── 1. STATE & GLOBALS ──────────────────────────────────
+let selInst = 'pvt', selFocus = 'all';
 let currentEdition = 'india';
 let analysisHistory = [];
-try { analysisHistory = JSON.parse(localStorage.getItem('regintel_history') || '[]'); } catch(e) {}
+let currentAnalysisResult = null;
+let obStatuses = {};      // { obKey: 'none'|'ack'|'prog'|'done' }
+let chatMessages = [];    // { role, content }
+let chatDocContext = '';
+let isChatOpen = false;
 
-// ─── DISCLAIMER ──────────────────────────────────────────
-function acceptDisclaimer() {
-  document.getElementById('disclaimer-overlay').style.display = 'none';
-  try { sessionStorage.setItem('regintel_accepted', '1'); } catch(e) {}
-}
+// Load persisted data
+try { analysisHistory = JSON.parse(localStorage.getItem('regintel_history') || '[]'); } catch(e) { analysisHistory = []; }
+try { obStatuses = JSON.parse(localStorage.getItem('regintel_ob_statuses') || '{}'); } catch(e) { obStatuses = {}; }
+
+// Load saved API key
+try {
+  const savedKey = localStorage.getItem('regintel_gemini_key') || '';
+  if (savedKey) {
+    document.getElementById('api-key-input').value = savedKey;
+    document.getElementById('api-key-status').textContent = '✓ Key loaded from storage';
+  }
+} catch(e) {}
+
+// Show disclaimer if not accepted this session
 try {
   if (sessionStorage.getItem('regintel_accepted')) {
     document.getElementById('disclaimer-overlay').style.display = 'none';
   }
 } catch(e) { document.getElementById('disclaimer-overlay').style.display = 'none'; }
 
-// ─── EDITION SWITCHER ─────────────────────────────────────
+// ── EDITIONS CONFIG ──────────────────────────────────────
 const EDITIONS = {
   india: {
     logoName: 'RegIntel India',
-    logoTag: 'RBI · SEBI · IRDAI Compliance Intelligence',
-    placeholder: 'Paste any RBI circular, SEBI regulation, or IRDAI guideline here...',
+    logoTag: 'RBI · SEBI · IRDAI · DPDP Compliance Intelligence',
+    placeholder: 'Paste any RBI circular, SEBI regulation, IRDAI guideline, or DPDP Act extract here...',
     chips: [
       {cls:'rbi',l:'RBI Master Direction'},{cls:'rbi',l:'RBI Circular'},
       {cls:'sebi',l:'SEBI Regulation'},{cls:'sebi',l:'SEBI Circular'},
-      {cls:'irdai',l:'IRDAI Guidelines'},{cls:'',l:'PMLA'},{cls:'',l:'FEMA'},{cls:'',l:'IndAS'}
+      {cls:'irdai',l:'IRDAI Guidelines'},{cls:'dpdp',l:'DPDP Act 2023'},
+      {cls:'',l:'PMLA'},{cls:'',l:'FEMA'}
     ],
     instPills: [
       {v:'pvt',l:'Private bank'},{v:'psu',l:'PSU bank'},{v:'nbfc',l:'NBFC'},
@@ -727,11 +791,12 @@ const EDITIONS = {
   us: {
     logoName: 'RegIntel US',
     logoTag: 'Fed · OCC · SEC · FINRA Compliance Intelligence',
-    placeholder: 'Paste any Federal Reserve regulation, OCC guidance, SEC rule, Dodd-Frank provision, or FINRA circular here...',
+    placeholder: 'Paste any Federal Reserve regulation, OCC guidance, SEC rule, or FINRA circular here...',
     chips: [
       {cls:'rbi',l:'Dodd-Frank'},{cls:'rbi',l:'Basel III (US)'},
       {cls:'sebi',l:'SEC Rule'},{cls:'sebi',l:'FINRA Circular'},
-      {cls:'irdai',l:'OCC Guidance'},{cls:'',l:'BSA / AML'},{cls:'',l:'CCAR'},{cls:'',l:'Volcker Rule'}
+      {cls:'irdai',l:'OCC Guidance'},{cls:'',l:'BSA / AML'},
+      {cls:'',l:'CCAR'},{cls:'',l:'Volcker Rule'}
     ],
     instPills: [
       {v:'gsib',l:'G-SIB bank'},{v:'regional',l:'Regional bank'},{v:'broker_dealer',l:'Broker-dealer'},
@@ -745,6 +810,666 @@ const EDITIONS = {
   }
 };
 
+// ── 2. FILE READING ──────────────────────────────────────
+function onFileSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('upload-title').textContent = file.name;
+  document.getElementById('upload-sub').textContent = (file.size / 1024).toFixed(1) + ' KB · reading file...';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'txt') {
+    // Plain text
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('doc-text').value = e.target.result;
+      document.getElementById('char-count').textContent = e.target.result.length + ' characters';
+      document.getElementById('upload-sub').textContent = (file.size / 1024).toFixed(1) + ' KB · text loaded ✓';
+    };
+    reader.readAsText(file);
+
+  } else if (ext === 'docx') {
+    // DOCX via Mammoth.js
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        const result = await mammoth.extractRawText({ arrayBuffer: e.target.result });
+        document.getElementById('doc-text').value = result.value;
+        document.getElementById('char-count').textContent = result.value.length + ' characters';
+        document.getElementById('upload-sub').textContent = (file.size / 1024).toFixed(1) + ' KB · DOCX extracted ✓';
+      } catch(err) {
+        document.getElementById('upload-sub').textContent = 'Error reading DOCX: ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+
+  } else if (ext === 'pdf') {
+    // PDF via PDF.js
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        const typedArray = new Uint8Array(e.target.result);
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fullText += content.items.map(s => s.str).join(' ') + '\n';
+        }
+        document.getElementById('doc-text').value = fullText.trim();
+        document.getElementById('char-count').textContent = fullText.trim().length + ' characters';
+        document.getElementById('upload-sub').textContent = (file.size / 1024).toFixed(1) + ' KB · PDF extracted (' + pdf.numPages + ' pages) ✓';
+      } catch(err) {
+        document.getElementById('upload-sub').textContent = 'Error reading PDF: ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+
+  } else {
+    document.getElementById('upload-sub').textContent = 'Unsupported file type. Use PDF, DOCX, or TXT.';
+  }
+}
+
+// Drag-and-drop wiring
+const dz = document.getElementById('dropzone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    const fakeInput = { files: [file] };
+    document.getElementById('upload-title').textContent = file.name;
+    onFileSelect(fakeInput);
+  }
+});
+
+// Character count on typing
+document.getElementById('doc-text').oninput = function() {
+  document.getElementById('char-count').textContent = this.value.length + ' characters';
+};
+
+// ── 3. buildPrompt ────────────────────────────────────────
+function buildPrompt(docText, institution, focus, edition) {
+  const txt = docText.toLowerCase();
+
+  // Detect regulator
+  let regType = 'generic';
+  if (txt.includes('rbi') || txt.includes('reserve bank') || txt.includes('master direction') || txt.includes('prudential')) regType = 'rbi';
+  else if (txt.includes('sebi') || txt.includes('securities') || txt.includes('exchange board') || txt.includes('mutual fund')) regType = 'sebi';
+  else if (txt.includes('irdai') || txt.includes('insurance regulatory') || txt.includes('irda')) regType = 'irdai';
+  else if (txt.includes('pmla') || txt.includes('prevention of money laundering') || txt.includes('fema') || txt.includes('foreign exchange')) regType = 'pmla';
+  else if (txt.includes('dpdp') || txt.includes('digital personal data') || txt.includes('data protection')) regType = 'dpdp';
+  else if (txt.includes('federal reserve') || txt.includes('occ ') || txt.includes(' sec ') || txt.includes('finra') || txt.includes('dodd-frank') || txt.includes('basel')) regType = 'us';
+
+  // System persona per regulator
+  const personas = {
+    rbi: 'You are a senior RBI compliance expert with 20 years in Indian banking prudential norms, master directions, and monetary policy circulars. You understand the nuances of SCB/NBFC distinctions, capital adequacy ratios, KYC/AML obligations, and regulatory reporting under Indian banking law.',
+    sebi: 'You are a capital markets compliance specialist with deep expertise in SEBI regulations, stock exchange circulars, mutual fund regulations, PMS/AIF frameworks, and LODR obligations. You know SEBI enforcement patterns and typical penalty structures.',
+    irdai: 'You are an insurance regulation expert specialising in IRDAI guidelines, solvency margins, product approval frameworks, policyholder protection, and reinsurance regulations under Indian insurance law.',
+    pmla: 'You are an AML and forex compliance expert under Indian law, with deep expertise in PMLA 2002, FEMA 1999, FIU-IND reporting obligations, suspicious transaction reports, and cross-border remittance regulations.',
+    dpdp: 'You are a data protection specialist with expert knowledge of India\'s DPDP Act 2023, its notice and consent requirements, data fiduciary obligations, Data Protection Board, grievance redressal mechanisms, and cross-border data transfer rules.',
+    us: 'You are a US financial regulatory compliance expert specialising in Federal Reserve SR Letters, OCC Comptroller\'s Handbooks, SEC rules and releases, FINRA Rule Books, Dodd-Frank Act obligations, and Basel III capital requirements as implemented in the US.',
+    generic: 'You are a senior regulatory compliance analyst with broad expertise across financial services, banking, insurance, and capital markets regulations.'
+  };
+
+  // Institution-specific tuning
+  const instTuning = {
+    pvt: 'This is a large private sector commercial bank regulated by RBI.',
+    psu: 'This is a public sector undertaking (PSU) bank with government ownership and RBI regulation.',
+    nbfc: 'This is a Non-Banking Financial Company (NBFC) regulated by RBI — note NBFC-specific carve-outs vs bank rules.',
+    fintech: 'This is a fintech company that may operate as a payment aggregator, lending platform, or neo-bank — focus on digital-specific obligations.',
+    broker: 'This is a SEBI-registered stock broker or mutual fund distributor.',
+    invest: 'This is an investment bank / merchant banker with SEBI and RBI obligations.',
+    gsib: 'This is a Global Systemically Important Bank (G-SIB) operating in the US market.',
+    regional: 'This is a US regional bank regulated by the Federal Reserve and OCC.',
+    broker_dealer: 'This is a US broker-dealer regulated by FINRA and SEC.',
+    hedge: 'This is a hedge fund with SEC registration and reporting obligations.',
+    asset_mgr: 'This is a US asset management firm with SEC and ERISA obligations.',
+    fintech_us: 'This is a US fintech or BNPL company with CFPB, state licensing, and potentially OCC charter obligations.'
+  };
+
+  const focusTuning = focus !== 'all' ? `\nPay particular attention to ${focus.toUpperCase()} obligations and requirements.` : '';
+
+  const persona = personas[regType] || personas.generic;
+  const instNote = instTuning[institution] || '';
+
+  return `${persona}
+
+${instNote}${focusTuning}
+
+Below is a regulatory document. Extract ALL actionable compliance obligations from it. Be thorough — compliance teams depend on not missing anything.
+
+DOCUMENT TEXT:
+---
+${docText.slice(0, 12000)}
+---
+
+Respond ONLY with a valid JSON object. No markdown fences. No explanation text before or after. No trailing commas. The JSON must exactly match this schema:
+
+{
+  "documentTitle": "Short descriptive title of this document (max 60 chars)",
+  "summary": "2-3 sentence plain English summary of what this regulation requires",
+  "regulatorType": "rbi|sebi|irdai|pmla|fema|dpdp|fed|sec|occ|generic",
+  "obligations": [
+    {
+      "title": "Short obligation title (max 60 chars)",
+      "description": "Plain English explanation of what the institution must do (2-3 sentences)",
+      "priority": "high|medium|low",
+      "deadline": "Specific date or timeframe, or 'Ongoing' if continuous, or 'Not specified'",
+      "responsibleTeam": "Which team is primarily responsible (e.g. Compliance, IT, Risk, Operations, Legal, Finance, HR)",
+      "penalty": "Penalty for non-compliance, or 'Not specified'",
+      "clauseReference": "Section/clause reference from the document, or null",
+      "confidence": "high|medium",
+      "tags": ["array of 1-3 relevant tags from: rbi, sebi, irdai, kyc, capital, reporting, conduct, ops, penalty, digital, pmla, fema, dpdp"]
+    }
+  ],
+  "riskAreas": [
+    {
+      "title": "Risk area name",
+      "level": "high|medium|low",
+      "penaltyContext": "Penalty amount or consequence, or null"
+    }
+  ],
+  "timeline": [
+    {
+      "date": "Date or timeframe",
+      "event": "What must happen by this date"
+    }
+  ],
+  "maxPenalty": "Highest single penalty mentioned, or 'Not specified'",
+  "nearestDeadline": "The most urgent deadline, or 'Not specified'",
+  "highPriorityCount": 0,
+  "dpdpRelevance": "none|low|high"
+}
+
+Ensure obligations array has at least 3 items if any actionable content exists. Set highPriorityCount to the count of obligations with priority 'high'.`;
+}
+
+// ── 4. callGemini ─────────────────────────────────────────
+async function callGemini(promptText, apiKey) {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: promptText }] }],
+        generationConfig: { temperature: 0.1, maxOutputTokens: 4096 }
+      })
+    }
+  );
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    const msg = errData?.error?.message || `HTTP ${response.status}`;
+    throw new Error(msg);
+  }
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
+// ── 5. parseGeminiResponse ────────────────────────────────
+function parseGeminiResponse(rawText) {
+  // Strip markdown fences if present
+  let cleaned = rawText.trim();
+  cleaned = cleaned.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+
+  // Try direct parse
+  try {
+    const parsed = JSON.parse(cleaned);
+    if (!Array.isArray(parsed.obligations)) throw new Error('obligations is not an array');
+    return parsed;
+  } catch(e1) {
+    // Try extracting JSON between first { and last }
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      try {
+        const extracted = cleaned.slice(firstBrace, lastBrace + 1);
+        const parsed = JSON.parse(extracted);
+        if (!Array.isArray(parsed.obligations)) throw new Error('obligations is not an array');
+        return parsed;
+      } catch(e2) {
+        throw new Error('Could not parse AI response as valid JSON. The model returned unexpected content. Try again.');
+      }
+    }
+    throw new Error('AI response did not contain a valid JSON object. Please try again.');
+  }
+}
+
+// ── 6. startAnalysis ─────────────────────────────────────
+async function startAnalysis() {
+  const txt = document.getElementById('doc-text').value.trim();
+  if (!txt || txt.length < 100) {
+    alert('Please provide at least 100 characters of regulatory text to analyse.');
+    return;
+  }
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) {
+    alert('Please enter your Gemini API key. Get one free at aistudio.google.com');
+    return;
+  }
+
+  // Show loading, hide others
+  document.getElementById('input-panel').classList.add('hidden');
+  document.getElementById('error-panel').classList.add('hidden');
+  document.getElementById('results-panel').classList.add('hidden');
+  document.getElementById('loading-panel').classList.remove('hidden');
+
+  // Animate loading steps
+  const steps = [
+    'Sending to AI engine...',
+    'Parsing document structure...',
+    'Identifying regulatory framework...',
+    'Extracting key obligations...',
+    'Mapping penalty provisions...',
+    'Generating plain English summaries...',
+    'Building compliance timeline...',
+    'Finalising analysis...'
+  ];
+  let si = 0;
+  const iv = setInterval(() => {
+    if (si < steps.length) {
+      document.getElementById('load-text').textContent = steps[si++];
+    }
+  }, 2000);
+
+  try {
+    const prompt = buildPrompt(txt, selInst, selFocus, currentEdition);
+    const raw = await callGemini(prompt, key);
+    const parsed = parseGeminiResponse(raw);
+    clearInterval(iv);
+
+    currentAnalysisResult = parsed;
+
+    // Build chat doc context
+    chatDocContext = `DOCUMENT: ${parsed.documentTitle}\nSUMMARY: ${parsed.summary}\nOBLIGATIONS:\n` +
+      (parsed.obligations || []).map((o, i) => `${i+1}. [${o.priority.toUpperCase()}] ${o.title}: ${o.description} (Deadline: ${o.deadline}, Team: ${o.responsibleTeam}, Penalty: ${o.penalty})`).join('\n') +
+      `\nRISK AREAS:\n` + (parsed.riskAreas || []).map(r => `- ${r.title} [${r.level}]: ${r.penaltyContext || ''}`).join('\n') +
+      `\nTIMELINE:\n` + (parsed.timeline || []).map(t => `- ${t.date}: ${t.event}`).join('\n');
+
+    // Init chat
+    chatMessages = [];
+
+    // Save to history
+    const instLabel = EDITIONS[currentEdition].instPills.find(p => p.v === selInst)?.l || selInst;
+    const historyEntry = {
+      id: Date.now(),
+      documentTitle: parsed.documentTitle,
+      institution: instLabel,
+      edition: currentEdition,
+      obligationCount: (parsed.obligations || []).length,
+      date: new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}),
+      result: parsed
+    };
+    analysisHistory.unshift(historyEntry);
+    if (analysisHistory.length > 10) analysisHistory = analysisHistory.slice(0, 10);
+    try { localStorage.setItem('regintel_history', JSON.stringify(analysisHistory)); } catch(e) {}
+
+    document.getElementById('loading-panel').classList.add('hidden');
+    showResults(parsed);
+
+  } catch(err) {
+    clearInterval(iv);
+    document.getElementById('loading-panel').classList.add('hidden');
+    document.getElementById('error-panel').classList.remove('hidden');
+    document.getElementById('error-msg').textContent = err.message || 'An unexpected error occurred.';
+  }
+}
+
+// ── 7. showResults ────────────────────────────────────────
+function showResults(d) {
+  const instLabel = EDITIONS[currentEdition].instPills.find(p => p.v === selInst)?.l || selInst;
+
+  document.getElementById('res-docname').textContent = d.documentTitle || 'Regulatory Document';
+  document.getElementById('res-instname').textContent = instLabel;
+
+  const obligations = d.obligations || [];
+  const highCount = d.highPriorityCount || obligations.filter(o => o.priority === 'high').length;
+
+  document.getElementById('m1').textContent = obligations.length;
+  document.getElementById('m2').textContent = highCount;
+  document.getElementById('m3').textContent = d.maxPenalty || '—';
+  document.getElementById('m4').textContent = d.nearestDeadline || '—';
+
+  // Penalty banner
+  const penBanner = document.getElementById('penalty-banner');
+  if (d.maxPenalty && d.maxPenalty !== 'Not specified' && d.maxPenalty !== '—') {
+    penBanner.classList.remove('hidden');
+    document.getElementById('penalty-title').textContent = 'High penalty risk detected';
+    document.getElementById('penalty-body').textContent = 'Maximum penalty: ' + d.maxPenalty + '. Ensure all obligations are actioned promptly.';
+  } else {
+    penBanner.classList.add('hidden');
+  }
+
+  // DPDP banner
+  const dpdpBanner = document.getElementById('dpdp-banner');
+  if (d.dpdpRelevance === 'high' || d.regulatorType === 'dpdp') {
+    dpdpBanner.classList.remove('hidden');
+    document.getElementById('dpdp-text').textContent = 'This document has Digital Personal Data Protection Act 2023 implications. Data fiduciary obligations, consent management, and Data Protection Board reporting requirements may apply.';
+  } else {
+    dpdpBanner.classList.add('hidden');
+  }
+
+  // Obligations
+  renderObligations(obligations);
+
+  // Risk areas
+  const riskEl = document.getElementById('risk-list');
+  const dotMap = {high: 'rdot-h', medium: 'rdot-m', low: 'rdot-l', med: 'rdot-m'};
+  riskEl.innerHTML = (d.riskAreas || []).map(r => `
+    <div class="risk-row">
+      <div class="rdot ${dotMap[r.level] || 'rdot-m'}"></div>
+      <div>
+        <div class="risk-text">${r.title}</div>
+        ${r.penaltyContext ? `<div class="risk-penalty">${r.penaltyContext}</div>` : ''}
+      </div>
+    </div>`).join('') || '<div style="font-size:12px;color:var(--text-tertiary)">No specific risk areas identified.</div>';
+
+  // Timeline
+  const tlEl = document.getElementById('tl-list');
+  tlEl.innerHTML = (d.timeline || []).map(t => `
+    <div class="tl-row">
+      <div class="tl-date">${t.date}</div>
+      <div class="tl-text">${t.event}</div>
+    </div>`).join('') || '<div style="font-size:12px;color:var(--text-tertiary)">No specific timeline found.</div>';
+
+  // Wire export button
+  document.getElementById('export-btn').onclick = () => exportReport(d, instLabel);
+
+  // Tracker initial render
+  updateTracker(obligations.length);
+
+  document.getElementById('results-panel').classList.remove('hidden');
+}
+
+// ── 8. renderObligations ─────────────────────────────────
+function renderObligations(obligations) {
+  const tagMap = {
+    rbi:'tag-rbi', sebi:'tag-sebi', irdai:'tag-irdai', kyc:'tag-kyc',
+    capital:'tag-cap', reporting:'tag-report', conduct:'tag-conduct',
+    ops:'tag-ops', penalty:'tag-penalty', digital:'tag-digital',
+    pmla:'tag-pmla', fema:'tag-fema', dpdp:'tag-dpdp'
+  };
+  const tagLabel = {
+    rbi:'RBI', sebi:'SEBI', irdai:'IRDAI', kyc:'KYC/AML', capital:'Capital',
+    reporting:'Reporting', conduct:'Conduct', ops:'Operations',
+    penalty:'Penalty', digital:'Digital', pmla:'PMLA', fema:'FEMA', dpdp:'DPDP'
+  };
+
+  const container = document.getElementById('ob-list');
+  container.innerHTML = obligations.map((o, i) => {
+    const obKey = `ob_${(currentAnalysisResult?.documentTitle || 'doc').slice(0, 20).replace(/\s+/g,'_')}_${i}`;
+    const status = obStatuses[obKey] || 'none';
+    const sevClass = { high:'sev-high', medium:'sev-med', low:'sev-low', med:'sev-med' }[o.priority] || 'sev-low';
+    const sevLabel = { high:'High priority', medium:'Medium', low:'Low', med:'Medium' }[o.priority] || o.priority;
+    const confClass = o.confidence === 'high' ? 'conf-high' : 'conf-medium';
+    const tagsHtml = (o.tags || []).slice(0, 3).map(t => `<span class="tag ${tagMap[t] || 'tag-conduct'}">${tagLabel[t] || t}</span>`).join('');
+    const clauseHtml = o.clauseReference ? `<span class="ob-clause">${o.clauseReference}</span>` : '';
+    const teamHtml = o.responsibleTeam ? `<span class="ob-team">→ ${o.responsibleTeam}</span>` : '';
+    const dlHtml = o.deadline && o.deadline !== 'Not specified' ? `<span class="deadline-chip">🗓 ${o.deadline}</span>` : '';
+    const isDone = status === 'done';
+
+    return `
+    <div class="ob-card ${isDone ? 'done-card' : ''}" id="obcard_${i}">
+      <div class="ob-num">${i + 1}</div>
+      <div>
+        <div class="ob-title">${o.title}</div>
+        <div class="ob-desc">${o.description}</div>
+        ${o.penalty && o.penalty !== 'Not specified' ? `<div style="font-size:11px;color:var(--danger);margin-top:4px">⚠ Penalty: ${o.penalty}</div>` : ''}
+        <div class="ob-meta">
+          ${tagsHtml}
+          ${dlHtml}
+          ${clauseHtml}
+          ${teamHtml}
+          <span class="confidence-chip ${confClass}">${o.confidence === 'high' ? '● High confidence' : '◐ Medium confidence'}</span>
+        </div>
+      </div>
+      <div class="ob-right">
+        <span class="sev ${sevClass}">${sevLabel}</span>
+        <div class="status-toggle">
+          <button class="st-btn ${status === 'ack' ? 'active-ack' : ''}" onclick="setObStatus(${i}, 'ack', '${obKey}')">Ack</button>
+          <button class="st-btn ${status === 'prog' ? 'active-prog' : ''}" onclick="setObStatus(${i}, 'prog', '${obKey}')">In Progress</button>
+          <button class="st-btn ${status === 'done' ? 'active-done' : ''}" onclick="setObStatus(${i}, 'done', '${obKey}')">Done</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── 9. setObStatus + updateTracker ───────────────────────
+function setObStatus(idx, newStatus, obKey) {
+  // Toggle off if clicking same status
+  const current = obStatuses[obKey] || 'none';
+  obStatuses[obKey] = current === newStatus ? 'none' : newStatus;
+  try { localStorage.setItem('regintel_ob_statuses', JSON.stringify(obStatuses)); } catch(e) {}
+
+  const card = document.getElementById('obcard_' + idx);
+  if (card) {
+    card.classList.toggle('done-card', obStatuses[obKey] === 'done');
+    card.querySelectorAll('.st-btn').forEach((btn, bi) => {
+      const statuses = ['ack', 'prog', 'done'];
+      btn.className = 'st-btn';
+      if (obStatuses[obKey] === statuses[bi]) {
+        btn.classList.add(bi === 0 ? 'active-ack' : bi === 1 ? 'active-prog' : 'active-done');
+      }
+    });
+  }
+  updateTracker((currentAnalysisResult?.obligations || []).length);
+}
+
+function updateTracker(total) {
+  const docTitle = (currentAnalysisResult?.documentTitle || 'doc').slice(0, 20).replace(/\s+/g,'_');
+  const actioned = Object.entries(obStatuses)
+    .filter(([k, v]) => k.startsWith('ob_' + docTitle) && (v === 'ack' || v === 'prog' || v === 'done'))
+    .length;
+  const done = Object.entries(obStatuses)
+    .filter(([k, v]) => k.startsWith('ob_' + docTitle) && v === 'done')
+    .length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById('tracker-fill').style.width = pct + '%';
+  document.getElementById('tracker-count').textContent = actioned + ' of ' + total + ' actioned';
+}
+
+// ── 10. sendChat ─────────────────────────────────────────
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) { alert('Gemini API key needed for chat.'); return; }
+
+  chatMessages.push({ role: 'user', content: msg });
+  appendChatMessage('user', msg);
+  input.value = '';
+
+  const sendBtn = document.getElementById('chat-send-btn');
+  sendBtn.disabled = true;
+  sendBtn.textContent = '...';
+
+  // Hide suggestions after first message
+  document.getElementById('chat-suggestions').style.display = 'none';
+
+  // Build full conversation prompt
+  const historyText = chatMessages.slice(0, -1).map(m => `${m.role === 'user' ? 'User' : 'RegIntel'}: ${m.content}`).join('\n');
+  const fullPrompt = `You are RegIntel, an expert regulatory compliance AI assistant. You have already analysed the following document and extracted obligations.
+
+DOCUMENT CONTEXT:
+${chatDocContext}
+
+CONVERSATION HISTORY:
+${historyText}
+
+User's latest question: ${msg}
+
+Provide a precise, practical answer. Use bullet points where helpful. Be specific to Indian/financial regulation context. Reference specific obligations or clauses from the document where relevant. Keep response under 300 words.`;
+
+  try {
+    const raw = await callGemini(fullPrompt, key);
+    chatMessages.push({ role: 'assistant', content: raw });
+    const msgId = 'cmsg_' + Date.now();
+    appendChatMessage('ai', raw, msgId);
+
+    // Format AI response: **bold** → <strong>, bullets, newlines
+    const el = document.getElementById(msgId);
+    if (el) {
+      let formatted = raw
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^[-•]\s+(.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>\n?)+/gs, m => `<ul>${m}</ul>`)
+        .replace(/\n{2,}/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+      el.innerHTML = `<p>${formatted}</p>`;
+    }
+  } catch(err) {
+    appendChatMessage('ai', '⚠ Error: ' + err.message);
+  } finally {
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Send';
+  }
+}
+
+function appendChatMessage(role, content, id) {
+  const msgsEl = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role === 'user' ? 'user' : ''}`;
+  const avatarLabel = role === 'user' ? 'You' : 'RI';
+  const avatarClass = role === 'user' ? 'user-avatar' : 'ai-avatar';
+  const bubbleClass = role === 'user' ? 'user-bubble' : 'ai-bubble';
+  div.innerHTML = `
+    <div class="chat-avatar ${avatarClass}">${avatarLabel}</div>
+    <div class="chat-bubble ${bubbleClass}" ${id ? `id="${id}"` : ''}>${content}</div>`;
+  msgsEl.appendChild(div);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+// ── 11. exportReport ─────────────────────────────────────
+function exportReport(d, instLabel) {
+  const sevLabel = { high:'HIGH PRIORITY', medium:'MEDIUM', low:'LOW', med:'MEDIUM' };
+  const date = new Date().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+  const obligations = d.obligations || [];
+  const highCount = obligations.filter(o => o.priority === 'high').length;
+  const doneCount = Object.values(obStatuses).filter(v => v === 'done').length;
+
+  const obRows = obligations.map((o, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><strong>${o.title}</strong><br><small>${o.description}</small></td>
+      <td><span style="font-weight:700;color:${o.priority==='high'?'#A32D2D':o.priority==='medium'?'#854F0B':'#3B6D11'}">${sevLabel[o.priority]||o.priority}</span></td>
+      <td>${o.deadline || '—'}</td>
+      <td>${o.responsibleTeam || '—'}</td>
+      <td>${o.penalty || '—'}</td>
+    </tr>`).join('');
+
+  const riskRows = (d.riskAreas || []).map(r => `
+    <li><strong>${r.title}</strong> [${r.level.toUpperCase()}]${r.penaltyContext ? ' — ' + r.penaltyContext : ''}</li>`).join('');
+
+  const tlRows = (d.timeline || []).map(t => `
+    <tr><td style="font-weight:600;color:#185FA5;white-space:nowrap">${t.date}</td><td>${t.event}</td></tr>`).join('');
+
+  const checklist = obligations.map((o, i) => `
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #eee">
+      <input type="checkbox" style="margin-top:3px;flex-shrink:0">
+      <div><strong>${o.title}</strong><br><small style="color:#555">${o.responsibleTeam || ''} · ${o.deadline || 'No deadline'}</small></div>
+    </div>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<title>RegIntel Report — ${d.documentTitle}</title>
+<style>
+  body { font-family: -apple-system, 'Segoe UI', sans-serif; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 32px; }
+  .header { background: #185FA5; color: white; padding: 20px 24px; border-radius: 10px; margin-bottom: 24px; }
+  .header h1 { font-size: 20px; margin: 0 0 4px; }
+  .header p { font-size: 12px; opacity: 0.8; margin: 0; }
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  .metric { background: #f4f4f2; border-radius: 8px; padding: 12px; }
+  .metric-val { font-size: 22px; font-weight: 700; }
+  .metric-label { font-size: 11px; color: #666; margin-bottom: 4px; }
+  h2 { font-size: 14px; border-bottom: 2px solid #185FA5; padding-bottom: 6px; margin: 20px 0 12px; color: #185FA5; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #185FA5; color: white; padding: 8px 10px; text-align: left; }
+  td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+  tr:nth-child(even) td { background: #fafafa; }
+  ul { padding-left: 20px; font-size: 13px; }
+  li { margin-bottom: 6px; }
+  @media print {
+    body { padding: 0; }
+    .no-print { display: none; }
+    a { text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>RegIntel Compliance Report</h1>
+  <p>${d.documentTitle} · ${instLabel} · ${date}</p>
+</div>
+
+<div class="metrics">
+  <div class="metric"><div class="metric-label">Obligations</div><div class="metric-val">${obligations.length}</div></div>
+  <div class="metric"><div class="metric-label">High Priority</div><div class="metric-val" style="color:#A32D2D">${highCount}</div></div>
+  <div class="metric"><div class="metric-label">Max Penalty</div><div class="metric-val" style="font-size:14px">${d.maxPenalty || '—'}</div></div>
+  <div class="metric"><div class="metric-label">Nearest Deadline</div><div class="metric-val" style="font-size:14px">${d.nearestDeadline || '—'}</div></div>
+</div>
+
+<h2>Executive Summary</h2>
+<p style="font-size:13px;line-height:1.7">${d.summary || ''}</p>
+
+<h2>Key Obligations</h2>
+<table>
+  <thead><tr><th>#</th><th>Obligation</th><th>Priority</th><th>Deadline</th><th>Responsible Team</th><th>Penalty</th></tr></thead>
+  <tbody>${obRows}</tbody>
+</table>
+
+<h2>Compliance Risk Areas</h2>
+<ul>${riskRows}</ul>
+
+<h2>Regulatory Timeline</h2>
+<table><tbody>${tlRows}</tbody></table>
+
+<h2>Action Checklist (${doneCount} of ${obligations.length} completed)</h2>
+${checklist}
+
+<div style="margin-top:32px;padding:12px;background:#f8f8f6;border-radius:8px;font-size:11px;color:#888">
+  <strong>Disclaimer:</strong> This report is AI-generated for research purposes only. Always verify against the official source document and consult your legal or compliance team before acting. RegIntel accepts no liability for compliance decisions made based on this output.
+</div>
+</body></html>`;
+
+  const w = window.open('', '_blank');
+  if (w) {
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => w.print(), 800);
+  } else {
+    alert('Pop-up blocked. Please allow pop-ups for this page to export the report.');
+  }
+}
+
+// ── 12. testApiKey ───────────────────────────────────────
+async function testApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  const statusEl = document.getElementById('api-key-status');
+  if (!key) { statusEl.textContent = '⚠ Please enter a key first'; return; }
+  statusEl.textContent = 'Testing key...';
+  statusEl.style.color = 'var(--text-tertiary)';
+  try {
+    const raw = await callGemini('List one compliance obligation in one sentence.', key);
+    if (raw) {
+      statusEl.textContent = '✓ Key valid — ready to analyse';
+      statusEl.style.color = 'var(--success)';
+      try { localStorage.setItem('regintel_gemini_key', key); } catch(e) {}
+    }
+  } catch(err) {
+    statusEl.textContent = '✗ Key invalid: ' + err.message;
+    statusEl.style.color = 'var(--danger)';
+  }
+}
+
+// ── 13. EDITIONS / HISTORY / FRAMEWORKS ─────────────────
 function switchEdition(ed) {
   currentEdition = ed;
   document.getElementById('btn-india').classList.toggle('active', ed === 'india');
@@ -753,486 +1478,199 @@ function switchEdition(ed) {
   document.getElementById('logo-name').textContent = cfg.logoName;
   document.getElementById('logo-tag').textContent = cfg.logoTag;
   document.getElementById('doc-text').placeholder = cfg.placeholder;
+  document.getElementById('format-chips').innerHTML = cfg.chips.map(c => `<span class="chip ${c.cls}">${c.l}</span>`).join('');
 
-  // Update chips
-  document.getElementById('format-chips').innerHTML = cfg.chips.map(c =>
-    `<span class="chip ${c.cls}">${c.l}</span>`).join('');
-
-  // Update institution pills
   const instEl = document.getElementById('inst-pills');
-  instEl.innerHTML = cfg.instPills.map((p, i) =>
-    `<div class="pill ${i===0?'active':''}" data-v="${p.v}">${p.l}</div>`).join('');
-  instEl.querySelectorAll('.pill').forEach(p => {
-    p.onclick = () => { instEl.querySelectorAll('.pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); selInst = p.dataset.v; };
+  instEl.innerHTML = cfg.instPills.map((p, i) => `<div class="pill ${i===0?'active':''}" data-v="${p.v}">${p.l}</div>`).join('');
+  selInst = cfg.instPills[0].v;
+  instEl.querySelectorAll('.pill').forEach(p => p.onclick = function() {
+    instEl.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    selInst = this.dataset.v;
   });
-  selInst = cfg.defaultInst;
 
-  // Update focus pills
   const focEl = document.getElementById('focus-pills');
-  focEl.innerHTML = cfg.focusPills.map((p, i) =>
-    `<div class="pill ${i===0?'active':''}" data-v="${p.v}">${p.l}</div>`).join('');
-  focEl.querySelectorAll('.pill').forEach(p => {
-    p.onclick = () => { focEl.querySelectorAll('.pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); selFocus = p.dataset.v; };
+  focEl.innerHTML = cfg.focusPills.map((p, i) => `<div class="pill ${i===0?'active':''}" data-v="${p.v}">${p.l}</div>`).join('');
+  selFocus = 'all';
+  focEl.querySelectorAll('.pill').forEach(p => p.onclick = function() {
+    focEl.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    selFocus = this.dataset.v;
   });
-
-  // Reset the form
-  resetApp();
-  switchTab('analyse');
 }
 
-// ─── TAB SWITCHING ────────────────────────────────────────
 function switchTab(tab) {
-  const allPanels = ['analyse-main','history-panel','frameworks-panel','about-panel'];
-  allPanels.forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const tabMap = { analyse:0, history:1, frameworks:2, about:3 };
-  document.querySelectorAll('.tab')[tabMap[tab]].classList.add('active');
+  ['analyse-main', 'history-panel', 'frameworks-panel', 'about-panel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const tabNames = ['analyse', 'history', 'frameworks', 'about'];
+    t.classList.toggle('active', tabNames[i] === tab);
+  });
   if (tab === 'analyse') document.getElementById('analyse-main').classList.remove('hidden');
-  else document.getElementById(tab+'-panel').classList.remove('hidden');
+  else document.getElementById(tab + '-panel').classList.remove('hidden');
   if (tab === 'history') renderHistory();
   if (tab === 'frameworks') renderFrameworks();
-}
-
-function renderFrameworks() {
-  const isUS = currentEdition === 'us';
-  const fwData = isUS ? [
-    { code:'Fed', bg:'#E3F2FD', color:'#1565C0', name:'Federal Reserve', sub:'Bank holding company supervision', items:['Regulation Y — BHC activities','Regulation YY — Enhanced prudential standards','SR 11-7 Model Risk Management','CCAR / DFAST stress testing framework','Volcker Rule implementation guidance','SR 15-18 Shared national credits'] },
-    { code:'SEC', bg:'#e8f5e9', color:'#2e7d32', name:'Securities & Exchange Commission', sub:'Capital markets & investment advisers', items:['Regulation Best Interest (Reg BI)','Investment Adviser Act — Marketing Rule','SEC Private Fund Adviser Rules 2023','Regulation S-P (customer data privacy)','Rule 15c3-3 (customer protection rule)','Regulation SCI (systems compliance)'] },
-    { code:'OCC', bg:'var(--purple-bg)', color:'var(--purple)', name:'Office of the Comptroller', sub:'National bank supervision', items:['Basel III Endgame (US NPR)','OCC Third-party risk management 2023','Community Reinvestment Act (revised)','OCC Climate risk guidance','Heightened standards (12 CFR Part 30)','Fair lending — ECOA / HMDA'] },
-    { code:'CFPB', bg:'var(--danger-bg)', color:'var(--danger)', name:'CFPB + FinCEN + FINRA', sub:'Consumer, AML, broker rules', items:['BSA / AML programme requirements','CFPB UDAAP enforcement','FinCEN beneficial ownership rule (CDD)','FINRA Rule 2111 / Reg BI alignment','Regulation E (electronic fund transfers)','CFPB Section 1071 (small business data)'] }
-  ] : [
-    { code:'RBI', bg:'#fff3e0', color:'#e65100', name:'Reserve Bank of India', sub:'Banking & NBFC regulations', items:['Master Direction — Digital Lending 2022','KYC Master Direction 2024','Cybersecurity Framework for Banks','Fair Practices Code for NBFCs','Priority Sector Lending Guidelines','Basel III Capital Regulations (India)','RBI Outsourcing Guidelines'] },
-    { code:'SEBI', bg:'#e8f5e9', color:'#2e7d32', name:'Securities & Exchange Board', sub:'Capital markets regulations', items:['Investment Adviser Regulations (amended 2020)','SEBI Broker Regulations 1992','Mutual Fund Regulations 1996','LODR — Listing Obligations & Disclosure','Algo Trading & HFT Framework','ESG Disclosure Framework 2023','Research Analyst Regulations'] },
-    { code:'IRDAI', bg:'var(--purple-bg)', color:'var(--purple)', name:'IRDAI', sub:'Insurance sector regulations', items:['Insurance Act 1938 (amended 2021)','IRDAI Investment Regulations 2016','Corporate Governance Guidelines','Outsourcing of Activities Regulations','Information & Cybersecurity Guidelines','Banca Assurance Guidelines'] },
-    { code:'Other', bg:'var(--danger-bg)', color:'var(--danger)', name:'Cross-cutting Laws', sub:'AML, data, accounting', items:['PMLA 2002 — Money Laundering Prevention','FEMA — Foreign Exchange Management','IndAS / IFRS Accounting Standards','IT Act 2000 + CERT-IN Rules','DPDP Act 2023 — Digital Personal Data','GST on Financial Services'] }
-  ];
-
-  document.getElementById('frameworks-content').innerHTML = `
-    <div class="section-label">Supported frameworks — ${isUS ? '🇺🇸 US Edition' : '🇮🇳 India Edition'}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-      ${fwData.map(f => `
-        <div class="panel">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-            <div style="width:32px;height:32px;border-radius:8px;background:${f.bg};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${f.color};flex-shrink:0">${f.code}</div>
-            <div><div style="font-size:13px;font-weight:600">${f.name}</div><div style="font-size:11px;color:var(--text-tertiary)">${f.sub}</div></div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:5px">
-            ${f.items.map(i=>`<div class="fw-item">${i}</div>`).join('')}
-          </div>
-        </div>`).join('')}
-    </div>
-    <div style="background:var(--primary-light);border:1px solid #b5d4f4;border-radius:10px;padding:14px 16px;font-size:12px;color:var(--primary-dark)">
-      <strong>How to use:</strong> Go to "Analyse Document" → paste any extract from these frameworks → select your institution type → click Analyse. Switch between 🇮🇳 India and 🇺🇸 US editions using the toggle in the header.
-    </div>`;
 }
 
 function renderHistory() {
   const el = document.getElementById('history-list');
   if (!analysisHistory.length) {
-    el.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--text-tertiary)">
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" style="margin:0 auto 12px;display:block"><circle cx="18" cy="18" r="16" stroke="#ccc" stroke-width="1.5"/><path d="M18 10v8l5 3" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <div style="font-size:14px;font-weight:500;margin-bottom:4px">No analyses yet</div>
-      <div style="font-size:12px">Your past analyses will appear here once you run your first one</div>
-    </div>`;
+    el.innerHTML = '<div style="font-size:13px;color:var(--text-tertiary);text-align:center;padding:40px 0">No analyses yet. Run your first analysis to see history here.</div>';
     return;
   }
-  el.innerHTML = analysisHistory.slice().reverse().map((h, i) => `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="replayHistory(${analysisHistory.length - 1 - i})">
-      <div style="width:36px;height:36px;border-radius:8px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="var(--primary)" stroke-width="1"/><path d="M4.5 5h7M4.5 8h7M4.5 11h4" stroke="var(--primary)" stroke-width="0.8" stroke-linecap="round"/></svg>
+  el.innerHTML = analysisHistory.map((h, i) => `
+    <div class="history-item" onclick="replayHistory(${i})">
+      <div class="history-dot"></div>
+      <div class="history-info">
+        <div class="history-name">${h.documentTitle}</div>
+        <div class="history-meta">${h.institution} · ${h.edition === 'us' ? '🇺🇸 US' : '🇮🇳 India'} · ${h.date}</div>
       </div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${h.docName}</div>
-        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">${h.inst} · ${h.date} · ${h.count} obligations found</div>
-      </div>
-      <div style="font-size:11px;color:var(--primary);flex-shrink:0">View ›</div>
+      <div class="history-count">${h.obligationCount} obligations</div>
     </div>`).join('');
 }
 
 function replayHistory(idx) {
   const h = analysisHistory[idx];
-  selInst = h.instKey;
+  if (!h) return;
+  currentEdition = h.edition || 'india';
+  currentAnalysisResult = h.result;
+  switchEdition(currentEdition);
   switchTab('analyse');
-  document.querySelectorAll('#inst-pills .pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.v === h.instKey);
-  });
-  showResults();
-}
-
-// ─── PILL HANDLERS ───────────────────────────────────────
-document.querySelectorAll('#inst-pills .pill').forEach(p => {
-  p.onclick = () => {
-    document.querySelectorAll('#inst-pills .pill').forEach(x => x.classList.remove('active'));
-    p.classList.add('active'); selInst = p.dataset.v;
-  };
-});
-document.querySelectorAll('#focus-pills .pill').forEach(p => {
-  p.onclick = () => {
-    document.querySelectorAll('#focus-pills .pill').forEach(x => x.classList.remove('active'));
-    p.classList.add('active'); selFocus = p.dataset.v;
-  };
-});
-
-document.getElementById('doc-text').oninput = function() {
-  document.getElementById('char-count').textContent = this.value.length + ' characters';
-  hasContent = this.value.trim().length > 30;
-};
-
-function onFileSelect(input) {
-  if (input.files && input.files[0]) {
-    document.getElementById('upload-title').textContent = input.files[0].name;
-    document.getElementById('upload-sub').textContent = (input.files[0].size / 1024).toFixed(1) + ' KB · ready to analyse';
-    hasContent = true;
-  }
-}
-
-const dz = document.getElementById('dropzone');
-dz.ondragover = e => { e.preventDefault(); dz.classList.add('drag'); };
-dz.ondragleave = () => dz.classList.remove('drag');
-dz.ondrop = e => { e.preventDefault(); dz.classList.remove('drag'); if (e.dataTransfer.files[0]) onFileSelect({ files: e.dataTransfer.files }); };
-
-// ─── DATA ────────────────────────────────────────────────
-const DATA = {
-  pvt: {
-    docName: 'RBI Digital Lending Master Direction 2022',
-    inst: 'Private bank',
-    penalty: '₹2 Cr / violation',
-    deadline: 'Immediate',
-    highCount: 4,
-    showBanner: true,
-    bannerTitle: 'Immediate compliance required — RBI Digital Lending',
-    bannerBody: 'Several provisions in this document have immediate effect. Non-compliance risks monetary penalty of up to ₹2 crore per violation plus potential license action.',
-    obligations: [
-      { t: 'Direct bank-to-bank disbursement only', d: 'All loan disbursements and repayments must flow directly between borrower\'s bank account and your institution. No LSP or third-party pool accounts permitted under any circumstances.', tags: ['digital', 'ops'], sev: 'high', dl: 'Immediate' },
-      { t: 'Key Fact Statement mandatory before loan execution', d: 'A KFS showing the Annual Percentage Rate, all charges, LSP details, and grievance mechanism must be given to every borrower before they sign. No KFS = loan contract is potentially void.', tags: ['conduct', 'rbi'], sev: 'high', dl: 'Immediate' },
-      { t: 'Data localisation — all borrower data stays in India', d: 'LSP contracts must be audited and amended to include India data storage obligations. All existing data sharing arrangements must be reviewed within 90 days.', tags: ['digital', 'rbi'], sev: 'high', dl: '90 days' },
-      { t: 'Cooling-off period — minimum 3 days', d: 'Borrowers must be able to exit any digital loan within 3 days without penalty (for loans ≥7 days tenure). This must be operationally implemented in your digital loan journey.', tags: ['conduct'], sev: 'high', dl: 'Immediate' },
-      { t: 'No capitalisation of unpaid interest', d: 'Interest cannot be compounded on unpaid interest unless explicitly permitted by law. Review all digital lending product terms immediately for compliance.', tags: ['conduct', 'rbi'], sev: 'med', dl: 'Immediate' },
-      { t: 'Recovery agent conduct standards', d: 'Recovery agents working for LSPs must follow RBI fair practice guidelines. No calls before 8 AM or after 7 PM. Harassment is a regulatory violation.', tags: ['conduct', 'ops'], sev: 'med', dl: 'Immediate' },
-      { t: 'Nodal Grievance Officer designation', d: 'A named Nodal Grievance Redressal Officer must be designated for digital lending. Complaints acknowledged within 3 days, resolved within 30 days.', tags: ['conduct', 'report'], sev: 'med', dl: '30 days' },
-      { t: 'Quarterly supervisory return to RBI', d: 'A quarterly return on digital lending operations (disbursements, LSP breakdown, APR ranges, complaints) must be submitted to RBI within 30 days of quarter end.', tags: ['report', 'rbi'], sev: 'low', dl: 'Quarterly' },
-    ],
-    risks: [
-      { t: 'LSP pool account arrangements still active', l: 'high', p: 'Penalty: up to ₹2 Cr + potential RBI audit' },
-      { t: 'KFS not yet implemented in digital loan journey', l: 'high', p: 'Penalty: ₹1 Cr per instance + void contract risk' },
-      { t: 'Borrower data stored on LSP servers outside India', l: 'high', p: 'Penalty: data localisation violation' },
-      { t: 'No cooling-off functionality in loan app', l: 'high', p: 'Regulatory violation + consumer complaint risk' },
-      { t: 'Grievance Officer not yet designated / publicised', l: 'med', p: 'RBI inspection finding risk' },
-      { t: 'Quarterly return format not yet mapped to source systems', l: 'low', p: 'Late filing attracts supervisory scrutiny' },
-    ],
-    timeline: [
-      { d: 'Immediate', t: 'KFS, disbursement routing, cooling-off — no grace period' },
-      { d: '90 days', t: 'LSP contract audit and data localisation amendments' },
-      { d: '30 days / qtr', t: 'Quarterly supervisory return to RBI' },
-      { d: 'Ongoing', t: 'Fair recovery practices — continuous obligation' },
-      { d: 'Annual', t: 'Board review and approval of LSP list' },
-    ]
-  },
-  nbfc: {
-    docName: 'RBI KYC Master Direction 2024',
-    inst: 'NBFC',
-    penalty: '₹2 Cr / violation',
-    deadline: 'Ongoing',
-    highCount: 3,
-    showBanner: true,
-    bannerTitle: 'PMLA violation risk — criminal liability for Principal Officer',
-    bannerBody: 'Non-compliance with STR filing or record-keeping obligations under KYC/AML rules can result in imprisonment of up to 7 years for the designated Principal Officer under PMLA 2002.',
-    obligations: [
-      { t: 'CDD mandatory for transactions ₹50,000 and above', d: 'All cash or wire transfer transactions of ₹50,000 or more require full Customer Due Diligence. No exceptions even for existing customers if transaction exceeds threshold.', tags: ['kyc', 'rbi'], sev: 'high', dl: 'Ongoing' },
-      { t: 'V-CIP must be live — no pre-recorded videos', d: 'Video-based KYC must be a live session with facial matching, real-time PAN verification, and India geotagging. Any existing pre-recorded or semi-live process must be updated immediately.', tags: ['kyc', 'digital'], sev: 'high', dl: 'Immediate' },
-      { t: 'Suspicious Transaction Reports within 7 working days', d: 'STRs must be filed with FIU-IND within 7 working days of forming a suspicion. Filing is mandatory even if the transaction did not complete. Tipping off the customer is a criminal offence.', tags: ['kyc', 'report'], sev: 'high', dl: '7 days / ongoing' },
-      { t: 'EDD for PEPs and high-risk customers', d: 'Politically Exposed Persons and high-risk customers require senior management approval, source of wealth verification, and at minimum annual review. Must be formally documented.', tags: ['kyc', 'rbi'], sev: 'med', dl: 'Ongoing' },
-      { t: 'Periodic KYC re-verification', d: 'High-risk customers every 2 years, medium-risk every 8 years, low-risk every 10 years. Cannot freeze accounts without due process — must give customer opportunity to complete update.', tags: ['kyc', 'conduct'], sev: 'med', dl: 'Ongoing' },
-      { t: 'Record retention for 5 years post-relationship', d: 'All KYC documents, transaction records, and communications must be retained for 5 years after relationship ends. Under investigation, records must be kept indefinitely until case closure.', tags: ['report', 'ops'], sev: 'low', dl: 'Ongoing' },
-    ],
-    risks: [
-      { t: 'V-CIP process not fully live or lacks geotagging', l: 'high', p: 'Penalty: ₹1 Cr per violation + RBI action' },
-      { t: 'STR filing delays beyond 7 working days', l: 'high', p: 'PMLA: imprisonment up to 7 years for Principal Officer' },
-      { t: 'PEP screening process not formally documented', l: 'high', p: 'RBI inspection critical finding' },
-      { t: 'Beneficial ownership not tracked for corporate accounts', l: 'med', p: 'PMLA exposure + CERSAI reporting gap' },
-      { t: 'KYC records not retrievable within 24 hours for urgent requests', l: 'med', p: 'Regulatory non-cooperation finding' },
-    ],
-    timeline: [
-      { d: 'Ongoing', t: 'CDD on all qualifying transactions — no cutoff' },
-      { d: '7 working days', t: 'STR filing window from suspicion formation' },
-      { d: '24 hours', t: 'Urgent regulatory records retrieval deadline' },
-      { d: 'Every 2 years', t: 'High-risk customer KYC re-verification' },
-      { d: '5 years', t: 'Post-relationship record retention minimum' },
-    ]
-  },
-  broker: {
-    docName: 'SEBI Investment Adviser Regulations 2023',
-    inst: 'Broker / MF distributor',
-    penalty: '₹25 Cr or 3x unlawful gain',
-    deadline: '30 April (annual)',
-    highCount: 3,
-    showBanner: true,
-    bannerTitle: 'Segregation deadline passed — immediate action required',
-    bannerBody: 'SEBI\'s deadline for segregating advisory and distribution services was 30 September 2024. Any entity still holding both an IA registration and an ARN code is in active breach and faces deregistration.',
-    obligations: [
-      { t: 'Fee-only model mandatory — no commissions permitted', d: 'Registered Investment Advisers cannot receive commissions from product manufacturers. Only fees directly from clients are permitted. Any trail commission or incentive from AMCs or product houses must have ceased.', tags: ['sebi', 'conduct'], sev: 'high', dl: 'Immediate' },
-      { t: 'Segregation of advisory and distribution — deadline passed', d: 'An entity cannot simultaneously hold IA registration and a mutual fund distributor ARN. The 30 September 2024 deadline has passed. Any non-compliant entity is currently in breach.', tags: ['sebi', 'conduct'], sev: 'high', dl: 'Breached' },
-      { t: 'Risk profiling before every recommendation', d: 'A documented risk profiling must be on file for every client, reviewed annually. Suitability of every recommendation must be evidenced against the risk profile. No profiling = no advice permitted.', tags: ['sebi', 'conduct'], sev: 'high', dl: 'Ongoing' },
-      { t: 'Annual compliance audit by 30 April', d: 'An independent compliance audit must be submitted to SEBI every year by 30 April. Non-submission is treated as a serious violation and may trigger suspension.', tags: ['report', 'sebi'], sev: 'med', dl: '30 April' },
-      { t: 'Fee cap — ₹1.25 lakh per annum per family', d: 'For individual retail clients, total fees across all services cannot exceed ₹1.25 lakh per year per family. Any excess must be refunded. Review all client fee arrangements now.', tags: ['conduct', 'sebi'], sev: 'med', dl: 'Immediate' },
-      { t: 'Advance fee restriction — max 2 quarters', d: 'Cannot charge more than 2 quarters advance fee at a time. Excess advance fees must be refunded within 15 days of demand. Audit all client billing arrangements.', tags: ['conduct'], sev: 'low', dl: 'Immediate' },
-    ],
-    risks: [
-      { t: 'Still holding ARN alongside IA registration post-Sept 2024', l: 'high', p: 'Penalty: deregistration + ₹25 Cr fine' },
-      { t: 'Clients without documented risk profiling receiving advice', l: 'high', p: 'Penalty: per client instance + potential refund order' },
-      { t: 'Client fees exceeding ₹1.25 lakh cap unchecked', l: 'high', p: 'Mandatory refund + SEBI investigation' },
-      { t: 'Annual compliance audit submission overdue', l: 'med', p: 'Registration suspension risk' },
-      { t: 'WhatsApp / informal communication not archived', l: 'med', p: 'Record-keeping violation in SEBI audit' },
-    ],
-    timeline: [
-      { d: 'Breached', t: 'Advisory-distribution segregation (was 30 Sep 2024)' },
-      { d: '30 April', t: 'Annual compliance audit submission to SEBI' },
-      { d: '15 days', t: 'Refund deadline for excess advance fees on demand' },
-      { d: 'Ongoing', t: 'Risk profiling — before every new recommendation' },
-      { d: '5 years', t: 'Record retention minimum' },
-    ]
-  }
-};
-DATA.psu = { ...DATA.pvt, inst: 'PSU bank', docName: 'RBI Digital Lending Master Direction 2022' };
-DATA.fintech = { ...DATA.pvt, inst: 'Fintech / NBFC-P2P', docName: 'RBI Digital Lending Master Direction 2022' };
-DATA.invest = { ...DATA.nbfc, inst: 'Investment bank / merchant bank', docName: 'SEBI + RBI Combined Obligations' };
-
-// ─── US EDITION DATA ─────────────────────────────────────
-const DATA_US = {
-  gsib: {
-    docName: 'Dodd-Frank Act — Title I & Volcker Rule',
-    inst: 'G-SIB (Global Systemically Important Bank)',
-    penalty: '$25M+ / violation',
-    deadline: 'Annual (CCAR)',
-    highCount: 4,
-    showBanner: true,
-    bannerTitle: 'SIFI designation — enhanced prudential standards apply',
-    bannerBody: 'As a G-SIB, your institution is subject to enhanced capital surcharges, resolution planning (living will), and stress testing requirements under Dodd-Frank Title I. Non-compliance triggers Fed enforcement action.',
-    obligations: [
-      { t: 'Annual CCAR stress test submission to Federal Reserve', d: 'Comprehensive Capital Analysis and Review submission required annually. Must include severely adverse scenario projections. Fed may object to capital plan, restricting dividends and buybacks.', tags: ['capital','report'], sev: 'high', dl: 'Annual (April)' },
-      { t: 'Volcker Rule — proprietary trading prohibition', d: 'No proprietary trading in securities, derivatives, or commodity futures for the bank\'s own account. Permitted market-making and hedging activities must be documented and monitored with CEO attestation annually.', tags: ['conduct','ops'], sev: 'high', dl: 'Ongoing' },
-      { t: 'Resolution plan (Living Will) filing', d: 'Annual resolution plan must demonstrate how the firm could be wound down in an orderly manner without taxpayer bailout. Fed and FDIC may jointly find plans deficient, triggering capital surcharges.', tags: ['report','ops'], sev: 'high', dl: 'Annual (July)' },
-      { t: 'G-SIB capital surcharge maintenance', d: 'Additional CET1 capital buffer of 1.0%–4.5% above base Basel III minimum based on systemic risk score. Breach triggers automatic restrictions on capital distributions and discretionary bonuses.', tags: ['capital'], sev: 'high', dl: 'Ongoing' },
-      { t: 'Swap dealer registration with CFTC / SEC', d: 'All swap dealing activity above de minimis threshold requires registration. Registered swap dealers face margin, reporting, and business conduct obligations under Dodd-Frank Title VII.', tags: ['report','conduct'], sev: 'med', dl: 'Ongoing' },
-      { t: 'Enhanced counterparty credit limits', d: 'Single counterparty credit limits restrict net credit exposure to any one counterparty to 15% of tier 1 capital (25% for non-G-SIB counterparties). Monitoring and breach reporting required.', tags: ['capital','ops'], sev: 'med', dl: 'Ongoing' },
-    ],
-    risks: [
-      { t: 'CCAR capital plan objection by Fed — restricts buybacks', l: 'high', p: 'Penalty: restricted capital distributions, reputational damage' },
-      { t: 'Volcker Rule documentation gaps in market-making desks', l: 'high', p: 'Penalty: $25M+ per violation + consent order risk' },
-      { t: 'Living will found deficient by Fed + FDIC jointly', l: 'high', p: 'Penalty: capital surcharge increase, activity restrictions' },
-      { t: 'G-SIB surcharge breach under stress scenario', l: 'high', p: 'Automatic dividend / bonus restrictions triggered' },
-      { t: 'CFTC swap reporting latency exceeds 24-hour window', l: 'med', p: 'Penalty: up to $1M per day per violation' },
-    ],
-    timeline: [
-      { d: 'April (annual)', t: 'CCAR capital plan submission to Federal Reserve' },
-      { d: 'July (annual)', t: 'Resolution plan (Living Will) filing deadline' },
-      { d: 'Ongoing', t: 'G-SIB surcharge monitoring — quarterly Board review' },
-      { d: 'T+1 business day', t: 'Swap trade reporting to SDR (DTCC / ICE)' },
-      { d: 'Annual (Dec)', t: 'Volcker Rule CEO attestation' },
-    ]
-  },
-  broker_dealer: {
-    docName: 'SEC Regulation Best Interest (Reg BI) + FINRA Rules',
-    inst: 'Broker-dealer',
-    penalty: '$10M+ / violation',
-    deadline: 'Ongoing',
-    highCount: 3,
-    showBanner: true,
-    bannerTitle: 'Reg BI — best interest standard strictly enforced from 2020',
-    bannerBody: 'SEC Regulation Best Interest replaced the suitability standard. Broker-dealers must act in the retail customer\'s best interest, not merely make suitable recommendations. SEC has brought multiple enforcement actions since 2023.',
-    obligations: [
-      { t: 'Best interest obligation — all retail recommendations', d: 'Every recommendation to a retail customer must be in their best interest, considering cost, risk, and the customer\'s investment profile. Cannot prioritize firm revenue over customer outcome.', tags: ['conduct'], sev: 'high', dl: 'Ongoing' },
-      { t: 'Form CRS — relationship summary disclosure', d: 'A standardised 2-page Client Relationship Summary must be delivered to all retail customers at or before relationship initiation. Must be filed with SEC and updated within 30 days of material changes.', tags: ['report','conduct'], sev: 'high', dl: 'Ongoing' },
-      { t: 'Conflict of interest identification and mitigation', d: 'All material conflicts of interest affecting retail recommendations must be identified, disclosed, and mitigated. Financial incentives (sales contests, differential compensation) must be reviewed annually.', tags: ['conduct'], sev: 'high', dl: 'Annual review' },
-      { t: 'SAR filing with FinCEN within 30 days', d: 'Suspicious Activity Reports must be filed within 30 calendar days of detecting suspicious activity. 60-day extension available if no suspect is identified. Tipping off the subject is a federal crime.', tags: ['kyc','report'], sev: 'med', dl: '30 days' },
-      { t: 'Books and records retention — 6 years', d: 'All order tickets, confirmations, customer account records, and communications must be retained for 6 years (3 years easily accessible). SEC Rule 17a-4 compliance required including WORM storage for electronic records.', tags: ['ops','report'], sev: 'med', dl: 'Ongoing' },
-    ],
-    risks: [
-      { t: 'Differential compensation steering retail clients to higher-cost products', l: 'high', p: 'SEC enforcement: disgorgement + $10M+ penalty' },
-      { t: 'Form CRS not delivered at account opening', l: 'high', p: 'Penalty: $97,523 per violation (inflation-adjusted)' },
-      { t: 'SAR filings delayed beyond 30-day window', l: 'high', p: 'FinCEN penalty: up to $1M per violation' },
-      { t: 'Electronic communications on personal devices not archived', l: 'med', p: 'SEC / FINRA: recordkeeping violation, $125M+ (industry-wide fines)' },
-      { t: 'Annual conflict review not documented with sign-off', l: 'med', p: 'FINRA 2020 / Reg BI enforcement finding' },
-    ],
-    timeline: [
-      { d: 'Ongoing', t: 'Best interest standard — applies to every retail recommendation' },
-      { d: '30 days', t: 'Form CRS update after any material change' },
-      { d: '30 days', t: 'SAR filing window from suspicion detection' },
-      { d: 'Annual', t: 'Conflict of interest review and CEO sign-off' },
-      { d: 'Q1 each year', t: 'FINRA annual compliance report to board' },
-    ]
-  },
-  regional: {
-    docName: 'Basel III Endgame (US Implementation) — OCC / Fed Proposal',
-    inst: 'Regional bank ($100B+ assets)',
-    penalty: '$5M+ / violation',
-    deadline: 'July 2025 (phased)',
-    highCount: 3,
-    showBanner: false,
-    bannerTitle: '', bannerBody: '',
-    obligations: [
-      { t: 'Expanded risk-based capital requirements', d: 'Basel III Endgame requires regional banks ($100B+) to calculate capital using both standardised and internal model approaches, holding the higher amount. Estimated 16–19% capital increase industry-wide.', tags: ['capital'], sev: 'high', dl: 'Phased to 2028' },
-      { t: 'Long-term debt (LTD) requirement', d: 'Banks with $100B+ in assets must maintain long-term debt of at least 6% of risk-weighted assets to improve resolvability. New issuance required for most regional banks.', tags: ['capital','report'], sev: 'high', dl: '3 years after final rule' },
-      { t: 'Stress testing — expanded scope', d: 'Dodd-Frank Act Stress Testing (DFAST) expanded to $100B+ institutions under revised rules. Annual submission to Fed required with severely adverse scenario including 10% unemployment.', tags: ['capital','report'], sev: 'high', dl: 'Annual (April)' },
-      { t: 'Enhanced liquidity reporting (FR 2052a)', d: 'Daily liquidity reporting on FR 2052a required for $100B+ institutions. Must report inflows, outflows, and collateral positions by legal entity. Breach of LCR triggers supervisory dialogue.', tags: ['report','capital'], sev: 'med', dl: 'Daily' },
-      { t: 'Third-party risk management — OCC guidance', d: 'Comprehensive third-party risk management programme required covering all vendor relationships. Annual reviews, due diligence documentation, and Board oversight required for critical activities.', tags: ['ops'], sev: 'med', dl: 'Ongoing' },
-    ],
-    risks: [
-      { t: 'Capital shortfall under Basel III Endgame expanded RWA', l: 'high', p: 'Penalty: restricted capital distributions + Fed supervisory action' },
-      { t: 'Long-term debt issuance plan not in place', l: 'high', p: 'Non-compliance with final rule once effective' },
-      { t: 'FR 2052a daily reporting data quality gaps', l: 'high', p: 'Fed MRA (Matter Requiring Attention) + potential enforcement' },
-      { t: 'Critical vendor contracts missing OCC-required clauses', l: 'med', p: 'OCC examination finding + remediation requirement' },
-      { t: 'DFAST model documentation not at SR 11-7 standard', l: 'med', p: 'Fed model risk management finding' },
-    ],
-    timeline: [
-      { d: 'July 2025', t: 'Basel III Endgame effective date (phased implementation starts)' },
-      { d: 'April (annual)', t: 'DFAST stress test submission' },
-      { d: 'Daily', t: 'FR 2052a liquidity reporting' },
-      { d: '3 years post-rule', t: 'Full long-term debt requirement compliance' },
-      { d: 'Annual', t: 'Third-party risk programme board review' },
-    ]
-  }
-};
-DATA_US.hedge = { ...DATA_US.broker_dealer, inst: 'Hedge fund / Private fund adviser', docName: 'SEC Private Fund Adviser Rules 2023' };
-DATA_US.asset_mgr = { ...DATA_US.broker_dealer, inst: 'Asset manager (RIA)', docName: 'SEC Investment Adviser Act — Marketing Rule' };
-DATA_US.fintech_us = { ...DATA_US.regional, inst: 'Fintech / BNPL', docName: 'CFPB Supervision + State licensing' };
-
-// ─── LOADING STEPS ────────────────────────────────────────
-const steps = [
-  'Parsing document structure...',
-  'Identifying regulatory framework (RBI / SEBI / IRDAI)...',
-  'Extracting key obligations...',
-  'Mapping compliance domains...',
-  'Identifying penalty provisions...',
-  'Generating plain English summaries...',
-  'Mapping obligation deadlines...',
-  'Building compliance risk assessment...'
-];
-
-function startAnalysis() {
-  const txt = document.getElementById('doc-text').value.trim();
-  const fileSelected = document.getElementById('upload-title').textContent !== 'Drop regulatory document here';
-  if (!txt && !fileSelected) {
-    document.getElementById('doc-text').style.border = '2px solid #E24B4A';
-    setTimeout(() => document.getElementById('doc-text').style.border = '', 1600);
-    return;
-  }
   document.getElementById('input-panel').classList.add('hidden');
-  document.getElementById('loading-panel').classList.remove('hidden');
-  let i = 0;
-  const iv = setInterval(() => {
-    if (i < steps.length) { document.getElementById('load-text').textContent = steps[i++]; }
-    else {
-      clearInterval(iv);
-      showResults();
-    }
-  }, 370);
-}
-
-function showResults() {
   document.getElementById('loading-panel').classList.add('hidden');
-  document.getElementById('results-panel').classList.remove('hidden');
-  const dataset = currentEdition === 'us' ? DATA_US : DATA;
-  const d = dataset[selInst] || (currentEdition === 'us' ? DATA_US.gsib : DATA.pvt);
+  document.getElementById('error-panel').classList.add('hidden');
 
-  document.getElementById('res-docname').textContent = d.docName;
-  document.getElementById('res-instname').textContent = '· ' + d.inst;
-  document.getElementById('m1').textContent = d.obligations.length;
-  document.getElementById('m2').textContent = d.highCount;
-  document.getElementById('m3').textContent = d.penalty;
-  document.getElementById('m4').textContent = d.deadline;
-
-  if (d.showBanner) {
-    document.getElementById('penalty-banner').classList.remove('hidden');
-    document.getElementById('penalty-title').textContent = d.bannerTitle;
-    document.getElementById('penalty-body').textContent = d.bannerBody;
-  }
-
-  const tagMap = {
-    digital: ['tag-ops','Digital'], ops: ['tag-ops','Ops'], rbi: ['tag-rbi','RBI'],
-    sebi: ['tag-sebi','SEBI'], kyc: ['tag-kyc','KYC/AML'], cap: ['tag-cap','Capital'],
-    report: ['tag-report','Reporting'], conduct: ['tag-conduct','Conduct'], penalty: ['tag-penalty','Penalty']
-  };
-  const sevMap = { high: ['sev-high','High priority'], med: ['sev-med','Medium'], low: ['sev-low','Low'] };
-
-  const obEl = document.getElementById('ob-list');
-  obEl.innerHTML = d.obligations.map((o, i) => {
-    const tagsHtml = o.tags.map(t => { const [cls,lbl] = tagMap[t]||['tag-conduct',t]; return `<span class="tag ${cls}">${lbl}</span>`; }).join('');
-    const [sClass, sLabel] = sevMap[o.sev];
-    const dlHtml = o.dl ? `<span class="deadline-chip">🗓 ${o.dl}</span>` : '';
-    return `<div class="ob-card">
-      <div class="ob-num">${i+1}</div>
-      <div>
-        <div class="ob-title">${o.t}</div>
-        <div class="ob-desc">${o.d}</div>
-        <div class="ob-meta">${tagsHtml}${dlHtml}</div>
-      </div>
-      <span class="sev ${sClass}">${sLabel}</span>
-    </div>`;
-  }).join('');
-
-  const dotMap = { high:'rdot-h', med:'rdot-m', low:'rdot-l' };
-  document.getElementById('risk-list').innerHTML = d.risks.map(r =>
-    `<div class="risk-row"><div class="rdot ${dotMap[r.l]}"></div><div><div class="risk-text">${r.t}</div><div class="risk-penalty">${r.p}</div></div></div>`
-  ).join('');
-
-  document.getElementById('tl-list').innerHTML = d.timeline.map(t =>
-    `<div class="tl-row"><div class="tl-date">${t.d}</div><div class="tl-text">${t.t}</div></div>`
-  ).join('');
-
-  document.getElementById('cta-ask-btn').onclick = () => alert('In the deployed version, this connects to Claude AI for live follow-up analysis. See README for deployment instructions.');
-  document.getElementById('export-btn').onclick = () => exportReport(d);
-
-  // Save to history
-  analysisHistory.push({
-    docName: d.docName, inst: d.inst, instKey: selInst,
-    date: new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}),
-    count: d.obligations.length
-  });
-  if (analysisHistory.length > 20) analysisHistory.shift();
-  try { localStorage.setItem('regintel_history', JSON.stringify(analysisHistory)); } catch(e) {}
+  // Rebuild chat context
+  const d = h.result;
+  chatDocContext = `DOCUMENT: ${d.documentTitle}\nSUMMARY: ${d.summary}\nOBLIGATIONS:\n` +
+    (d.obligations || []).map((o, i) => `${i+1}. [${o.priority.toUpperCase()}] ${o.title}: ${o.description}`).join('\n');
+  chatMessages = [];
+  showResults(h.result);
 }
 
+function renderFrameworks() {
+  const isUS = currentEdition === 'us';
+  const fwData = isUS ? [
+    { name: 'Federal Reserve', color: 'var(--primary)', items: ['Regulation Y (BHC Act)', 'SR Letters', 'CCAR / DFAST', 'Volcker Rule (FRB)', 'Regulation Z (TILA)'] },
+    { name: 'OCC', color: '#2e7d32', items: ['Comptroller\'s Handbook', 'OCC Bulletins', 'BSA/AML enforcement', 'CRA guidance', 'Fintech charter rules'] },
+    { name: 'SEC', color: 'var(--purple)', items: ['Reg S-K / S-X', 'Investment Advisers Act', 'Securities Exchange Act', 'Reg BI (Best Interest)', 'EDGAR reporting'] },
+    { name: 'FINRA', color: '#854F0B', items: ['FINRA Rules 4000-9000', 'Suitability / KYC', 'AML Program Rule 3310', 'Net Capital Rule 4110', 'Trade reporting'] }
+  ] : [
+    { name: 'RBI', color: 'var(--primary)', items: ['Master Direction – KYC 2016', 'Prudential norms (capital)', 'Basel III implementation', 'Liquidity coverage ratio', 'NBFC Master Directions'] },
+    { name: 'SEBI', color: '#2e7d32', items: ['LODR Regulations 2015', 'Insider Trading Regulations', 'PMS / AIF Regulations', 'Mutual Fund Regulations 1996', 'Takeover Code (SAST)'] },
+    { name: 'IRDAI', color: 'var(--purple)', items: ['Insurance Act 1938', 'Solvency margin norms', 'Product filing guidelines', 'Investment regulations', 'Policyholder protection'] },
+    { name: 'PMLA / FEMA / DPDP', color: '#854F0B', items: ['PMLA 2002 + rules', 'FEMA 1999 (forex)', 'FIU-IND reporting', 'DPDP Act 2023', 'IT Act Section 43A'] }
+  ];
+
+  document.getElementById('frameworks-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      ${fwData.map(fw => `
+        <div class="panel">
+          <div style="font-size:13px;font-weight:700;color:${fw.color};margin-bottom:10px">${fw.name}</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            ${fw.items.map(item => `<div class="fw-item">${item}</div>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ── 14. UTILITY FUNCTIONS ────────────────────────────────
 function resetApp() {
-  document.getElementById('results-panel').classList.add('hidden');
-  document.getElementById('penalty-banner').classList.add('hidden');
   document.getElementById('input-panel').classList.remove('hidden');
+  document.getElementById('loading-panel').classList.add('hidden');
+  document.getElementById('error-panel').classList.add('hidden');
+  document.getElementById('results-panel').classList.add('hidden');
   document.getElementById('doc-text').value = '';
   document.getElementById('char-count').textContent = '0 characters';
   document.getElementById('upload-title').textContent = 'Drop regulatory document here';
-  document.getElementById('upload-sub').textContent = 'PDF, TXT or DOCX · or click to browse';
-  document.getElementById('ob-list').innerHTML = '';
+  document.getElementById('upload-sub').textContent = 'PDF, DOCX, or TXT · or click to browse';
   document.getElementById('file-in').value = '';
-  hasContent = false;
+  currentAnalysisResult = null;
+  chatMessages = [];
+  chatDocContext = '';
+  isChatOpen = false;
+  closeChat();
 }
 
-function exportReport(d) {
-  const lines = [
-    `REGINTEL INDIA — COMPLIANCE ANALYSIS REPORT`,
-    `Generated: ${new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}`,
-    `Document: ${d.docName}`,
-    `Institution: ${d.inst}`,
-    ``,
-    `SUMMARY`,
-    `Total obligations: ${d.obligations.length} | High priority: ${d.highCount} | Max penalty: ${d.penalty}`,
-    ``,
-    `KEY OBLIGATIONS`,
-    ...d.obligations.map((o,i) => `${i+1}. [${o.sev.toUpperCase()}] ${o.t}\n   ${o.d}\n   Deadline: ${o.dl||'N/A'}`),
-    ``,
-    `COMPLIANCE RISKS`,
-    ...d.risks.map(r => `• [${r.l.toUpperCase()}] ${r.t}\n  ${r.p}`),
-    ``,
-    `REGULATORY TIMELINE`,
-    ...d.timeline.map(t => `${t.d}: ${t.t}`),
-    ``,
-    `--- Generated by RegIntel India ---`
-  ];
-  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `RegIntel_Report_${d.inst.replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}.txt`;
-  a.click();
+function openChat() {
+  document.getElementById('chat-panel').classList.remove('hidden');
+  document.getElementById('cta-box').classList.add('hidden');
+  isChatOpen = true;
+  document.getElementById('chat-input').focus();
 }
+
+function closeChat() {
+  document.getElementById('chat-panel').classList.add('hidden');
+  if (currentAnalysisResult) document.getElementById('cta-box').classList.remove('hidden');
+  isChatOpen = false;
+}
+
+function chatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChat();
+  }
+}
+
+function sendSuggestion(btn) {
+  document.getElementById('chat-input').value = btn.textContent;
+  sendChat();
+}
+
+function acceptDisclaimer() {
+  document.getElementById('disclaimer-overlay').style.display = 'none';
+  try { sessionStorage.setItem('regintel_accepted', '1'); } catch(e) {}
+}
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (key) {
+    try { localStorage.setItem('regintel_gemini_key', key); } catch(e) {}
+    document.getElementById('api-key-status').textContent = '✓ Key saved to your browser only';
+    document.getElementById('api-key-status').style.color = 'var(--text-tertiary)';
+  }
+}
+
+function onApiKeyInput() {
+  saveApiKey();
+}
+
+function toggleKeyVisibility() {
+  const inp = document.getElementById('api-key-input');
+  const btn = document.getElementById('key-vis-btn');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.textContent = 'Hide';
+  } else {
+    inp.type = 'password';
+    btn.textContent = 'Show';
+  }
+}
+
+function toggleApiKeyInfo() {
+  // Not used in v2 part1 HTML but kept for compatibility
+}
+
+// ── PILL CLICK WIRING (initial load) ────────────────────
+document.getElementById('inst-pills').querySelectorAll('.pill').forEach(p => {
+  p.onclick = function() {
+    document.getElementById('inst-pills').querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    selInst = this.dataset.v;
+  };
+});
+document.getElementById('focus-pills').querySelectorAll('.pill').forEach(p => {
+  p.onclick = function() {
+    document.getElementById('focus-pills').querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    selFocus = this.dataset.v;
+  };
+});
+
 </script>
+
+
 </body>
 </html>
