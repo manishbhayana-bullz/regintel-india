@@ -306,7 +306,98 @@
     .tracker-bar { flex-wrap: wrap; }
     .cta-box { flex-direction: column; gap: 10px; }
     .api-key-controls { flex-wrap: wrap; }
+    .compare-upload-grid { grid-template-columns: 1fr; }
+    .diff-cols { grid-template-columns: 1fr; }
+    .compare-metrics { grid-template-columns: repeat(2,1fr); }
   }
+
+  /* ── PHASE 3: COMPARE DOCS ── */
+
+  /* Upload grid */
+  .compare-upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .compare-doc-slot { display: flex; flex-direction: column; gap: 0; }
+  .compare-doc-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; padding: 8px 14px; border-radius: 8px 8px 0 0; display: flex; align-items: center; gap: 7px; }
+  .compare-doc-label.label-a { background: var(--primary); color: #fff; }
+  .compare-doc-label.label-b { background: #2e7d32; color: #fff; }
+  .compare-slot-body { border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; overflow: hidden; background: var(--surface); }
+  .compare-upload-zone { border: 2px dashed var(--border-strong); border-radius: 8px; margin: 10px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--surface-2); }
+  .compare-upload-zone:hover, .compare-upload-zone.drag { border-color: var(--primary); background: var(--primary-light); }
+  .compare-upload-zone.slot-b:hover, .compare-upload-zone.slot-b.drag { border-color: #2e7d32; background: #e8f5e9; }
+  .compare-upload-title { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+  .compare-upload-sub { font-size: 11px; color: var(--text-tertiary); }
+  .compare-divider { display: flex; align-items: center; gap: 8px; margin: 0 10px 0; }
+  .compare-divider-line { flex: 1; height: 1px; background: var(--border); }
+  .compare-divider-text { font-size: 11px; color: var(--text-tertiary); }
+  .compare-textarea { width: 100%; border: none; outline: none; resize: none; padding: 10px 14px; font-size: 12px; line-height: 1.6; font-family: var(--font); color: var(--text-primary); background: var(--surface); min-height: 90px; }
+  .compare-textarea-footer { padding: 6px 12px; background: var(--surface-2); border-top: 1px solid var(--border); font-size: 11px; color: var(--text-tertiary); }
+
+  /* Compare button */
+  .compare-btn { width: 100%; padding: 12px; background: #185FA5; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 0; }
+  .compare-btn:hover { background: #0C447C; }
+  .compare-btn:disabled { background: var(--surface-2); color: var(--text-tertiary); cursor: not-allowed; }
+
+  /* Compare metrics */
+  .compare-metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+  .cmetric { border-radius: 10px; padding: 14px 12px; }
+  .cmetric.new { background: #e8f5e9; border: 1px solid #a5d6a7; }
+  .cmetric.removed { background: var(--danger-bg); border: 1px solid #f7c1c1; }
+  .cmetric.changed { background: var(--warning-bg); border: 1px solid #ffcc80; }
+  .cmetric.common { background: var(--surface-2); border: 1px solid var(--border); }
+  .cmetric-val { font-size: 26px; font-weight: 700; }
+  .cmetric.new .cmetric-val { color: #2e7d32; }
+  .cmetric.removed .cmetric-val { color: var(--danger); }
+  .cmetric.changed .cmetric-val { color: var(--warning); }
+  .cmetric.common .cmetric-val { color: var(--text-primary); }
+  .cmetric-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+  .cmetric-sub { font-size: 10px; color: var(--text-tertiary); margin-top: 3px; }
+
+  /* Summary banner */
+  .compare-summary { background: var(--primary-light); border: 1px solid #b5d4f4; border-radius: 10px; padding: 14px 16px; margin-bottom: 18px; }
+  .compare-summary-title { font-size: 13px; font-weight: 600; color: var(--primary-dark); margin-bottom: 5px; }
+  .compare-summary-text { font-size: 12px; color: var(--primary-dark); line-height: 1.6; }
+  .compare-risk-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 8px; }
+  .risk-badge-high { background: var(--danger-bg); color: var(--danger); }
+  .risk-badge-medium { background: var(--warning-bg); color: var(--warning); }
+  .risk-badge-low { background: var(--success-bg); color: var(--success); }
+
+  /* Diff columns */
+  .diff-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+  .diff-col { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .diff-col-header { padding: 10px 14px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .diff-col-header.new { background: #e8f5e9; color: #2e7d32; border-bottom: 2px solid #a5d6a7; }
+  .diff-col-header.removed { background: var(--danger-bg); color: var(--danger); border-bottom: 2px solid #f7c1c1; }
+  .diff-col-header.changed { background: var(--warning-bg); color: var(--warning); border-bottom: 2px solid #ffcc80; }
+  .diff-col-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .diff-col-empty { padding: 20px 14px; font-size: 12px; color: var(--text-tertiary); text-align: center; }
+
+  /* Diff obligation cards */
+  .diff-card { border-radius: 8px; padding: 11px 13px; border: 1px solid var(--border); border-left-width: 3px; background: var(--surface); }
+  .diff-card.new { border-left-color: #2e7d32; background: #fafff9; }
+  .diff-card.removed { border-left-color: var(--danger); background: #fffafa; }
+  .diff-card.changed { border-left-color: var(--amber); background: #fffdf5; }
+  .diff-card-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .diff-card-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+  .diff-card-reason { font-size: 10px; font-weight: 500; margin-top: 5px; padding: 3px 8px; border-radius: 20px; display: inline-block; }
+  .diff-card-reason.new { background: #e8f5e9; color: #2e7d32; }
+  .diff-card-reason.removed { background: var(--danger-bg); color: var(--danger); }
+  .diff-card-reason.changed { background: var(--warning-bg); color: var(--warning); }
+  .diff-card-meta { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+  .diff-sev { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+  .diff-sev-high { background: var(--danger-bg); color: var(--danger); }
+  .diff-sev-med { background: var(--warning-bg); color: var(--warning); }
+  .diff-sev-low { background: var(--success-bg); color: var(--success); }
+  .diff-deadline { font-size: 10px; padding: 2px 7px; border-radius: 20px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-tertiary); }
+  .diff-team { font-size: 10px; color: var(--purple); padding: 2px 7px; background: var(--purple-bg); border-radius: 20px; }
+
+  /* Doc titles row */
+  .compare-doc-titles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .compare-doc-title-card { border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+  .compare-doc-title-card.doc-a { background: var(--primary-light); border: 1px solid #b5d4f4; }
+  .compare-doc-title-card.doc-b { background: #e8f5e9; border: 1px solid #a5d6a7; }
+  .compare-doc-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; flex-shrink: 0; }
+  .badge-doc-a { background: var(--primary); color: #fff; }
+  .badge-doc-b { background: #2e7d32; color: #fff; }
+  .compare-doc-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
 </style>
 </head>
 <body>
@@ -370,6 +461,7 @@
 <div class="tabs">
   <div class="tab active" onclick="switchTab('analyse')">Analyse Document</div>
   <div class="tab" onclick="switchTab('history')">History</div>
+  <div class="tab" onclick="switchTab('compare')">⚖ Compare Docs</div>
   <div class="tab" onclick="switchTab('frameworks')">Frameworks</div>
   <div class="tab" onclick="switchTab('about')">About</div>
 </div>
@@ -456,7 +548,7 @@
         — 1,500 requests/day, no credit card needed. Your key is stored only in localStorage and sent directly from your browser to Google's API.
       </div>
       <div class="api-key-controls">
-        <input type="password" id="AIzaSyC74KBI72_RLf-0X7CLpZndgNHro9euj9s" placeholder="AIza..." oninput="onApiKeyInput()"/>
+        <input type="password" id="api-key-input" placeholder="AIza..." oninput="onApiKeyInput()"/>
         <button class="btn-sm" onclick="testApiKey()">Test key</button>
         <button class="btn-sm" onclick="toggleKeyVisibility()" id="key-vis-btn">Show</button>
       </div>
@@ -625,6 +717,222 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════
+     COMPARE DOCS TAB — PHASE 3
+═══════════════════════════════════════════════════════ -->
+<div id="compare-panel" class="container hidden">
+
+  <!-- INPUT STATE -->
+  <div id="compare-input">
+
+    <div class="section-label" style="margin-bottom:14px">Compare two regulatory documents — identify what's new, removed, or changed</div>
+
+    <!-- TWO UPLOAD SLOTS -->
+    <div class="compare-upload-grid">
+
+      <!-- DOC A -->
+      <div class="compare-doc-slot">
+        <div class="compare-doc-label label-a">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M3 4h6M3 6h6M3 8h4" stroke="white" stroke-width="0.9" stroke-linecap="round"/></svg>
+          Document A — Baseline / Old version
+        </div>
+        <div class="compare-slot-body">
+          <div class="compare-upload-zone slot-a" id="dropzone-a" onclick="document.getElementById('file-in-a').click()">
+            <input type="file" id="file-in-a" style="display:none" accept=".pdf,.txt,.docx" onchange="onFileSelectA(this)"/>
+            <div class="compare-upload-title" id="upload-title-a">Drop or click to upload</div>
+            <div class="compare-upload-sub" id="upload-sub-a">PDF, DOCX or TXT</div>
+          </div>
+          <div class="compare-divider" style="margin:0 10px 4px">
+            <div class="compare-divider-line"></div>
+            <span class="compare-divider-text">or paste</span>
+            <div class="compare-divider-line"></div>
+          </div>
+          <textarea class="compare-textarea" id="doc-a-text" placeholder="Paste the baseline / older regulatory document here..." oninput="document.getElementById('char-count-a').textContent=this.value.length+' chars'"></textarea>
+          <div class="compare-textarea-footer"><span id="char-count-a">0 chars</span> · min 100 chars</div>
+        </div>
+      </div>
+
+      <!-- DOC B -->
+      <div class="compare-doc-slot">
+        <div class="compare-doc-label label-b">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M3 4h6M3 6h6M3 8h4" stroke="white" stroke-width="0.9" stroke-linecap="round"/></svg>
+          Document B — New / Updated version
+        </div>
+        <div class="compare-slot-body">
+          <div class="compare-upload-zone slot-b" id="dropzone-b" onclick="document.getElementById('file-in-b').click()">
+            <input type="file" id="file-in-b" style="display:none" accept=".pdf,.txt,.docx" onchange="onFileSelectB(this)"/>
+            <div class="compare-upload-title" id="upload-title-b">Drop or click to upload</div>
+            <div class="compare-upload-sub" id="upload-sub-b">PDF, DOCX or TXT</div>
+          </div>
+          <div class="compare-divider" style="margin:0 10px 4px">
+            <div class="compare-divider-line"></div>
+            <span class="compare-divider-text">or paste</span>
+            <div class="compare-divider-line"></div>
+          </div>
+          <textarea class="compare-textarea" id="doc-b-text" placeholder="Paste the new / updated regulatory document here..." oninput="document.getElementById('char-count-b').textContent=this.value.length+' chars'"></textarea>
+          <div class="compare-textarea-footer"><span id="char-count-b">0 chars</span> · min 100 chars</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTITUTION + FOCUS PILLS (reuse existing styles) -->
+    <div class="row-2col" style="margin-bottom:16px">
+      <div>
+        <div class="section-label">Institution type</div>
+        <div class="pills-row" id="compare-inst-pills">
+          <div class="pill active" data-v="pvt">Private bank</div>
+          <div class="pill" data-v="psu">PSU bank</div>
+          <div class="pill" data-v="nbfc">NBFC</div>
+          <div class="pill" data-v="fintech">Fintech</div>
+          <div class="pill" data-v="broker">Broker / MF</div>
+          <div class="pill" data-v="invest">Investment bank</div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Regulatory focus</div>
+        <div class="pills-row" id="compare-focus-pills">
+          <div class="pill active" data-v="all">All areas</div>
+          <div class="pill" data-v="kyc">KYC / AML</div>
+          <div class="pill" data-v="capital">Capital</div>
+          <div class="pill" data-v="conduct">Conduct</div>
+          <div class="pill" data-v="reporting">Reporting</div>
+          <div class="pill" data-v="digital">Digital / IT</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPARE BUTTON -->
+    <button class="compare-btn" id="compare-btn" onclick="startComparison()">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path d="M3 7.5h9M3 4.5h5M3 10.5h5M10 4l3 3.5-3 3.5" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Compare with AI
+    </button>
+  </div><!-- /compare-input -->
+
+  <!-- COMPARE LOADING -->
+  <div id="compare-loading" class="hidden">
+    <div class="loading-wrap">
+      <div class="loading-status"><div class="spinner"></div><span id="compare-load-text">Reading both documents...</span></div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="compare-prog-fill" style="animation: prog 28s ease-in-out forwards;"></div>
+      </div>
+      <div class="loading-subtitle">Powered by Gemini 2.0 Flash · Comparing regulatory obligations</div>
+    </div>
+  </div>
+
+  <!-- COMPARE ERROR -->
+  <div id="compare-error" class="hidden">
+    <div class="error-banner">
+      <div class="error-banner-title">⚠️ Comparison failed</div>
+      <div class="error-banner-text" id="compare-error-msg">Something went wrong. Please check your API key and try again.</div>
+    </div>
+    <button class="btn-outline" onclick="resetComparison()" style="margin-top:8px">← Try again</button>
+  </div>
+
+  <!-- COMPARE RESULTS -->
+  <div id="compare-results" class="hidden">
+
+    <!-- Results header -->
+    <div class="results-header" style="margin-bottom:16px">
+      <div style="font-size:14px;font-weight:600;color:var(--text-primary)">Comparison Results</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-outline" onclick="resetComparison()">← New comparison</button>
+        <button class="btn-outline" id="compare-export-btn">Export report ↗</button>
+      </div>
+    </div>
+
+    <!-- Doc titles -->
+    <div class="compare-doc-titles">
+      <div class="compare-doc-title-card doc-a">
+        <span class="compare-doc-badge badge-doc-a">Doc A</span>
+        <span class="compare-doc-name" id="compare-doc-a-name">Baseline document</span>
+      </div>
+      <div class="compare-doc-title-card doc-b">
+        <span class="compare-doc-badge badge-doc-b">Doc B</span>
+        <span class="compare-doc-name" id="compare-doc-b-name">Updated document</span>
+      </div>
+    </div>
+
+    <!-- Summary banner -->
+    <div class="compare-summary" id="compare-summary-banner">
+      <div class="compare-summary-title" id="compare-summary-title">Comparison Summary</div>
+      <div class="compare-summary-text" id="compare-summary-text">—</div>
+      <div id="compare-risk-badge"></div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="compare-metrics">
+      <div class="cmetric new">
+        <div class="cmetric-label">New obligations</div>
+        <div class="cmetric-val" id="cm1">—</div>
+        <div class="cmetric-sub">added in Doc B</div>
+      </div>
+      <div class="cmetric removed">
+        <div class="cmetric-label">Removed / Eased</div>
+        <div class="cmetric-val" id="cm2">—</div>
+        <div class="cmetric-sub">only in Doc A</div>
+      </div>
+      <div class="cmetric changed">
+        <div class="cmetric-label">Changed / Updated</div>
+        <div class="cmetric-val" id="cm3">—</div>
+        <div class="cmetric-sub">modified obligations</div>
+      </div>
+      <div class="cmetric common">
+        <div class="cmetric-label">Unchanged</div>
+        <div class="cmetric-val" id="cm4">—</div>
+        <div class="cmetric-sub">common to both</div>
+      </div>
+    </div>
+
+    <!-- Three diff columns -->
+    <div class="diff-cols">
+
+      <!-- NEW -->
+      <div class="diff-col">
+        <div class="diff-col-header new">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#2e7d32" stroke-width="1.2"/><path d="M6 3v6M3 6h6" stroke="#2e7d32" stroke-width="1.2" stroke-linecap="round"/></svg>
+          New obligations
+        </div>
+        <div class="diff-col-body" id="diff-new-list">
+          <div class="diff-col-empty">No new obligations found</div>
+        </div>
+      </div>
+
+      <!-- REMOVED -->
+      <div class="diff-col">
+        <div class="diff-col-header removed">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#A32D2D" stroke-width="1.2"/><path d="M3 6h6" stroke="#A32D2D" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Removed / Eased
+        </div>
+        <div class="diff-col-body" id="diff-removed-list">
+          <div class="diff-col-empty">No removed obligations found</div>
+        </div>
+      </div>
+
+      <!-- CHANGED -->
+      <div class="diff-col">
+        <div class="diff-col-header changed">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#BA7517" stroke-width="1.2"/><path d="M4 4l4 4M8 4l-4 4" stroke="#BA7517" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Changed / Updated
+        </div>
+        <div class="diff-col-body" id="diff-changed-list">
+          <div class="diff-col-empty">No changed obligations found</div>
+        </div>
+      </div>
+
+    </div><!-- /diff-cols -->
+
+    <!-- Key insight -->
+    <div class="panel" id="compare-insight-panel" style="margin-bottom:22px">
+      <div class="block-title">Key insight for your compliance team</div>
+      <div id="compare-insight-text" style="font-size:13px;color:var(--text-secondary);line-height:1.7">—</div>
+    </div>
+
+  </div><!-- /compare-results -->
+
+</div><!-- /compare-panel -->
+
+<!-- ═══════════════════════════════════════════════════════
      FRAMEWORKS TAB
 ═══════════════════════════════════════════════════════ -->
 <div id="frameworks-panel" class="container hidden">
@@ -693,7 +1001,7 @@
     <div style="display:flex;flex-direction:column">
       <div class="roadmap-row"><div class="roadmap-phase done">Phase 1</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Working prototype</div><div style="font-size:11px;color:var(--text-tertiary)">Document analysis UI, institution filter, export, live deployment</div></div><div class="roadmap-status done-badge">Live ✓</div></div>
       <div class="roadmap-row"><div class="roadmap-phase done">Phase 2</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Live AI engine — current version</div><div style="font-size:11px;color:var(--text-tertiary)">Real Gemini AI, obligation tracker, follow-up chat, DPDP module, HTML export</div></div><div class="roadmap-status done-badge">Live ✓</div></div>
-      <div class="roadmap-row"><div class="roadmap-phase next">Phase 3</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Multi-doc comparison + gap analysis</div><div style="font-size:11px;color:var(--text-tertiary)">Upload two documents, compare obligations, identify compliance gaps</div></div><div class="roadmap-status next-badge">Next</div></div>
+      <div class="roadmap-row"><div class="roadmap-phase done">Phase 3</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Multi-doc comparison + gap analysis</div><div style="font-size:11px;color:var(--text-tertiary)">Upload two documents, compare obligations, identify compliance gaps</div></div><div class="roadmap-status live-badge">Live</div></div>
       <div class="roadmap-row"><div class="roadmap-phase plan">Phase 4</div><div class="roadmap-content"><div style="font-size:12px;font-weight:500">Enterprise GRC integration</div><div style="font-size:11px;color:var(--text-tertiary)">API integration with bank GRC platforms, audit trails, role-based access</div></div><div class="roadmap-status plan-badge">Planned</div></div>
     </div>
   </div>
@@ -1500,12 +1808,12 @@ function switchEdition(ed) {
 }
 
 function switchTab(tab) {
-  ['analyse-main', 'history-panel', 'frameworks-panel', 'about-panel'].forEach(id => {
+  ['analyse-main', 'history-panel', 'frameworks-panel', 'about-panel', 'compare-panel'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
   });
   document.querySelectorAll('.tab').forEach((t, i) => {
-    const tabNames = ['analyse', 'history', 'frameworks', 'about'];
+    const tabNames = ['analyse', 'history', 'compare', 'frameworks', 'about'];
     t.classList.toggle('active', tabNames[i] === tab);
   });
   if (tab === 'analyse') document.getElementById('analyse-main').classList.remove('hidden');
@@ -1672,5 +1980,734 @@ document.getElementById('focus-pills').querySelectorAll('.pill').forEach(p => {
 </script>
 
 
-</body>
-</html>
+<script>
+// ═══════════════════════════════════════════════════════════
+//  REGINTEL PHASE 3 — COMPARE DOCS SCRIPT
+//  Depends on: callGemini(), pdfjsLib, mammoth (all pre-existing)
+// ═══════════════════════════════════════════════════════════
+
+// ── P3.1  STATE ───────────────────────────────────────────
+let compareInstSel  = 'pvt';
+let compareFocusSel = 'all';
+let comparisonResult = null;
+
+// ── P3.2  PILL WIRING (on DOMContentLoaded) ───────────────
+(function wireComparePills() {
+  document.getElementById('compare-inst-pills').querySelectorAll('.pill').forEach(p => {
+    p.onclick = function () {
+      document.getElementById('compare-inst-pills').querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      this.classList.add('active');
+      compareInstSel = this.dataset.v;
+    };
+  });
+  document.getElementById('compare-focus-pills').querySelectorAll('.pill').forEach(p => {
+    p.onclick = function () {
+      document.getElementById('compare-focus-pills').querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      this.classList.add('active');
+      compareFocusSel = this.dataset.v;
+    };
+  });
+})();
+
+// ── P3.3  FILE READING — Doc A ────────────────────────────
+function onFileSelectA(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('upload-title-a').textContent = file.name;
+  document.getElementById('upload-sub-a').textContent   = (file.size / 1024).toFixed(1) + ' KB · reading…';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'txt') {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('doc-a-text').value = e.target.result;
+      document.getElementById('char-count-a').textContent = e.target.result.length + ' chars';
+      document.getElementById('upload-sub-a').textContent = (file.size / 1024).toFixed(1) + ' KB · text loaded ✓';
+    };
+    reader.readAsText(file);
+
+  } else if (ext === 'docx') {
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        const result = await mammoth.extractRawText({ arrayBuffer: e.target.result });
+        document.getElementById('doc-a-text').value = result.value;
+        document.getElementById('char-count-a').textContent = result.value.length + ' chars';
+        document.getElementById('upload-sub-a').textContent = (file.size / 1024).toFixed(1) + ' KB · DOCX extracted ✓';
+      } catch (err) {
+        document.getElementById('upload-sub-a').textContent = 'Error reading DOCX: ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+
+  } else if (ext === 'pdf') {
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        const typedArray = new Uint8Array(e.target.result);
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page    = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fullText += content.items.map(s => s.str).join(' ') + '\n';
+        }
+        document.getElementById('doc-a-text').value = fullText.trim();
+        document.getElementById('char-count-a').textContent = fullText.trim().length + ' chars';
+        document.getElementById('upload-sub-a').textContent = (file.size / 1024).toFixed(1) + ' KB · PDF extracted (' + pdf.numPages + ' pages) ✓';
+      } catch (err) {
+        document.getElementById('upload-sub-a').textContent = 'Error reading PDF: ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+
+  } else {
+    document.getElementById('upload-sub-a').textContent = 'Unsupported file type. Use PDF, DOCX, or TXT.';
+  }
+}
+
+// ── P3.4  FILE READING — Doc B ────────────────────────────
+function onFileSelectB(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('upload-title-b').textContent = file.name;
+  document.getElementById('upload-sub-b').textContent   = (file.size / 1024).toFixed(1) + ' KB · reading…';
+
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'txt') {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('doc-b-text').value = e.target.result;
+      document.getElementById('char-count-b').textContent = e.target.result.length + ' chars';
+      document.getElementById('upload-sub-b').textContent = (file.size / 1024).toFixed(1) + ' KB · text loaded ✓';
+    };
+    reader.readAsText(file);
+
+  } else if (ext === 'docx') {
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        const result = await mammoth.extractRawText({ arrayBuffer: e.target.result });
+        document.getElementById('doc-b-text').value = result.value;
+        document.getElementById('char-count-b').textContent = result.value.length + ' chars';
+        document.getElementById('upload-sub-b').textContent = (file.size / 1024).toFixed(1) + ' KB · DOCX extracted ✓';
+      } catch (err) {
+        document.getElementById('upload-sub-b').textContent = 'Error reading DOCX: ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+
+  } else if (ext === 'pdf') {
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        const typedArray = new Uint8Array(e.target.result);
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page    = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fullText += content.items.map(s => s.str).join(' ') + '\n';
+        }
+        document.getElementById('doc-b-text').value = fullText.trim();
+        document.getElementById('char-count-b').textContent = fullText.trim().length + ' chars';
+        document.getElementById('upload-sub-b').textContent = (file.size / 1024).toFixed(1) + ' KB · PDF extracted (' + pdf.numPages + ' pages) ✓';
+      } catch (err) {
+        document.getElementById('upload-sub-b').textContent = 'Error reading PDF: ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+
+  } else {
+    document.getElementById('upload-sub-b').textContent = 'Unsupported file type. Use PDF, DOCX, or TXT.';
+  }
+}
+
+// ── P3.5  DRAG-AND-DROP — dropzone-a & dropzone-b ─────────
+(function wireCompareDragDrop() {
+  const dzA = document.getElementById('dropzone-a');
+  dzA.addEventListener('dragover',  e => { e.preventDefault(); dzA.classList.add('drag'); });
+  dzA.addEventListener('dragleave', ()  => dzA.classList.remove('drag'));
+  dzA.addEventListener('drop', e => {
+    e.preventDefault();
+    dzA.classList.remove('drag');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const fakeInput = { files: [file] };
+      document.getElementById('upload-title-a').textContent = file.name;
+      onFileSelectA(fakeInput);
+    }
+  });
+
+  const dzB = document.getElementById('dropzone-b');
+  dzB.addEventListener('dragover',  e => { e.preventDefault(); dzB.classList.add('drag'); });
+  dzB.addEventListener('dragleave', ()  => dzB.classList.remove('drag'));
+  dzB.addEventListener('drop', e => {
+    e.preventDefault();
+    dzB.classList.remove('drag');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const fakeInput = { files: [file] };
+      document.getElementById('upload-title-b').textContent = file.name;
+      onFileSelectB(fakeInput);
+    }
+  });
+})();
+
+// ── P3.6  buildComparisonPrompt ───────────────────────────
+function buildComparisonPrompt(docAText, docBText, institution, focus) {
+
+  // Detect regulator type from both documents combined
+  const combinedLower = (docAText + ' ' + docBText).toLowerCase();
+  let regType = 'generic';
+  if (combinedLower.includes('rbi') || combinedLower.includes('reserve bank') || combinedLower.includes('master direction') || combinedLower.includes('prudential')) regType = 'rbi';
+  else if (combinedLower.includes('sebi') || combinedLower.includes('securities') || combinedLower.includes('exchange board') || combinedLower.includes('mutual fund')) regType = 'sebi';
+  else if (combinedLower.includes('irdai') || combinedLower.includes('insurance regulatory') || combinedLower.includes('irda')) regType = 'irdai';
+  else if (combinedLower.includes('pmla') || combinedLower.includes('prevention of money laundering') || combinedLower.includes('fema') || combinedLower.includes('foreign exchange')) regType = 'pmla';
+  else if (combinedLower.includes('dpdp') || combinedLower.includes('digital personal data') || combinedLower.includes('data protection')) regType = 'dpdp';
+  else if (combinedLower.includes('federal reserve') || combinedLower.includes('occ ') || combinedLower.includes(' sec ') || combinedLower.includes('finra') || combinedLower.includes('dodd-frank') || combinedLower.includes('basel')) regType = 'us';
+
+  const personas = {
+    rbi:     'You are a senior RBI compliance expert with 20 years in Indian banking prudential norms, master directions, and monetary policy circulars.',
+    sebi:    'You are a capital markets compliance specialist with deep expertise in SEBI regulations, stock exchange circulars, mutual fund regulations, PMS/AIF frameworks, and LODR obligations.',
+    irdai:   'You are an insurance regulation expert specialising in IRDAI guidelines, solvency margins, product approval frameworks, and policyholder protection.',
+    pmla:    'You are an AML and forex compliance expert with deep expertise in PMLA 2002, FEMA 1999, FIU-IND reporting obligations, and suspicious transaction reports.',
+    dpdp:    'You are a data protection specialist with expert knowledge of India\'s DPDP Act 2023, notice and consent requirements, and data fiduciary obligations.',
+    us:      'You are a US financial regulatory compliance expert specialising in Federal Reserve SR Letters, OCC guidance, SEC rules, FINRA Rule Books, and Dodd-Frank Act obligations.',
+    generic: 'You are a senior regulatory compliance analyst with broad expertise across financial services, banking, insurance, and capital markets regulations.'
+  };
+
+  const instTuning = {
+    pvt: 'This is a large private sector commercial bank regulated by RBI.',
+    psu: 'This is a public sector undertaking (PSU) bank with government ownership and RBI regulation.',
+    nbfc: 'This is a Non-Banking Financial Company (NBFC) regulated by RBI.',
+    fintech: 'This is a fintech company — focus on digital-specific obligations.',
+    broker: 'This is a SEBI-registered stock broker or mutual fund distributor.',
+    invest: 'This is an investment bank with SEBI and RBI obligations.',
+    gsib: 'This is a Global Systemically Important Bank (G-SIB) operating in the US market.',
+    regional: 'This is a US regional bank regulated by the Federal Reserve and OCC.',
+    broker_dealer: 'This is a US broker-dealer regulated by FINRA and SEC.',
+    hedge: 'This is a hedge fund with SEC registration and reporting obligations.',
+    asset_mgr: 'This is a US asset management firm with SEC and ERISA obligations.',
+    fintech_us: 'This is a US fintech or BNPL company with CFPB and state licensing obligations.'
+  };
+
+  const focusTuning = focus !== 'all' ? `\nPay particular attention to ${focus.toUpperCase()} obligations.` : '';
+  const persona  = personas[regType] || personas.generic;
+  const instNote = instTuning[institution] || '';
+
+  // Truncate each document to ~6000 chars so total prompt stays within limits
+  const sliceA = docAText.slice(0, 6000);
+  const sliceB = docBText.slice(0, 6000);
+
+  return `${persona}
+
+${instNote}${focusTuning}
+
+You are comparing two versions of a regulatory document. Document A is the BASELINE (older/current version). Document B is the NEW/UPDATED version.
+
+Your task: analyse what has changed between these two documents from a compliance obligations perspective.
+
+DOCUMENT A (Baseline):
+---
+${sliceA}
+---
+
+DOCUMENT B (New/Updated):
+---
+${sliceB}
+---
+
+Respond ONLY with a valid JSON object. No markdown fences. No explanation before or after. No trailing commas. The JSON must exactly match this schema:
+
+{
+  "docATitle": "Short descriptive title of Document A (max 60 chars)",
+  "docBTitle": "Short descriptive title of Document B (max 60 chars)",
+  "summary": "2-3 sentence plain-English summary of the key differences between the two documents and what they mean for compliance teams",
+  "complianceRisk": "high|medium|low",
+  "keyInsight": "One paragraph of strategic insight for the compliance team — what should they prioritise, what deadlines are now triggered, what internal policies need updating",
+  "newObligations": [
+    {
+      "title": "Obligation title (max 60 chars)",
+      "description": "Plain English explanation of this new obligation (2-3 sentences)",
+      "priority": "high|medium|low",
+      "deadline": "Specific date or timeframe, or 'Ongoing', or 'Not specified'",
+      "responsibleTeam": "Compliance|IT|Risk|Operations|Legal|Finance|HR",
+      "changeReason": null
+    }
+  ],
+  "removedObligations": [
+    {
+      "title": "Obligation title (max 60 chars)",
+      "description": "Plain English explanation of what obligation was removed or eased (2-3 sentences)",
+      "priority": "high|medium|low",
+      "deadline": "Not specified",
+      "responsibleTeam": "Compliance|IT|Risk|Operations|Legal|Finance|HR",
+      "changeReason": null
+    }
+  ],
+  "changedObligations": [
+    {
+      "title": "Obligation title (max 60 chars)",
+      "description": "Plain English explanation of what the obligation requires now (2-3 sentences)",
+      "priority": "high|medium|low",
+      "deadline": "Specific date or timeframe, or 'Ongoing', or 'Not specified'",
+      "responsibleTeam": "Compliance|IT|Risk|Operations|Legal|Finance|HR",
+      "changeReason": "Concise explanation of what specifically changed between Doc A and Doc B for this obligation"
+    }
+  ],
+  "commonObligations": [
+    {
+      "title": "Obligation title (max 60 chars)",
+      "description": "Plain English explanation of this unchanged obligation",
+      "priority": "high|medium|low",
+      "deadline": "Specific date or timeframe, or 'Ongoing', or 'Not specified'",
+      "responsibleTeam": "Compliance|IT|Risk|Operations|Legal|Finance|HR",
+      "changeReason": null
+    }
+  ]
+}
+
+Rules:
+- newObligations: obligations that ONLY appear in Doc B
+- removedObligations: obligations that were in Doc A but are absent/eased in Doc B
+- changedObligations: obligations present in both but with modified thresholds, deadlines, scope, or wording — always populate changeReason
+- commonObligations: obligations identical or substantively unchanged between the two documents
+- If a category has no items, return an empty array []
+- complianceRisk reflects how significant the changes are (high = major new burdens or removed safeguards, medium = material but manageable, low = minor)`;
+}
+
+// ── P3.7  parseComparisonResponse ─────────────────────────
+function parseComparisonResponse(rawText) {
+  let cleaned = rawText.trim();
+  cleaned = cleaned.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+
+  try {
+    const parsed = JSON.parse(cleaned);
+    if (!Array.isArray(parsed.newObligations)) throw new Error('newObligations is not an array');
+    return parsed;
+  } catch (e1) {
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace  = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      try {
+        const extracted = cleaned.slice(firstBrace, lastBrace + 1);
+        const parsed    = JSON.parse(extracted);
+        if (!Array.isArray(parsed.newObligations)) throw new Error('newObligations is not an array');
+        return parsed;
+      } catch (e2) {
+        throw new Error('Could not parse AI comparison response as valid JSON. The model returned unexpected content. Please try again.');
+      }
+    }
+    throw new Error('AI comparison response did not contain a valid JSON object. Please try again.');
+  }
+}
+
+// ── P3.8  startComparison ─────────────────────────────────
+async function startComparison() {
+  const txtA = document.getElementById('doc-a-text').value.trim();
+  const txtB = document.getElementById('doc-b-text').value.trim();
+
+  if (!txtA || txtA.length < 100) {
+    showCompareError('Document A must contain at least 100 characters of regulatory text. Please upload or paste Document A.');
+    return;
+  }
+  if (!txtB || txtB.length < 100) {
+    showCompareError('Document B must contain at least 100 characters of regulatory text. Please upload or paste Document B.');
+    return;
+  }
+
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) {
+    showCompareError('Please enter your Gemini API key above. Get one free at aistudio.google.com');
+    return;
+  }
+
+  // Show loading, hide input + error
+  document.getElementById('compare-input').classList.add('hidden');
+  document.getElementById('compare-error').classList.add('hidden');
+  document.getElementById('compare-results').classList.add('hidden');
+  document.getElementById('compare-loading').classList.remove('hidden');
+
+  // Restart progress bar animation (replace element to reset CSS animation state)
+  const oldFill = document.getElementById('compare-prog-fill');
+  if (oldFill) {
+    const newFill = oldFill.cloneNode(true);
+    oldFill.parentNode.replaceChild(newFill, oldFill);
+  }
+
+  // Animate load steps
+  const steps = [
+    'Reading Document A...',
+    'Reading Document B...',
+    'Identifying regulatory frameworks...',
+    'Comparing obligations...',
+    'Mapping changes and gaps...',
+    'Finalising comparison...'
+  ];
+  let si = 0;
+  const iv = setInterval(() => {
+    if (si < steps.length) {
+      document.getElementById('compare-load-text').textContent = steps[si++];
+    }
+  }, 2500);
+
+  try {
+    const prompt = buildComparisonPrompt(txtA, txtB, compareInstSel, compareFocusSel);
+    const raw    = await callGemini(prompt, key);
+    clearInterval(iv);
+    const parsed = parseComparisonResponse(raw);
+    comparisonResult = parsed;
+    document.getElementById('compare-loading').classList.add('hidden');
+    showComparisonResults(parsed);
+  } catch (err) {
+    clearInterval(iv);
+    document.getElementById('compare-loading').classList.add('hidden');
+    showCompareError(err.message || 'An unexpected error occurred during comparison.');
+  }
+}
+
+// helper to surface compare errors without touching main error panel
+function showCompareError(msg) {
+  document.getElementById('compare-input').classList.remove('hidden');
+  document.getElementById('compare-error').classList.remove('hidden');
+  document.getElementById('compare-error-msg').textContent = msg;
+}
+
+// ── P3.9  showComparisonResults ───────────────────────────
+function showComparisonResults(d) {
+  // Metric counts
+  document.getElementById('cm1').textContent = (d.newObligations     || []).length;
+  document.getElementById('cm2').textContent = (d.removedObligations || []).length;
+  document.getElementById('cm3').textContent = (d.changedObligations || []).length;
+  document.getElementById('cm4').textContent = (d.commonObligations  || []).length;
+
+  // Doc title cards
+  document.getElementById('compare-doc-a-name').textContent = d.docATitle || 'Document A';
+  document.getElementById('compare-doc-b-name').textContent = d.docBTitle || 'Document B';
+
+  // Summary banner
+  document.getElementById('compare-summary-title').textContent = 'Comparison Summary — ' + (d.docATitle || 'Doc A') + ' vs ' + (d.docBTitle || 'Doc B');
+  document.getElementById('compare-summary-text').textContent  = d.summary || '—';
+
+  // Risk badge
+  const riskBadgeEl  = document.getElementById('compare-risk-badge');
+  const riskLevel    = (d.complianceRisk || 'medium').toLowerCase();
+  const riskClassMap = { high: 'risk-badge-high', medium: 'risk-badge-medium', low: 'risk-badge-low' };
+  const riskLabelMap = { high: '🔴 High compliance risk', medium: '🟡 Medium compliance risk', low: '🟢 Low compliance risk' };
+  riskBadgeEl.className  = 'compare-risk-badge ' + (riskClassMap[riskLevel] || riskClassMap.medium);
+  riskBadgeEl.textContent = riskLabelMap[riskLevel] || riskLabelMap.medium;
+
+  // Diff columns
+  renderDiffList('diff-new-list',     d.newObligations     || [], 'new');
+  renderDiffList('diff-removed-list', d.removedObligations || [], 'removed');
+  renderDiffList('diff-changed-list', d.changedObligations || [], 'changed');
+
+  // Key insight
+  document.getElementById('compare-insight-text').textContent = d.keyInsight || '—';
+
+  // Wire export button
+  document.getElementById('compare-export-btn').onclick = () => exportComparisonReport(d);
+
+  // Show results
+  document.getElementById('compare-results').classList.remove('hidden');
+}
+
+// ── P3.10  renderDiffList ─────────────────────────────────
+
+// Safe HTML escape — prevents AI text with <, >, &, " from breaking card layout
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderDiffList(containerId, obligations, type) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (!obligations || obligations.length === 0) {
+    const typeLabels = { new: 'new', removed: 'removed', changed: 'changed' };
+    container.innerHTML = `<div class="diff-col-empty">No ${typeLabels[type] || type} obligations found.</div>`;
+    return;
+  }
+
+  const sevClassMap = { high: 'diff-sev-high', medium: 'diff-sev-med', low: 'diff-sev-low', med: 'diff-sev-med' };
+  const sevLabelMap = { high: 'HIGH', medium: 'MED', low: 'LOW', med: 'MED' };
+
+  container.innerHTML = obligations.map(ob => {
+    const priority = (ob.priority || 'medium').toLowerCase();
+    const sevClass = sevClassMap[priority] || 'diff-sev-med';
+    const sevLabel = sevLabelMap[priority] || 'MED';
+    const deadline = ob.deadline && ob.deadline !== 'Not specified' ? ob.deadline : null;
+    const team     = ob.responsibleTeam || null;
+
+    // changeReason chip: always for 'changed' type; static label for new/removed
+    let reasonHtml = '';
+    if (type === 'changed' && ob.changeReason) {
+      reasonHtml = `<div class="diff-card-reason changed">↻ ${escapeHtml(ob.changeReason)}</div>`;
+    } else if (type === 'new') {
+      reasonHtml = `<div class="diff-card-reason new">+ Added in Doc B</div>`;
+    } else if (type === 'removed') {
+      reasonHtml = `<div class="diff-card-reason removed">− Removed in Doc B</div>`;
+    }
+
+    const deadlineHtml = deadline ? `<span class="diff-deadline">⏰ ${escapeHtml(deadline)}</span>` : '';
+    const teamHtml     = team     ? `<span class="diff-team">${escapeHtml(team)}</span>` : '';
+
+    return `
+      <div class="diff-card ${type}">
+        <div class="diff-card-title">${escapeHtml(ob.title) || 'Untitled obligation'}</div>
+        <div class="diff-card-desc">${escapeHtml(ob.description)}</div>
+        ${reasonHtml}
+        <div class="diff-card-meta">
+          <span class="diff-sev ${sevClass}">${sevLabel}</span>
+          ${deadlineHtml}
+          ${teamHtml}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── P3.11  exportComparisonReport ────────────────────────
+function exportComparisonReport(d) {
+  const newObs     = d.newObligations     || [];
+  const removedObs = d.removedObligations || [];
+  const changedObs = d.changedObligations || [];
+
+  function obligationTableRows(arr, showReason) {
+    if (!arr || arr.length === 0) {
+      return `<tr><td colspan="${showReason ? 6 : 5}" style="text-align:center;color:#888;padding:14px">No obligations in this category.</td></tr>`;
+    }
+    // Local escape for the print window (escapeHtml is defined in outer scope)
+    const esc = s => escapeHtml(s || '');
+    return arr.map(ob => `
+      <tr>
+        <td><strong>${esc(ob.title)}</strong></td>
+        <td>${esc(ob.description)}</td>
+        <td><span style="font-weight:700;color:${ob.priority==='high'?'#A32D2D':ob.priority==='medium'?'#854F0B':'#3B6D11'}">${esc((ob.priority||'medium').toUpperCase())}</span></td>
+        <td>${esc(ob.deadline) || 'Not specified'}</td>
+        <td>${esc(ob.responsibleTeam) || '—'}</td>
+        ${showReason ? `<td style="font-size:11px;color:#666">${esc(ob.changeReason) || '—'}</td>` : ''}
+      </tr>`).join('');
+  }
+
+  const riskColor   = { high: '#A32D2D', medium: '#854F0B', low: '#3B6D11' };
+  const riskBg      = { high: '#FCEBEB', medium: '#FAEEDA', low: '#EAF3DE' };
+  const risk        = (d.complianceRisk || 'medium').toLowerCase();
+  const exportDate  = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Pre-escape all AI-generated fields used directly in the HTML template
+  const safeDocA    = escapeHtml(d.docATitle) || 'Document A';
+  const safeDocB    = escapeHtml(d.docBTitle) || 'Document B';
+  const safeSummary = escapeHtml(d.summary) || '—';
+  const safeInsight = escapeHtml(d.keyInsight) || '—';
+  const riskLabel   = risk.charAt(0).toUpperCase() + risk.slice(1);
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>RegIntel — Comparison Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Segoe UI', system-ui, sans-serif; color: #1a1a1a; background: #fff; padding: 32px; }
+  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #185FA5; }
+  .logo-box { width: 40px; height: 40px; background: #185FA5; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+  .logo-text h1 { font-size: 18px; font-weight: 700; color: #185FA5; }
+  .logo-text p  { font-size: 12px; color: #888; }
+  .doc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .doc-card { border-radius: 8px; padding: 12px 16px; }
+  .doc-card.a { background: #E6F1FB; border: 1px solid #b5d4f4; }
+  .doc-card.b { background: #e8f5e9; border: 1px solid #a5d6a7; }
+  .doc-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: 6px; }
+  .badge-a { background: #185FA5; color: #fff; }
+  .badge-b { background: #2e7d32; color: #fff; }
+  .doc-name { font-size: 13px; font-weight: 600; }
+  .summary-box { background: #f4f4f2; border: 1px solid #e2e2e2; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+  .summary-box h2 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #185FA5; }
+  .summary-box p  { font-size: 13px; color: #333; line-height: 1.7; }
+  .risk-badge { display: inline-block; margin-top: 10px; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; background: ${riskBg[risk] || riskBg.medium}; color: ${riskColor[risk] || riskColor.medium}; border: 1px solid ${riskColor[risk] || riskColor.medium}; }
+  .metrics-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
+  .metric-box { border-radius: 8px; padding: 14px; text-align: center; }
+  .metric-box.new { background: #e8f5e9; border: 1px solid #a5d6a7; }
+  .metric-box.removed { background: #FCEBEB; border: 1px solid #f7c1c1; }
+  .metric-box.changed { background: #FAEEDA; border: 1px solid #ffcc80; }
+  .metric-box.common  { background: #f4f4f2; border: 1px solid #e2e2e2; }
+  .metric-val   { font-size: 28px; font-weight: 700; }
+  .metric-label { font-size: 11px; color: #666; margin-top: 4px; }
+  .metric-box.new .metric-val { color: #2e7d32; }
+  .metric-box.removed .metric-val { color: #A32D2D; }
+  .metric-box.changed .metric-val { color: #854F0B; }
+  h2.section { font-size: 14px; font-weight: 700; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #e2e2e2; }
+  h2.section.new     { color: #2e7d32; border-color: #a5d6a7; }
+  h2.section.removed { color: #A32D2D; border-color: #f7c1c1; }
+  h2.section.changed { color: #854F0B; border-color: #ffcc80; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 24px; }
+  th { background: #f4f4f2; padding: 9px 10px; text-align: left; font-weight: 600; font-size: 11px; border: 1px solid #e2e2e2; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 9px 10px; border: 1px solid #e2e2e2; vertical-align: top; line-height: 1.5; }
+  tr:nth-child(even) td { background: #fafafa; }
+  .insight-box { background: #E6F1FB; border: 1px solid #b5d4f4; border-radius: 8px; padding: 16px; margin: 24px 0; }
+  .insight-box h2 { font-size: 13px; font-weight: 700; color: #185FA5; margin-bottom: 8px; }
+  .insight-box p { font-size: 13px; color: #0C447C; line-height: 1.7; }
+  .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e2e2; font-size: 11px; color: #aaa; line-height: 1.6; }
+  @media print {
+    body { padding: 16px; }
+    .metrics-row { page-break-inside: avoid; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; }
+    h2.section { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-box">RI</div>
+  <div class="logo-text">
+    <h1>RegIntel — Document Comparison Report</h1>
+    <p>Generated: ${exportDate} · Powered by Gemini 2.0 Flash · For research purposes only</p>
+  </div>
+</div>
+
+<div class="doc-row">
+  <div class="doc-card a">
+    <span class="doc-badge badge-a">Doc A — Baseline</span>
+    <div class="doc-name">${safeDocA}</div>
+  </div>
+  <div class="doc-card b">
+    <span class="doc-badge badge-b">Doc B — New/Updated</span>
+    <div class="doc-name">${safeDocB}</div>
+  </div>
+</div>
+
+<div class="summary-box">
+  <h2>Comparison Summary</h2>
+  <p>${safeSummary}</p>
+  <div class="risk-badge">Compliance Risk: ${riskLabel}</div>
+</div>
+
+<div class="metrics-row">
+  <div class="metric-box new">
+    <div class="metric-val">${newObs.length}</div>
+    <div class="metric-label">New Obligations</div>
+  </div>
+  <div class="metric-box removed">
+    <div class="metric-val">${removedObs.length}</div>
+    <div class="metric-label">Removed / Eased</div>
+  </div>
+  <div class="metric-box changed">
+    <div class="metric-val">${changedObs.length}</div>
+    <div class="metric-label">Changed / Updated</div>
+  </div>
+  <div class="metric-box common">
+    <div class="metric-val">${(d.commonObligations || []).length}</div>
+    <div class="metric-label">Unchanged</div>
+  </div>
+</div>
+
+<h2 class="section new">➕ New Obligations (added in Doc B)</h2>
+<table>
+  <thead><tr><th>Obligation</th><th>Description</th><th>Priority</th><th>Deadline</th><th>Responsible Team</th></tr></thead>
+  <tbody>${obligationTableRows(newObs, false)}</tbody>
+</table>
+
+<h2 class="section removed">➖ Removed / Eased Obligations</h2>
+<table>
+  <thead><tr><th>Obligation</th><th>Description</th><th>Priority</th><th>Deadline</th><th>Responsible Team</th></tr></thead>
+  <tbody>${obligationTableRows(removedObs, false)}</tbody>
+</table>
+
+<h2 class="section changed">↻ Changed / Updated Obligations</h2>
+<table>
+  <thead><tr><th>Obligation</th><th>Description</th><th>Priority</th><th>Deadline</th><th>Responsible Team</th><th>What Changed</th></tr></thead>
+  <tbody>${obligationTableRows(changedObs, true)}</tbody>
+</table>
+
+<div class="insight-box">
+  <h2>💡 Key Insight for Your Compliance Team</h2>
+  <p>${safeInsight}</p>
+</div>
+
+<div class="footer">
+  <strong>Disclaimer:</strong> This report is AI-generated and intended for research and exploration purposes only. It is not a substitute for qualified legal or compliance advice. Always verify against official source documents and consult your legal / compliance team before acting. RegIntel does not store any document text you upload or paste — all processing occurs directly in your browser.
+</div>
+
+</body></html>`;
+
+  const win = window.open('', '_blank');
+  if (win) {
+    win.document.write(html);
+    win.document.close();
+    setTimeout(() => win.print(), 800);
+  }
+}
+
+// ── P3.12  resetComparison ────────────────────────────────
+function resetComparison() {
+  // Clear textareas
+  document.getElementById('doc-a-text').value = '';
+  document.getElementById('doc-b-text').value = '';
+
+  // Reset upload titles / subs
+  document.getElementById('upload-title-a').textContent = 'Drop or click to upload';
+  document.getElementById('upload-sub-a').textContent   = 'PDF, DOCX or TXT';
+  document.getElementById('upload-title-b').textContent = 'Drop or click to upload';
+  document.getElementById('upload-sub-b').textContent   = 'PDF, DOCX or TXT';
+
+  // Reset char counts
+  document.getElementById('char-count-a').textContent = '0 chars';
+  document.getElementById('char-count-b').textContent = '0 chars';
+
+  // Reset file inputs
+  const fiA = document.getElementById('file-in-a');
+  const fiB = document.getElementById('file-in-b');
+  if (fiA) fiA.value = '';
+  if (fiB) fiB.value = '';
+
+  // Panel visibility
+  document.getElementById('compare-results').classList.add('hidden');
+  document.getElementById('compare-error').classList.add('hidden');
+  document.getElementById('compare-loading').classList.add('hidden');
+  document.getElementById('compare-input').classList.remove('hidden');
+
+  // Reset diff lists to default empty-state placeholders
+  const emptyPlaceholders = {
+    'diff-new-list':     '<div class="diff-col-empty">No new obligations found</div>',
+    'diff-removed-list': '<div class="diff-col-empty">No removed obligations found</div>',
+    'diff-changed-list': '<div class="diff-col-empty">No changed obligations found</div>'
+  };
+  Object.entries(emptyPlaceholders).forEach(([id, html]) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  });
+
+  // Reset metric counters and summary
+  ['cm1','cm2','cm3','cm4'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '—'; });
+  const riskBadgeEl = document.getElementById('compare-risk-badge');
+  if (riskBadgeEl) { riskBadgeEl.textContent = ''; riskBadgeEl.className = 'compare-risk-badge'; }
+  const sumTitle = document.getElementById('compare-summary-title');
+  if (sumTitle) sumTitle.textContent = 'Comparison Summary';
+  const sumText = document.getElementById('compare-summary-text');
+  if (sumText) sumText.textContent = '—';
+  const insightEl = document.getElementById('compare-insight-text');
+  if (insightEl) insightEl.textContent = '—';
+  const docAName = document.getElementById('compare-doc-a-name');
+  if (docAName) docAName.textContent = 'Baseline document';
+  const docBName = document.getElementById('compare-doc-b-name');
+  if (docBName) docBName.textContent = 'Updated document';
+
+  // Clear state
+  comparisonResult = null;
+}
+
+</script>
+
+</body></html>
