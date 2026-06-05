@@ -1597,8 +1597,12 @@ async function callGemini(promptText, apiKey) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: promptText }] }],
-        generationConfig: { temperature: 0.1, maxOutputTokens: 4096 }
-      })
+        generationConfig: { 
+          temperature: 0.1, 
+          maxOutputTokens: 4096,
+          responseMimeType: "application/json"
+    }
+})
     }
   );
   if (!response.ok) {
@@ -1612,31 +1616,41 @@ async function callGemini(promptText, apiKey) {
 
 // ── 5. parseGeminiResponse ────────────────────────────────
 function parseGeminiResponse(rawText) {
-  // Strip markdown fences if present
   let cleaned = rawText.trim();
+  
+  // Strip markdown fences (```json ... ``` or ``` ... ```)
   cleaned = cleaned.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '');
-
-  // Try direct parse
+  
+  // Try direct parse first
   try {
     const parsed = JSON.parse(cleaned);
     if (!Array.isArray(parsed.obligations)) throw new Error('obligations is not an array');
     return parsed;
-  } catch(e1) {
-    // Try extracting JSON between first { and last }
+  } catch(e1) {}
+  
+  // Try extracting JSON between first { and last }
+  try {
     const firstBrace = cleaned.indexOf('{');
-    const lastBrace = cleaned.lastIndexOf('}');
-    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-      try {
-        const extracted = cleaned.slice(firstBrace, lastBrace + 1);
-        const parsed = JSON.parse(extracted);
-        if (!Array.isArray(parsed.obligations)) throw new Error('obligations is not an array');
-        return parsed;
-      } catch(e2) {
-        throw new Error('Could not parse AI response as valid JSON. The model returned unexpected content. Try again.');
-      }
+    const lastBrace  = cleaned.lastIndexOf('}');
+    if (firstBrace > -1 && lastBrace > firstBrace) {
+      const slice = cleaned.slice(firstBrace, lastBrace + 1);
+      const parsed = JSON.parse(slice);
+      if (!Array.isArray(parsed.obligations)) throw new Error('obligations is not an array');
+      return parsed;
     }
-    throw new Error('AI response did not contain a valid JSON object. Please try again.');
-  }
+  } catch(e2) {}
+
+  // Try fixing trailing commas (common Gemini issue)
+  try {
+    const fixed = cleaned
+      .replace(/,\s*}/g, '}')
+      .replace(/,\s*]/g, ']');
+    const parsed = JSON.parse(fixed);
+    if (!Array.isArray(parsed.obligations)) throw new Error('obligations is not an array');
+    return parsed;
+  } catch(e3) {}
+
+  throw new Error('Could not parse AI response as valid JSON. The model returned unexpected content. Try again.');
 }
 
 // ── 6. startAnalysis ─────────────────────────────────────
