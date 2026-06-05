@@ -1613,7 +1613,8 @@ function parseGeminiResponse(rawText) {
     return parsed;
   } catch(e3) {}
 
-  throw new Error('Could not parse AI response as valid JSON. The model returned unexpected content. Try again.');
+  console.error('RAW GEMINI RESPONSE:', rawText);
+    throw new Error('Could not parse AI response as valid JSON. The model returned unexpected content. Try again.');
 }
 
 // ── 6. startAnalysis ─────────────────────────────────────
