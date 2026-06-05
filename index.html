@@ -6,6 +6,8 @@
 <title>RegIntel — Regulatory Intelligence Command Center</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080B10'/><text x='6' y='22' font-size='18' fill='%23BDFF00'>RI</text></svg>">
 
+<!-- Chart.js for real charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <!-- PDF.js for PDF file reading (client-side, zero backend) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <!-- Mammoth.js for DOCX file reading (client-side) -->
@@ -351,6 +353,57 @@ body {
 
   .hidden { display: none !important; }
 
+
+  /* ── RISK DONUT CHART CARD ── */
+  .risk-donut-wrap { display: flex; align-items: center; gap: 20px; padding: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; }
+  .risk-donut-legend { flex: 1; display: flex; flex-direction: column; gap: 11px; }
+  .risk-legend-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .risk-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .risk-legend-label { font-size: 10px; font-weight: 700; flex: 1; font-family: "JetBrains Mono", monospace; letter-spacing: 0.04em; }
+  .risk-legend-val { font-size: 12px; font-weight: 700; font-family: "JetBrains Mono", monospace; }
+  .risk-legend-bar { height: 4px; border-radius: 4px; background: var(--border); overflow: hidden; margin-top: 3px; }
+  .risk-legend-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  /* ── AI HEALTH PREDICTOR ── */
+  .health-predictor-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .gauge-wrap { text-align: center; margin-bottom: 14px; }
+  .gauge-score { font-size: 28px; font-weight: 800; font-family: "JetBrains Mono", monospace; color: #FFD700; line-height: 1; }
+  .gauge-score-sub { font-size: 10px; color: var(--text-tertiary); font-family: "JetBrains Mono", monospace; letter-spacing: 0.08em; margin-top: 3px; }
+  .gauge-badge { display: inline-block; margin-top: 6px; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; background: rgba(255,215,0,0.12); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); font-family: "JetBrains Mono", monospace; letter-spacing: 0.05em; }
+  .predictor-row { margin-bottom: 10px; }
+  .predictor-row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .predictor-row-label { font-size: 11px; font-weight: 600; color: var(--text-primary); }
+  .predictor-row-val { font-size: 11px; font-weight: 700; font-family: "JetBrains Mono", monospace; }
+  .predictor-bar-bg { height: 5px; background: rgba(255,255,255,0.06); border-radius: 9999px; overflow: hidden; }
+  .predictor-bar-fill { height: 100%; border-radius: 9999px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+  /* ── GLOBAL RISK MAP ── */
+  .risk-map-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+  .risk-map-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .risk-map-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+  .risk-map-canvas-wrap { position: relative; min-height: 220px; background: #060a0f; }
+  .risk-map-canvas-wrap canvas { display: block; width: 100%; }
+  .risk-map-overlay { position: absolute; top: 10px; left: 12px; background: rgba(8,11,16,0.85); border: 1px solid rgba(255,255,255,0.10); border-radius: 8px; padding: 6px 10px; }
+  .risk-map-overlay-val { font-family: "JetBrains Mono", monospace; font-size: 16px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .risk-map-overlay-label { font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--text-tertiary); margin-top: 1px; letter-spacing: 0.06em; }
+  .risk-map-alert { position: absolute; bottom: 10px; left: 12px; font-size: 10px; font-weight: 700; font-family: "JetBrains Mono", monospace; padding: 3px 9px; border-radius: 20px; background: rgba(255,59,48,0.18); color: var(--danger); border: 1px solid rgba(255,59,48,0.30); letter-spacing: 0.05em; }
+  .risk-map-stats { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--border); }
+  .risk-map-stat { text-align: center; padding: 10px 8px; }
+  .risk-map-stat + .risk-map-stat { border-left: 1px solid var(--border); }
+  .risk-map-stat-val { font-family: "JetBrains Mono", monospace; font-size: 14px; font-weight: 700; line-height: 1; }
+  .risk-map-stat-label { font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--text-tertiary); margin-top: 3px; letter-spacing: 0.06em; }
+  /* ── SAMPLE DOCS ── */
+  .sample-doc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px; }
+  .sample-doc-icon { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+  .sample-doc-body { flex: 1; min-width: 0; }
+  .sample-doc-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .sample-doc-meta { font-size: 10px; color: var(--text-tertiary); margin-bottom: 8px; font-family: "JetBrains Mono", monospace; letter-spacing: 0.03em; }
+  .sample-doc-preview { font-size: 11px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 10px; }
+  .sample-doc-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .sample-doc-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; font-family: "JetBrains Mono", monospace; }
+  .sample-doc-actions { display: flex; gap: 8px; }
+  .sample-doc-btn { font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--text-secondary); cursor: pointer; transition: all 0.12s; font-family: "JetBrains Mono", monospace; letter-spacing: 0.04em; }
+  .sample-doc-btn:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+  .sample-doc-btn.primary-btn { background: var(--primary); color: #080B10; border-color: var(--primary); font-weight: 700; }
+  .sample-doc-btn.primary-btn:hover { background: var(--primary-dark); }
   /* ── MOBILE ── */
   @media (max-width: 640px) {
     .container { padding: 16px; }
@@ -601,6 +654,74 @@ body {
       </div>
     </div>
 
+    <!-- SAMPLE DOCUMENTS -->
+    <div style="margin-bottom:14px;">
+      <div class="section-label" style="margin-bottom:10px;">
+        📄 Sample regulatory documents
+        <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-tertiary)"> — click to load &amp; analyse</span>
+      </div>
+      <div id="sample-docs-list">
+
+        <!-- Sample Doc 1: RBI KYC -->
+        <div class="sample-doc-card">
+          <div class="sample-doc-icon" style="background:rgba(255,87,34,0.12);border:1px solid rgba(255,87,34,0.25);">🏦</div>
+          <div class="sample-doc-body">
+            <div class="sample-doc-title">RBI KYC Master Direction 2016 (Updated 2024)</div>
+            <div class="sample-doc-meta">RBI/DBR/2015-16/18 · Master Direction · Effective: Jan 2024 · 89 Sections</div>
+            <div class="sample-doc-preview">Master Direction on Know Your Customer (KYC). Covers CDD for individual and non-individual customers, beneficial ownership identification (Section 13), re-KYC timelines for high/medium/low risk (Sec. 38), Video-based Customer Identification Process (V-CIP), and penalties up to ₹1 crore per violation under Section 47 of the Banking Regulation Act.</div>
+            <div class="sample-doc-tags">
+              <span class="sample-doc-tag" style="background:rgba(255,87,34,0.12);color:#ff5722;border:1px solid rgba(255,87,34,0.25);">RBI</span>
+              <span class="sample-doc-tag" style="background:rgba(189,255,0,0.08);color:#BDFF00;border:1px solid rgba(189,255,0,0.2);">KYC / AML</span>
+              <span class="sample-doc-tag" style="background:rgba(255,59,48,0.10);color:#FF3B30;border:1px solid rgba(255,59,48,0.2);">HIGH PENALTY</span>
+            </div>
+            <div class="sample-doc-actions">
+              <button class="sample-doc-btn primary-btn" onclick="loadSampleDoc('rbi_kyc')">Load &amp; Analyse</button>
+              <button class="sample-doc-btn" onclick="downloadSampleDoc('rbi_kyc')">⬇ Download TXT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sample Doc 2: SEBI LODR -->
+        <div class="sample-doc-card">
+          <div class="sample-doc-icon" style="background:rgba(46,125,50,0.12);border:1px solid rgba(46,125,50,0.25);">📊</div>
+          <div class="sample-doc-body">
+            <div class="sample-doc-title">SEBI LODR Regulations 2015 (Amended 2024)</div>
+            <div class="sample-doc-meta">SEBI/LAD-NRO/GN/2015/013 · Regulation · Effective: Dec 2015, Amended Q1 2024</div>
+            <div class="sample-doc-preview">SEBI (Listing Obligations and Disclosure Requirements) Regulations covering board composition (Reg. 17), audit committee (Reg. 18), related party transactions (Reg. 23), continuous disclosure (Reg. 30), and financial reporting timelines. Penalty for non-compliance: ₹1 lakh to ₹25 crore per violation under Section 15HB of SEBI Act. Quarterly filings and board certification mandatory.</div>
+            <div class="sample-doc-tags">
+              <span class="sample-doc-tag" style="background:rgba(46,125,50,0.12);color:#4caf50;border:1px solid rgba(46,125,50,0.25);">SEBI</span>
+              <span class="sample-doc-tag" style="background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.2);">LODR</span>
+              <span class="sample-doc-tag" style="background:rgba(255,215,0,0.10);color:#FFD700;border:1px solid rgba(255,215,0,0.2);">ELEVATED</span>
+            </div>
+            <div class="sample-doc-actions">
+              <button class="sample-doc-btn primary-btn" onclick="loadSampleDoc('sebi_lodr')">Load &amp; Analyse</button>
+              <button class="sample-doc-btn" onclick="downloadSampleDoc('sebi_lodr')">⬇ Download TXT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sample Doc 3: DPDP Act -->
+        <div class="sample-doc-card">
+          <div class="sample-doc-icon" style="background:rgba(123,31,162,0.12);border:1px solid rgba(123,31,162,0.25);">🔒</div>
+          <div class="sample-doc-body">
+            <div class="sample-doc-title">Digital Personal Data Protection Act 2023</div>
+            <div class="sample-doc-meta">Act No. 22 of 2023 · Ministry of Electronics &amp; IT · Notified: Aug 11, 2023</div>
+            <div class="sample-doc-preview">India's landmark data protection law covering data principal rights (Section 11-13), data fiduciary obligations including consent notice (Section 5-6), data localization requirements, Data Protection Board adjudication, and significant financial penalties: up to ₹250 crore for data breaches, ₹200 crore for failure to notify, ₹50 crore per violation for non-compliance with security standards.</div>
+            <div class="sample-doc-tags">
+              <span class="sample-doc-tag" style="background:rgba(123,31,162,0.12);color:#ce93d8;border:1px solid rgba(123,31,162,0.25);">DPDP</span>
+              <span class="sample-doc-tag" style="background:rgba(255,59,48,0.10);color:#FF3B30;border:1px solid rgba(255,59,48,0.2);">₹250 CR PENALTY</span>
+              <span class="sample-doc-tag" style="background:rgba(255,59,48,0.10);color:#FF3B30;border:1px solid rgba(255,59,48,0.2);">CRITICAL</span>
+            </div>
+            <div class="sample-doc-actions">
+              <button class="sample-doc-btn primary-btn" onclick="loadSampleDoc('dpdp_act')">Load &amp; Analyse</button>
+              <button class="sample-doc-btn" onclick="downloadSampleDoc('dpdp_act')">⬇ Download TXT</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- GEMINI API KEY -->
     <div class="api-key-section">
       <div class="section-label">
@@ -729,6 +850,111 @@ body {
       <div class="panel">
         <div class="block-title">Regulatory timeline</div>
         <div id="tl-list"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         RISK DONUT CHART — Chart.js Real Doughnut
+    ═══════════════════════════════════════════════════════ -->
+    <div class="panel" id="risk-donut-panel" style="margin-bottom:16px;display:none">
+      <div class="block-title" style="margin-bottom:14px">
+        Compliance Risk Distribution
+        <span style="font-size:11px;font-weight:400;color:var(--text-tertiary)">Live from analysis</span>
+      </div>
+      <div class="risk-donut-wrap">
+        <canvas id="riskDonut" width="130" height="130" style="flex-shrink:0;"></canvas>
+        <div class="risk-donut-legend">
+          <div>
+            <div class="risk-legend-row">
+              <div class="risk-legend-dot" style="background:#FF3B30"></div>
+              <span class="risk-legend-label" style="color:#FF3B30">HIGH RISK</span>
+              <span class="risk-legend-val" id="donut-high-pct" style="color:#FF3B30">—</span>
+            </div>
+            <div class="risk-legend-bar"><div class="risk-legend-bar-fill" id="donut-high-bar" style="background:#FF3B30;width:0%"></div></div>
+          </div>
+          <div>
+            <div class="risk-legend-row">
+              <div class="risk-legend-dot" style="background:#FFD700"></div>
+              <span class="risk-legend-label" style="color:#FFD700">MEDIUM RISK</span>
+              <span class="risk-legend-val" id="donut-med-pct" style="color:#FFD700">—</span>
+            </div>
+            <div class="risk-legend-bar"><div class="risk-legend-bar-fill" id="donut-med-bar" style="background:#FFD700;width:0%"></div></div>
+          </div>
+          <div>
+            <div class="risk-legend-row">
+              <div class="risk-legend-dot" style="background:#BDFF00"></div>
+              <span class="risk-legend-label" style="color:#BDFF00">LOW RISK</span>
+              <span class="risk-legend-val" id="donut-low-pct" style="color:#BDFF00">—</span>
+            </div>
+            <div class="risk-legend-bar"><div class="risk-legend-bar-fill" id="donut-low-bar" style="background:#BDFF00;width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         AI HEALTH PREDICTOR — Half-Gauge + Per-Framework Bars
+    ═══════════════════════════════════════════════════════ -->
+    <div class="panel" id="health-predictor-panel" style="margin-bottom:16px;display:none">
+      <div class="block-title" style="margin-bottom:14px">
+        AI Compliance Health Predictor
+        <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:rgba(189,255,0,0.10);color:var(--primary);font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;margin-left:8px">BETA</span>
+      </div>
+      <div class="health-predictor-wrap">
+        <div class="gauge-wrap">
+          <canvas id="gaugeChart" width="200" height="110" style="display:inline-block;max-width:200px;"></canvas>
+          <div style="margin-top:-8px;">
+            <div class="gauge-score" id="gauge-score-val">64.2</div>
+            <div class="gauge-score-sub">COMPLIANCE SCORE / 100</div>
+            <div class="gauge-badge" id="gauge-badge">MODERATE RISK</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:14px;display:flex;flex-direction:column;gap:10px;">
+          <div class="predictor-row">
+            <div class="predictor-row-head"><span class="predictor-row-label">KYC / AML Coverage</span><span class="predictor-row-val" id="ph-kyc" style="color:#FF3B30">48%</span></div>
+            <div class="predictor-bar-bg"><div class="predictor-bar-fill" id="phb-kyc" style="background:#FF3B30;width:0%"></div></div>
+          </div>
+          <div class="predictor-row">
+            <div class="predictor-row-head"><span class="predictor-row-label">Data Protection (DPDP)</span><span class="predictor-row-val" id="ph-dpdp" style="color:#FFD700">61%</span></div>
+            <div class="predictor-bar-bg"><div class="predictor-bar-fill" id="phb-dpdp" style="background:#FFD700;width:0%"></div></div>
+          </div>
+          <div class="predictor-row">
+            <div class="predictor-row-head"><span class="predictor-row-label">SEBI Reporting</span><span class="predictor-row-val" id="ph-sebi" style="color:#BDFF00">82%</span></div>
+            <div class="predictor-bar-bg"><div class="predictor-bar-fill" id="phb-sebi" style="background:#BDFF00;width:0%"></div></div>
+          </div>
+          <div class="predictor-row">
+            <div class="predictor-row-head"><span class="predictor-row-label">Capital Adequacy (RBI)</span><span class="predictor-row-val" id="ph-capital" style="color:#BDFF00">91%</span></div>
+            <div class="predictor-bar-bg"><div class="predictor-bar-fill" id="phb-capital" style="background:#BDFF00;width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GLOBAL RISK MAP — Animated Canvas
+    ═══════════════════════════════════════════════════════ -->
+    <div class="risk-map-wrap" id="global-risk-map-panel" style="display:none">
+      <div class="risk-map-header">
+        <div class="risk-map-title">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#BDFF00" stroke-width="1.2"/><path d="M1.5 8h13M8 1.5c-2 2-3 4-3 6.5s1 4.5 3 6.5M8 1.5c2 2 3 4 3 6.5s-1 4.5-3 6.5" stroke="#BDFF00" stroke-width="1" stroke-linecap="round"/></svg>
+          Global Regulatory Risk Map
+        </div>
+        <span style="background:rgba(189,255,0,0.12);color:#BDFF00;border:1px solid rgba(189,255,0,0.3);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;">
+          <span style="width:6px;height:6px;border-radius:50%;background:#BDFF00;display:inline-block;animation:blink 1.2s ease-in-out infinite;"></span>LIVE
+        </span>
+      </div>
+      <div class="risk-map-canvas-wrap">
+        <canvas id="mapCanvas"></canvas>
+        <div class="risk-map-overlay">
+          <div class="risk-map-overlay-val">1,340</div>
+          <div class="risk-map-overlay-label">LIVE ALERTS</div>
+        </div>
+        <div class="risk-map-alert">⚠ CRITICAL: SOUTH ASIA</div>
+      </div>
+      <div class="risk-map-stats">
+        <div class="risk-map-stat"><div class="risk-map-stat-val" style="color:#FF3B30">42</div><div class="risk-map-stat-label">HIGH RISK</div></div>
+        <div class="risk-map-stat"><div class="risk-map-stat-val" style="color:#FFD700">118</div><div class="risk-map-stat-label">MEDIUM</div></div>
+        <div class="risk-map-stat"><div class="risk-map-stat-val" style="color:#BDFF00">1,180</div><div class="risk-map-stat-label">MONITORED</div></div>
       </div>
     </div>
 
@@ -2773,6 +2999,681 @@ function resetComparison() {
   comparisonResult = null;
 }
 
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  REGINTEL — NEW FEATURES: Charts, Risk Map, Sample Docs
+// ═══════════════════════════════════════════════════════════
+
+// ── BLINK ANIMATION (for risk map live dot) ──
+const blinkStyle = document.createElement('style');
+blinkStyle.textContent = '@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}';
+document.head.appendChild(blinkStyle);
+
+// ── RISK DONUT CHART ─────────────────────────────────────────
+let riskDonutChart = null;
+
+function initRiskDonut(high, medium, low) {
+  const total = high + medium + low || 1;
+  const highPct  = Math.round(high / total * 100);
+  const medPct   = Math.round(medium / total * 100);
+  const lowPct   = 100 - highPct - medPct;
+
+  // Update legend text + bars
+  const setPct = (id, bar, pct) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = pct + '%';
+    const bel = document.getElementById(bar);
+    if (bel) setTimeout(() => bel.style.width = pct + '%', 300);
+  };
+  setPct('donut-high-pct', 'donut-high-bar', highPct);
+  setPct('donut-med-pct',  'donut-med-bar',  medPct);
+  setPct('donut-low-pct',  'donut-low-bar',  lowPct);
+
+  const ctx = document.getElementById('riskDonut');
+  if (!ctx) return;
+
+  if (riskDonutChart) { riskDonutChart.destroy(); }
+
+  riskDonutChart = new Chart(ctx.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['High Risk', 'Medium Risk', 'Low Risk'],
+      datasets: [{
+        data: [highPct, medPct, lowPct],
+        backgroundColor: ['rgba(255,59,48,0.85)', 'rgba(255,215,0,0.85)', 'rgba(189,255,0,0.85)'],
+        borderColor: ['rgba(255,59,48,0.3)', 'rgba(255,215,0,0.3)', 'rgba(189,255,0,0.3)'],
+        borderWidth: 1,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      cutout: '72%',
+      responsive: false,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(8,11,16,0.95)',
+          titleFont: { family: 'JetBrains Mono', size: 10 },
+          bodyFont:  { family: 'JetBrains Mono', size: 11 },
+          padding: 10,
+          borderColor: 'rgba(255,255,255,0.10)',
+          borderWidth: 1
+        }
+      },
+      animation: { animateRotate: true, duration: 900 }
+    }
+  });
+
+  document.getElementById('risk-donut-panel').style.display = '';
+}
+
+// ── AI HEALTH PREDICTOR GAUGE ────────────────────────────────
+let gaugeChartInstance = null;
+
+function initHealthPredictor(obligations) {
+  // Derive per-framework scores from obligations
+  const all = obligations || [];
+  const score = (tags, label) => {
+    const relevant = all.filter(o => o.tags && o.tags.some(t => tags.includes(t)));
+    if (!relevant.length) return 70; // default
+    const doneKeys = Object.entries(obStatuses).filter(([,v]) => v === 'done').map(([k]) => k);
+    const done = relevant.filter((_, i) => doneKeys.includes('ob_' + i)).length;
+    const highCount = relevant.filter(o => o.priority === 'high').length;
+    const base = 100 - (highCount / relevant.length * 60);
+    return Math.max(20, Math.min(95, Math.round(base)));
+  };
+
+  const kycScore     = score(['kyc', 'pmla', 'rbi'], 'kyc');
+  const dpdpScore    = score(['dpdp', 'digital'], 'dpdp');
+  const sebiScore    = score(['sebi', 'reporting', 'conduct'], 'sebi');
+  const capitalScore = score(['capital', 'rbi'], 'capital');
+
+  const overall = Math.round((kycScore + dpdpScore + sebiScore + capitalScore) / 4 * 10) / 10;
+
+  // Colour helper
+  const col = v => v >= 75 ? '#BDFF00' : v >= 50 ? '#FFD700' : '#FF3B30';
+
+  // Update text values
+  const setBar = (valId, barId, pct) => {
+    const v = document.getElementById(valId);
+    const b = document.getElementById(barId);
+    if (v) { v.textContent = pct + '%'; v.style.color = col(pct); }
+    if (b) { b.style.background = col(pct); setTimeout(() => b.style.width = pct + '%', 400); }
+  };
+  setBar('ph-kyc', 'phb-kyc', kycScore);
+  setBar('ph-dpdp', 'phb-dpdp', dpdpScore);
+  setBar('ph-sebi', 'phb-sebi', sebiScore);
+  setBar('ph-capital', 'phb-capital', capitalScore);
+
+  const scoreEl = document.getElementById('gauge-score-val');
+  if (scoreEl) { scoreEl.textContent = overall; scoreEl.style.color = col(overall); }
+
+  const badgeEl = document.getElementById('gauge-badge');
+  if (badgeEl) {
+    const label = overall >= 75 ? 'LOW RISK' : overall >= 50 ? 'MODERATE RISK' : 'HIGH RISK';
+    const bg = overall >= 75 ? 'rgba(189,255,0,0.12)' : overall >= 50 ? 'rgba(255,215,0,0.12)' : 'rgba(255,59,48,0.12)';
+    const bc = overall >= 75 ? 'rgba(189,255,0,0.3)' : overall >= 50 ? 'rgba(255,215,0,0.3)' : 'rgba(255,59,48,0.3)';
+    badgeEl.textContent = label;
+    badgeEl.style.background = bg; badgeEl.style.color = col(overall); badgeEl.style.borderColor = bc;
+  }
+
+  // Draw half-gauge
+  const ctx = document.getElementById('gaugeChart');
+  if (!ctx) return;
+  if (gaugeChartInstance) { gaugeChartInstance.destroy(); }
+
+  gaugeChartInstance = new Chart(ctx.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [overall, 100 - overall],
+        backgroundColor: [col(overall) + 'dd', 'rgba(255,255,255,0.05)'],
+        borderColor: [col(overall) + '66', 'transparent'],
+        borderWidth: 1,
+        circumference: 180,
+        rotation: -90
+      }]
+    },
+    options: {
+      cutout: '76%',
+      responsive: false,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { duration: 1200 }
+    }
+  });
+
+  document.getElementById('health-predictor-panel').style.display = '';
+}
+
+// ── GLOBAL RISK MAP ──────────────────────────────────────────
+let mapAnimFrame = null;
+
+function initGlobalRiskMap() {
+  const panel = document.getElementById('global-risk-map-panel');
+  if (!panel) return;
+  panel.style.display = '';
+
+  const canvas = document.getElementById('mapCanvas');
+  const wrap = canvas.parentElement;
+
+  function resize() {
+    canvas.width  = wrap.clientWidth;
+    canvas.height = 220;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const ctx = canvas.getContext('2d');
+
+  // Hotspot data: [x%, y%, intensity, label]
+  const hotspots = [
+    [.52,.42,1.0,'NEW DELHI'], [.54,.52,0.8,'MUMBAI'],  [.80,.38,0.7,'BEIJING'],
+    [.47,.32,0.6,'LONDON'],   [.44,.36,0.5,'FRANKFURT'],[.25,.38,0.7,'NEW YORK'],
+    [.55,.58,0.9,'SINGAPORE'],[.75,.65,0.5,'SYDNEY'],   [.60,.60,0.6,'JAKARTA'],
+    [.20,.58,0.4,'SÃO PAULO'],[.53,.28,0.5,'MOSCOW'],   [.63,.40,0.7,'DUBAI'],
+  ];
+
+  // Connection pairs
+  const conns = [[0,5],[0,11],[1,6],[2,3],[4,5],[11,6]];
+
+  if (mapAnimFrame) cancelAnimationFrame(mapAnimFrame);
+
+  let frame = 0;
+  function draw() {
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    // Background gradient
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#040810'); bg.addColorStop(1, '#060a10');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(189,255,0,0.04)'; ctx.lineWidth = .5;
+    for (let x = 0; x < W; x += W/18) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let y = 0; y < H; y += H/8)  { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // Connection arcs with moving data packets
+    conns.forEach(([a,b]) => {
+      const [ax,ay] = hotspots[a], [bx,by] = hotspots[b];
+      const x1=ax*W, y1=ay*H, x2=bx*W, y2=by*H;
+      const mx=(x1+x2)/2, my=Math.min(y1,y2)-(H*.12);
+      ctx.strokeStyle = 'rgba(189,255,0,0.07)'; ctx.lineWidth = .7;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.quadraticCurveTo(mx,my,x2,y2); ctx.stroke();
+
+      // Moving packet
+      const t = ((frame * .006) + (a * .15)) % 1;
+      const fx = Math.pow(1-t,2)*x1 + 2*(1-t)*t*mx + t*t*x2;
+      const fy = Math.pow(1-t,2)*y1 + 2*(1-t)*t*my + t*t*y2;
+      ctx.fillStyle = 'rgba(189,255,0,0.75)';
+      ctx.beginPath(); ctx.arc(fx,fy,1.8,0,Math.PI*2); ctx.fill();
+    });
+
+    // Hotspots
+    hotspots.forEach(([px,py,intensity,label]) => {
+      const x=px*W, y=py*H;
+      const pulse = (Math.sin(frame*.05 + px*10)+1)/2;
+      const r = 4 + intensity*8 + pulse*4;
+      const color = intensity>.75 ? '255,59,48' : intensity>.55 ? '255,215,0' : '189,255,0';
+
+      // Glow
+      const gr = ctx.createRadialGradient(x,y,0,x,y,r*3);
+      gr.addColorStop(0, `rgba(${color},${.25*intensity})`);
+      gr.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(x,y,r*3,0,Math.PI*2); ctx.fill();
+
+      // Core
+      ctx.fillStyle = `rgba(${color},${.7+.3*pulse})`;
+      ctx.beginPath(); ctx.arc(x,y,3+intensity*2,0,Math.PI*2); ctx.fill();
+
+      // Pulse ring
+      ctx.strokeStyle = `rgba(${color},${.4*(1-pulse)})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(x,y,r+pulse*8,0,Math.PI*2); ctx.stroke();
+
+      // Label (high-intensity only)
+      if (intensity > .75 && W > 280) {
+        ctx.fillStyle = `rgba(${color},0.9)`;
+        ctx.font = `bold 7px 'JetBrains Mono',monospace`;
+        ctx.fillText(label, x+8, y-4);
+      }
+    });
+
+    frame++;
+    mapAnimFrame = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── Hook into showResults to trigger charts ───────────────────
+// Wrap the existing showResults function
+const _origShowResults = typeof showResults === 'function' ? showResults : null;
+if (_origShowResults) {
+  window.showResults = function(d) {
+    _origShowResults(d);
+    // Compute risk counts from obligations
+    const obs = d.obligations || [];
+    const high   = obs.filter(o => o.priority === 'high').length;
+    const medium = obs.filter(o => o.priority === 'medium').length;
+    const low    = obs.filter(o => o.priority === 'low').length;
+    setTimeout(() => {
+      initRiskDonut(high, medium, low);
+      initHealthPredictor(obs);
+      initGlobalRiskMap();
+    }, 200);
+  };
+}
+
+// ── SAMPLE DOCUMENT DATA ──────────────────────────────────────
+const SAMPLE_DOCS = {
+  rbi_kyc: {
+    name: 'RBI_KYC_MasterDirection_2024.txt',
+    title: 'RBI KYC Master Direction 2016 (Updated 2024)',
+    text: `RESERVE BANK OF INDIA
+MASTER DIRECTION — KNOW YOUR CUSTOMER (KYC) DIRECTION, 2016
+(Updated as on January 4, 2024)
+RBI/DBR/2015-16/18 · DBR.AML.BC.No.81/14.01.001/2015-16
+
+PART I — PRELIMINARY
+
+Section 1: Short Title and Commencement
+(1) These Directions shall be called the Reserve Bank of India (Know Your Customer (KYC)) Directions, 2016.
+(2) These Directions shall come into force with immediate effect from February 25, 2016, and as amended from time to time.
+
+Section 2: Applicability
+These Directions apply to all Regulated Entities (REs) as defined under Section 3, including:
+(a) All Scheduled Commercial Banks (excluding RRBs);
+(b) All Local Area Banks;
+(c) All Small Finance Banks;
+(d) All Payment Banks;
+(e) All Regional Rural Banks;
+(f) All Urban Co-operative Banks;
+(g) All State Co-operative Banks and Central Co-operative Banks;
+(h) All Non-Banking Financial Companies (NBFCs) including Housing Finance Companies;
+(i) All India Financial Institutions;
+(j) All Payment System Providers and Payment System Participants;
+(k) All Prepaid Payment Instrument Issuers.
+
+Section 3: Definitions
+(i) "Beneficial Owner" means the natural person who ultimately owns or controls a customer or on whose behalf a transaction is being conducted, as per threshold:
+    - For companies: natural person holding ≥25% shares/voting rights;
+    - For partnerships: natural person holding ≥15% capital/profit share;
+    - For trusts: settlor, trustee, beneficiary with ≥15% interest.
+
+(ii) "Customer Due Diligence (CDD)" means identifying and verifying the identity of customers using reliable, independent source documents.
+
+(iii) "High Risk Customer" includes:
+    - Politically Exposed Persons (PEPs) and their family members;
+    - Non-resident customers;
+    - Customers with transactions inconsistent with their profile;
+    - Customers from FATF non-compliant jurisdictions.
+
+PART II — CUSTOMER ACCEPTANCE POLICY
+
+Section 8: Risk Categorisation
+(1) REs shall categorise customers into three risk categories: Low, Medium, and High.
+(2) Risk categorisation shall be based on:
+    (a) nature of business activity;
+    (b) location of customer;
+    (c) mode of transactions;
+    (d) nature of products / services.
+(3) Risk categorisation must be reviewed periodically:
+    - High Risk: re-KYC every 2 years;
+    - Medium Risk: re-KYC every 8 years;
+    - Low Risk: re-KYC every 10 years.
+
+PART III — CUSTOMER IDENTIFICATION PROCEDURE
+
+Section 13: Beneficial Ownership Identification
+(1) Regulated Entities shall identify beneficial owners for all non-individual customers.
+(2) Identity of beneficial owners shall be verified using reliable and independent documents.
+(3) For companies: obtain and verify names of natural persons holding ≥25% shares.
+(4) If no natural person holds ≥25%, the senior managing official shall be treated as the Beneficial Owner.
+(5) REs shall obtain a declaration from the authorised signatory that no changes have occurred in BO identity since last verification.
+
+Section 16: CDD for High-Risk Customers
+(1) For high-risk customers, REs shall conduct Enhanced Due Diligence (EDD) including:
+    (a) Obtaining additional information on source of funds;
+    (b) Senior management approval for establishing business relationship;
+    (c) Enhanced monitoring of business relationships.
+(2) High-risk customers shall be re-verified every 2 years without exception.
+(3) Failure to conduct EDD shall attract action under Section 47 of the Banking Regulation Act 1949.
+
+Section 17: Video-based Customer Identification Process (V-CIP)
+(1) REs may undertake V-CIP for customer onboarding subject to conditions:
+    (a) Live interaction with customer through a seamless, real-time video;
+    (b) Geo-tagging of customer location at the time of V-CIP;
+    (c) Capture of a photograph and Aadhaar/PAN during the process;
+    (d) Recording of V-CIP session to be maintained for 5 years.
+(2) V-CIP shall not be used for onboarding high-risk customers without in-person verification at a later stage.
+
+PART IV — ONGOING DUE DILIGENCE
+
+Section 38: Periodic Updation of KYC
+(1) REs shall periodically update KYC data as per the following schedule:
+    (a) High Risk customers — every 2 years;
+    (b) Medium Risk customers — every 8 years;
+    (c) Low Risk customers — every 10 years.
+(2) For updating KYC, REs shall re-verify identity documents and re-assess risk category.
+(3) If a customer fails to provide updated KYC, the RE may restrict account operations but shall not close the account solely for this reason.
+(4) Deadline for completion of re-KYC for existing high-risk customers: December 31, 2024.
+
+Section 40: Transaction Monitoring
+(1) REs shall put in place an effective transaction monitoring system, either manual or system-based.
+(2) Unusual or suspicious transactions shall be reported to the Financial Intelligence Unit — India (FIU-IND) within prescribed timelines.
+(3) Cash transactions above ₹10 lakh must be reported as Cash Transaction Reports (CTR) within 15 days of the end of the month.
+(4) Suspicious Transaction Reports (STR) to be filed with FIU-IND within 7 days of determination.
+
+PART VI — RECORD MANAGEMENT
+
+Section 52: Preservation of Records
+(1) All KYC documents and transaction records shall be preserved for a minimum of 5 years after the termination of the business relationship.
+(2) Records shall be maintained in a form that permits rapid reconstruction of individual transactions.
+(3) Records shall be made available to enforcement authorities immediately upon demand.
+
+PART VIII — PENALTIES AND ENFORCEMENT
+
+Section 70: Penalty Provisions
+(1) Violations of these Directions shall attract penalties under:
+    (a) Section 47 of the Banking Regulation Act, 1949 — up to ₹1 crore per violation;
+    (b) Section 46 of the Banking Regulation Act — for willful violation;
+    (c) PMLA 2002 — for AML non-compliance, up to ₹1 lakh per day of default.
+(2) For systemic deficiencies identified during inspection, the RBI may impose:
+    (a) Monetary penalty up to ₹2 crore per violation;
+    (b) Supervisory action including business restrictions;
+    (c) Cancellation of banking licence in extreme cases.
+(3) RBI shall issue a show-cause notice before imposing any penalty, providing 30 days to respond.
+
+Section 72: Compliance Calendar
+Key compliance deadlines under this Direction:
+- December 31, 2024: Complete re-KYC for all high-risk customers onboarded before 2022;
+- March 31, 2025: Implement V-CIP infrastructure if offering digital onboarding;
+- June 30, 2025: Submit board-approved KYC policy incorporating 2024 amendments;
+- Ongoing: Monthly CTR filing by 15th of following month; STR within 7 days.`
+  },
+
+  sebi_lodr: {
+    name: 'SEBI_LODR_Regulations_2024.txt',
+    title: 'SEBI LODR Regulations 2015 (Amended 2024)',
+    text: `SECURITIES AND EXCHANGE BOARD OF INDIA
+SECURITIES AND EXCHANGE BOARD OF INDIA (LISTING OBLIGATIONS AND DISCLOSURE REQUIREMENTS) REGULATIONS, 2015
+(Amended vide SEBI/LAD-NRO/GN/2024/173 · Effective Q1 2024)
+F. No. SEBI/LAD-NRO/GN/2015/013
+
+CHAPTER I — PRELIMINARY
+
+Regulation 1: Short Title and Commencement
+(1) These regulations shall be called the Securities and Exchange Board of India (Listing Obligations and Disclosure Requirements) Regulations, 2015.
+(2) They shall come into force on the 90th day from the date of their publication in the Official Gazette.
+
+Regulation 2: Definitions
+(f) "Compliance Report" means the report on compliance with corporate governance norms by a listed entity, certified by the compliance officer and countersigned by the Chief Executive Officer / Managing Director.
+
+(zb) "Related Party Transaction" means any transfer of resources, services, or obligations between a listed entity and a related party, regardless of whether a price is charged.
+
+CHAPTER III — CORPORATE GOVERNANCE
+
+Regulation 17: Board of Directors
+(1) The board of directors of a listed entity shall have an optimum combination of executive and non-executive directors.
+(2) Composition requirements:
+    (a) At least one-third of the board shall comprise independent directors;
+    (b) Where the chairperson is non-executive, one-third board independence required;
+    (c) Where the chairperson is executive, at least half the board shall be independent;
+    (d) Minimum one woman independent director mandatory for top 500 listed entities by market cap;
+    (e) Minimum one director who has domain expertise in relevant sector.
+(3) Board meetings: Minimum four meetings in a year with a gap of not more than 120 days between two consecutive meetings.
+(4) Non-compliance penalty: ₹20,000 per day for each day of default, subject to a maximum of ₹10 lakh per quarter.
+
+Regulation 17A: Number of Directorships
+(1) A person shall not be a director in more than seven listed entities simultaneously.
+(2) A managing director or whole-time director shall not serve as an independent director in more than three listed entities.
+
+Regulation 18: Audit Committee
+(1) Every listed entity shall constitute a qualified and independent audit committee.
+(2) Composition:
+    (a) Minimum three directors as members;
+    (b) Majority (including chairperson) shall be independent directors;
+    (c) All members shall be financially literate; at least one member shall have accounting or financial management expertise.
+(3) Powers of the Audit Committee:
+    (a) To investigate any activity within its terms of reference;
+    (b) To seek information from any employee;
+    (c) To obtain outside legal or professional advice.
+(4) The audit committee shall meet at least four times a year with a maximum gap of 120 days.
+(5) Quorum: Two independent directors including the chairperson.
+
+Regulation 21: Risk Management Committee
+(1) Top 1000 listed entities by market capitalisation shall constitute a Risk Management Committee.
+(2) Majority of members including the chairperson shall be members of the board of directors.
+(3) The Risk Management Committee shall meet at least twice in a financial year.
+(4) The committee shall have oversight of risk management policies and implementation.
+(5) Disclosure of risk management framework in annual reports mandatory from FY 2025.
+
+Regulation 23: Related Party Transactions
+(1) All related party transactions shall require approval of the audit committee.
+(2) Material related party transactions: those exceeding ₹1,000 crore or 10% of annual consolidated turnover (whichever is lower) — require shareholder approval.
+(3) No related party shall vote on a resolution pertaining to their own transaction.
+(4) Quarterly disclosure of related party transactions within 30 days of end of each quarter on the exchange website.
+(5) Penalty for violation: as per Section 15HB of the SEBI Act — ₹1 lakh to ₹25 crore.
+
+Regulation 24: Corporate Governance for Subsidiaries
+(1) At least one independent director of the holding entity shall be on the board of unlisted material subsidiaries.
+(2) Material subsidiary means one whose income/net worth exceeds 20% of consolidated income/net worth.
+(3) Board minutes of material subsidiaries to be placed at parent company board meetings.
+
+CHAPTER IV — OBLIGATIONS WITH RESPECT TO DISCLOSURE
+
+Regulation 29: Prior Intimation to Stock Exchange
+The listed entity shall give prior intimation of at least two working days (excluding date of intimation and meeting) to the stock exchanges of board meetings wherein financial results, dividend, buyback, or bonus issue will be considered.
+
+Regulation 30: Disclosure of Events and Information
+(1) Every listed entity shall make disclosures to the stock exchange within the timelines specified in Schedule III.
+(2) Material events requiring immediate disclosure (within 24 hours):
+    (a) Acquisitions, takeovers, mergers, or de-mergers;
+    (b) Changes in key managerial personnel;
+    (c) Litigation / regulatory action with penalty above ₹1 crore;
+    (d) Award of major contracts;
+    (e) Resignation of auditor.
+(3) Events requiring disclosure within 30 minutes of occurrence during market hours (or before next market open):
+    (a) Board decisions on financial results;
+    (b) Dividend declarations.
+
+Regulation 33: Financial Results
+(1) Every listed entity shall submit quarterly and annual financial results on the exchange within:
+    (a) Standalone quarterly results: 45 days from end of each quarter (except Q4);
+    (b) Standalone annual results: 60 days from end of financial year;
+    (c) Consolidated quarterly results: 60 days from end of each quarter (except Q4);
+    (d) Consolidated annual results: 60 days from end of financial year.
+(2) Financial results shall be signed by Chairperson/MD/Whole-Time Director and CEO/CFO.
+(3) Limited Review Report or Audit Report required.
+
+CHAPTER V — OBLIGATIONS WITH RESPECT TO ANNUAL REPORT
+
+Regulation 34: Annual Report
+(1) The listed entity shall submit annual report to the stock exchange within 21 days of the AGM.
+(2) Annual report shall include:
+    (a) Audited standalone and consolidated financial statements;
+    (b) Business Responsibility and Sustainability Report (BRSR) — mandatory for top 1000 entities;
+    (c) Corporate Governance Report;
+    (d) Management Discussion and Analysis.
+
+COMPLIANCE CALENDAR — KEY DEADLINES:
+- Q1 results (April–June): Submit by August 14 each year;
+- Q2 results (July–Sep): Submit by November 14;
+- Q3 results (Oct–Dec): Submit by February 14;
+- Q4 / Full Year results: Submit within 60 days (by May 30);
+- Annual Report: Within 21 days of AGM (typically by October);
+- Compliance Certificate on Corporate Governance: Within 30 days of each quarter end.
+
+PENALTIES UNDER SEBI ACT:
+- Section 15HB: Failure to comply with LODR — ₹1 lakh to ₹25 crore;
+- Daily penalty for continuing default: ₹1 lakh per day;
+- Suspension of trading: for repeated violations or where penalty is not paid;
+- Debarment of directors: in cases of willful non-disclosure.`
+  },
+
+  dpdp_act: {
+    name: 'DPDP_Act_2023_India.txt',
+    title: 'Digital Personal Data Protection Act 2023',
+    text: `THE DIGITAL PERSONAL DATA PROTECTION ACT, 2023
+Act No. 22 of 2023
+Ministry of Electronics and Information Technology, Government of India
+Notified in the Official Gazette: August 11, 2023
+[Note: Enforcement provisions pending notification of Rules — expected 2024-25]
+
+CHAPTER I — PRELIMINARY
+
+Section 1: Short Title, Extent and Commencement
+(1) This Act may be called the Digital Personal Data Protection Act, 2023.
+(2) It extends to the whole of India and also applies to processing of digital personal data outside India if such processing is in connection with any activity related to offering of goods or services to Data Principals within India.
+(3) It shall come into force on such date as the Central Government may, by notification in the Official Gazette, appoint.
+
+Section 2: Definitions
+(i) "Consent Manager" means a person registered with the Board, who acts as a single point of contact to enable a Data Principal to give, manage, review and withdraw consent through an accessible, transparent and interoperable platform;
+(j) "Data Breach" means any unauthorised processing of personal data or accidental disclosure, acquisition, sharing, use, alteration, destruction or loss of access to personal data, that compromises the confidentiality, integrity or availability of personal data;
+(k) "Data Fiduciary" means any person who alone or in conjunction with other persons determines the purpose and means of processing of personal data;
+(l) "Data Principal" means the individual to whom the personal data relates and where such individual is a child, includes the parents or lawful guardian of such child;
+(o) "Significant Data Fiduciary" means any Data Fiduciary or class of Data Fiduciaries notified as such by the Central Government under Section 10.
+
+CHAPTER II — OBLIGATIONS OF DATA FIDUCIARY
+
+Section 4: Grounds for Processing Personal Data
+(1) A person may process the personal data of a Data Principal only in accordance with the provisions of this Act, for a lawful purpose:
+    (a) For which the Data Principal has given her consent; or
+    (b) For certain legitimate uses specified in Section 7.
+
+Section 5: Notice
+(1) Every Data Fiduciary shall give to each Data Principal a notice in clear and plain language before seeking consent or, where consent has been sought, as soon as reasonably practicable, with:
+    (a) A description of personal data sought to be collected;
+    (b) The purpose for which the personal data is proposed to be processed;
+    (c) The manner in which the Data Principal may exercise her rights under Section 11 to 13;
+    (d) The manner in which the Data Principal may make a complaint to the Board.
+
+Section 6: Consent
+(1) Consent of the Data Principal shall be free, specific, informed, unconditional, and unambiguous.
+(2) Consent must be given through an affirmative action that signifies agreement to the processing of her personal data for the specified purpose.
+(3) Consent shall be limited to such personal data as is necessary for the specified purpose — DATA MINIMISATION PRINCIPLE.
+(4) The Data Principal has the right to withdraw consent at any time, and the withdrawal shall be as easy as the manner in which consent was given.
+(5) The Data Fiduciary shall cease processing within a reasonable time upon withdrawal of consent.
+(6) Consent records must be maintained and available for inspection by the Data Protection Board.
+
+Section 7: Certain Legitimate Uses
+Processing personal data without consent is permitted for:
+(a) Specified purpose by the State for providing subsidies, benefits, and services;
+(b) Legal compliance obligations;
+(c) Medical emergency or epidemic;
+(d) Employment-related purposes with lawful employment contracts.
+
+CHAPTER III — RIGHTS AND DUTIES OF DATA PRINCIPAL
+
+Section 11: Right to Access Information
+Every Data Principal shall have the right to obtain from the Data Fiduciary:
+(a) A summary of personal data being processed and the processing activities;
+(b) The identities of all other Data Fiduciaries and Data Processors with whom the personal data has been shared;
+(c) Any other information related to the personal data and its processing as may be prescribed.
+
+Section 12: Right to Correction and Erasure
+(1) The Data Principal shall have the right to:
+    (a) Correction of inaccurate or misleading personal data;
+    (b) Completion of incomplete personal data;
+    (c) Updation of personal data;
+    (d) Erasure of personal data that is no longer necessary for the purpose for which it was processed.
+(2) Data Fiduciary must act upon requests within a timeframe to be prescribed in Rules (expected: 30 days).
+
+Section 13: Right to Grievance Redressal
+(1) Every Data Principal shall have the right to have readily available means of grievance redressal in respect of any act or omission of a Data Fiduciary.
+(2) Every Data Fiduciary shall establish an effective mechanism to address grievances within a period of 30 days of receipt of a grievance.
+(3) The Data Principal may approach the Board only after the Data Fiduciary fails to redress the grievance within 30 days.
+
+CHAPTER IV — OBLIGATIONS OF SIGNIFICANT DATA FIDUCIARIES
+
+Section 10: Significant Data Fiduciary
+(1) The Central Government may notify any Data Fiduciary or class of Data Fiduciaries as Significant Data Fiduciaries based on:
+    (a) The volume and sensitivity of the personal data processed;
+    (b) Risk to the rights of Data Principals;
+    (c) Potential impact on sovereignty and integrity of India;
+    (d) Risk to electoral democracy;
+    (e) Security of the State.
+(2) Significant Data Fiduciaries shall:
+    (a) Appoint a Data Protection Officer (DPO) based in India;
+    (b) Appoint an independent Data Auditor to conduct data audits;
+    (c) Undertake periodic Data Protection Impact Assessments (DPIA);
+    (d) Carry out such other measures as may be prescribed.
+
+Section 9: Processing of Children's Data
+(1) A Data Fiduciary shall, before processing any personal data of a child, obtain verifiable parental consent.
+(2) A Data Fiduciary shall not undertake processing of personal data that is likely to cause detrimental effect on the well-being of a child.
+(3) A Data Fiduciary shall not undertake tracking or behavioural monitoring of children or targeted advertising directed at children.
+(4) Age threshold: "child" means a person who has not completed 18 years of age.
+
+CHAPTER V — DATA PROTECTION BOARD
+
+Section 18: Data Protection Board of India
+(1) The Central Government shall establish the Data Protection Board of India.
+(2) The Board shall adjudicate and impose penalties for non-compliance.
+
+Section 27: Penalties
+(1) Schedule 1 — Penalties for violations:
+
+Item 1: Failure to take reasonable security safeguards resulting in a Data Breach:
+    — Penalty: Up to ₹250 crore per instance
+
+Item 2: Failure to notify the Board and affected Data Principals of a Data Breach:
+    — Penalty: Up to ₹200 crore per instance
+
+Item 3: Non-fulfilment of obligations in relation to children:
+    — Penalty: Up to ₹200 crore per instance
+
+Item 4: Non-compliance by a Significant Data Fiduciary with additional obligations:
+    — Penalty: Up to ₹150 crore per instance
+
+Item 5: Non-compliance with any other provision of the Act or Rules:
+    — Penalty: Up to ₹50 crore per instance
+
+(2) Maximum cumulative penalties may reach ₹500 crore per entity.
+
+COMPLIANCE TIMELINES AND ACTION ITEMS:
+1. IMMEDIATE — Audit existing consent mechanisms against Section 6 requirements;
+2. IMMEDIATE — Map all personal data flows and update Privacy Policy with Section 5 notice requirements;
+3. Within 6 months of Rules notification — Establish grievance redressal mechanism per Section 13;
+4. Within 12 months of Rules notification — Appoint DPO (if classified as Significant Data Fiduciary);
+5. Within 12 months — Implement verifiable parental consent for products used by minors;
+6. Within 18 months — Complete first Data Protection Impact Assessment (DPIA);
+7. Ongoing — Maintain consent records and data processing logs for potential Board inspection;
+8. Ongoing — Report Data Breaches to Board within prescribed timeline (expected: 72 hours in Rules).`
+  }
+};
+
+function loadSampleDoc(docId) {
+  const doc = SAMPLE_DOCS[docId];
+  if (!doc) return;
+  // Load text into textarea
+  document.getElementById('doc-text').value = doc.text;
+  document.getElementById('char-count').textContent = doc.text.length + ' characters';
+  document.getElementById('upload-title').textContent = doc.name;
+  document.getElementById('upload-sub').textContent = 'Sample document loaded · ' + Math.round(doc.text.length / 1024 * 10) / 10 + ' KB';
+  // Scroll to analyse button
+  document.getElementById('analyse-btn').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Flash the analyse button
+  const btn = document.getElementById('analyse-btn');
+  btn.style.background = '#d4ff4d';
+  setTimeout(() => btn.style.background = '', 800);
+}
+
+function downloadSampleDoc(docId) {
+  const doc = SAMPLE_DOCS[docId];
+  if (!doc) return;
+  const blob = new Blob([doc.text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = doc.name;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 </script>
 
 </body></html>
