@@ -602,13 +602,13 @@ body {
     .header { padding: 10px 16px; }
 
     /* Mobile welcome banner — shown only on mobile */
-    #mobile-welcome { display: block; }
+    #mobile-welcome { display: block !important; }
 
     /* Mobile AI chat float — shown only on mobile */
-    #mobile-ai-chat { display: flex; }
+    #mobile-ai-chat { display: flex !important; }
 
     /* Mobile bottom nav — shown only on mobile */
-    #mobile-bottom-nav { display: flex; }
+    #mobile-bottom-nav { display: flex !important; }
 
     /* Reduce sample docs grid to single col */
     #sample-docs-list { grid-template-columns: 1fr !important; }
@@ -806,9 +806,9 @@ body {
     display: none;
   }
   /* ── MOBILE-ONLY ELEMENTS (hidden on desktop by default) ── */
-  #mobile-welcome { display: none; }
-  #mobile-ai-chat { display: none; }
-  #mobile-bottom-nav { display: none; }
+  #mobile-welcome { display: none !important; }
+  #mobile-ai-chat { display: none !important; }
+  #mobile-bottom-nav { display: none !important; }
 
   /* ── MOBILE ── */
   @media (max-width: 640px) {
@@ -2702,13 +2702,16 @@ async function testApiKey() {
 // ── 13. EDITIONS / HISTORY / FRAMEWORKS ─────────────────
 function switchEdition(ed) {
   currentEdition = ed;
-  var btnIndia = document.getElementById('btn-india');
-  var btnUs = document.getElementById('btn-us');
+  const btnIndia = document.getElementById('btn-india');
+  const btnUs = document.getElementById('btn-us');
   if (btnIndia) btnIndia.classList.toggle('active', ed === 'india');
   if (btnUs) btnUs.classList.toggle('active', ed === 'us');
   const cfg = EDITIONS[ed];
-  document.getElementById('logo-name').textContent = cfg.logoName;
-  document.getElementById('logo-tag').textContent = cfg.logoTag;
+  if (!cfg) return;
+  const logoName = document.getElementById('logo-name');
+  const logoTag = document.getElementById('logo-tag');
+  if (logoName) logoName.textContent = cfg.logoName;
+  if (logoTag) logoTag.textContent = cfg.logoTag;
   document.getElementById('doc-text').placeholder = cfg.placeholder;
   document.getElementById('format-chips').innerHTML = cfg.chips.map(c => `<span class="chip ${c.cls}">${c.l}</span>`).join('');
 
