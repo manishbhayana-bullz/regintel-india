@@ -798,24 +798,89 @@ body {
   .mob-risk-badge.warning { background: rgba(255,215,0,0.12); border: 1px solid rgba(255,215,0,0.28); color: #FFD700; }
   .mob-risk-badge.bullish { background: rgba(189,255,0,0.10); border: 1px solid rgba(189,255,0,0.25); color: #BDFF00; }
 
-  /* Light theme overrides for mobile elements */
+  /* ── LIGHT THEME: MOBILE OVERRIDES ── */
+
+  /* Bottom nav */
   body.light-theme #mobile-bottom-nav {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.97);
     border-top-color: #E4E8EF;
+    box-shadow: 0 -2px 16px rgba(15,22,35,0.08);
   }
   body.light-theme .mob-nav-item { color: #4A5568; }
-  body.light-theme .mob-nav-item.active { color: #7AB800; background: rgba(122,184,0,0.10); }
-  body.light-theme #mobile-ai-chat-panel {
-    background: rgba(255,255,255,0.97);
-    border-color: rgba(122,184,0,0.35);
+  body.light-theme .mob-nav-item.active {
+    color: #5a8a00;
+    background: rgba(90,138,0,0.10);
   }
-  body.light-theme .mob-chat-header { background: rgba(122,184,0,0.08); }
-  body.light-theme .mob-chat-text { background: rgba(0,0,0,0.04); color: #0F1623; }
-  body.light-theme .mob-chat-input-row { background: #F1F3F7; border-color: #E4E8EF; }
-  body.light-theme .mob-chat-input { color: #0F1623; }
-  body.light-theme .mob-chat-send { color: #7AB800; }
+  body.light-theme .mob-nav-label { color: inherit; }
+
+  /* Welcome section */
+  body.light-theme .mob-welcome-label { color: #5a8a00; }
   body.light-theme .mob-welcome-title { color: #0F1623; }
   body.light-theme .mob-welcome-sub { color: #4A5568; }
+
+  /* Risk alert badges — bullish neon → readable green */
+  body.light-theme .mob-risk-badge.bullish {
+    background: rgba(90,138,0,0.10);
+    border-color: rgba(90,138,0,0.30);
+    color: #5a8a00;
+  }
+  /* Warning badge stays readable (dark gold on light) */
+  body.light-theme .mob-risk-badge.warning {
+    background: rgba(184,134,11,0.10);
+    border-color: rgba(184,134,11,0.30);
+    color: #9a6f00;
+  }
+  /* Bearish stays red — already readable on light */
+  body.light-theme .mob-risk-badge.bearish {
+    background: rgba(217,48,37,0.08);
+    border-color: rgba(217,48,37,0.25);
+    color: #D93025;
+  }
+
+  /* AI chat float panel */
+  body.light-theme #mobile-ai-chat-panel {
+    background: rgba(255,255,255,0.98);
+    border-color: rgba(90,138,0,0.30);
+    box-shadow: 0 -4px 24px rgba(15,22,35,0.12);
+  }
+  body.light-theme .mob-chat-header {
+    background: rgba(90,138,0,0.07);
+    border-bottom-color: #E4E8EF;
+  }
+  /* "Ask RegIntel Assistant" label in header */
+  body.light-theme .mob-chat-header span[style*="color:#BDFF00"],
+  body.light-theme .mob-chat-header span { color: #5a8a00 !important; }
+  /* Pulse dot */
+  body.light-theme .mob-chat-pulse { background: #5a8a00; }
+  /* Chat bubble */
+  body.light-theme .mob-chat-text {
+    background: rgba(15,22,35,0.05);
+    color: #0F1623;
+  }
+  /* Suggestion chips */
+  body.light-theme .mob-chat-suggestion {
+    background: #F1F3F7;
+    border-color: #CDD4DE;
+    color: #4A5568;
+  }
+  body.light-theme .mob-chat-suggestion:hover,
+  body.light-theme .mob-chat-suggestion:active {
+    color: #5a8a00;
+    border-color: rgba(90,138,0,0.40);
+    background: rgba(90,138,0,0.07);
+  }
+  /* Input row */
+  body.light-theme .mob-chat-input-row {
+    background: #F1F3F7;
+    border-color: #CDD4DE;
+  }
+  body.light-theme .mob-chat-input-row:focus-within { border-color: #5a8a00; }
+  body.light-theme .mob-chat-input { color: #0F1623; }
+  body.light-theme .mob-chat-input::placeholder { color: #9aaab8; }
+  /* Send button */
+  body.light-theme .mob-chat-send { color: #5a8a00; }
+  /* Close button */
+  body.light-theme .mob-chat-header button { color: #4A5568; }
 
   /* ── PHASE 3: COMPARE DOCS ── */
 
