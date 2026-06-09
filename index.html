@@ -567,6 +567,11 @@ body {
   .sample-doc-btn:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
   .sample-doc-btn.primary-btn { background: var(--primary); color: #080B10; border-color: var(--primary); font-weight: 700; }
   .sample-doc-btn.primary-btn:hover { background: var(--primary-dark); }
+  /* ── MOBILE-ONLY ELEMENTS: hidden on desktop, shown via media query below ── */
+  #mobile-welcome { display: none; }
+  #mobile-ai-chat { display: none; }
+  #mobile-bottom-nav { display: none; }
+
   /* ── MOBILE ── */
   @media (max-width: 640px) {
     .container { padding: 16px; }
@@ -602,13 +607,13 @@ body {
     .header { padding: 10px 16px; }
 
     /* Mobile welcome banner — shown only on mobile */
-    #mobile-welcome { display: block !important; }
+    #mobile-welcome { display: block; }
 
     /* Mobile AI chat float — shown only on mobile */
-    #mobile-ai-chat { display: flex !important; }
+    #mobile-ai-chat { display: flex; }
 
     /* Mobile bottom nav — shown only on mobile */
-    #mobile-bottom-nav { display: flex !important; }
+    #mobile-bottom-nav { display: flex; }
 
     /* Reduce sample docs grid to single col */
     #sample-docs-list { grid-template-columns: 1fr !important; }
@@ -805,11 +810,6 @@ body {
   #mobile-risk-badges {
     display: none;
   }
-  /* ── MOBILE-ONLY ELEMENTS (hidden on desktop by default) ── */
-  #mobile-welcome { display: none !important; }
-  #mobile-ai-chat { display: none !important; }
-  #mobile-bottom-nav { display: none !important; }
-
   /* ── MOBILE ── */
   @media (max-width: 640px) {
     #mobile-risk-badges { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 8px; }
