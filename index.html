@@ -69,6 +69,37 @@ body {
   padding: 2px 8px;
   border-radius: 20px;
   letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* Mobile: replace text pill with dot-only badge to save header space */
+@media (max-width: 640px) {
+  .pill-live {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .pill-live::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #BDFF00;
+    animation: live-blink 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes live-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  /* Also shrink header logo text on mobile to give pill space */
+  .header { padding: 10px 14px !important; }
+  .logo-name, [style*="font-size:15px"] { font-size: 13px !important; }
+  .logo-tag, [style*="letter-spacing:0.05em"] { display: none; }
 }
 .ticker-bar {
   overflow: hidden; white-space: nowrap;
@@ -2621,8 +2652,10 @@ async function testApiKey() {
 // ── 13. EDITIONS / HISTORY / FRAMEWORKS ─────────────────
 function switchEdition(ed) {
   currentEdition = ed;
-  document.getElementById('btn-india').classList.toggle('active', ed === 'india');
-  document.getElementById('btn-us').classList.toggle('active', ed === 'us');
+  var btnIndia = document.getElementById('btn-india');
+  var btnUs = document.getElementById('btn-us');
+  if (btnIndia) btnIndia.classList.toggle('active', ed === 'india');
+  if (btnUs) btnUs.classList.toggle('active', ed === 'us');
   const cfg = EDITIONS[ed];
   document.getElementById('logo-name').textContent = cfg.logoName;
   document.getElementById('logo-tag').textContent = cfg.logoTag;
@@ -4328,19 +4361,41 @@ function downloadSampleDoc(docId) {
    MOBILE NAVIGATION — bridges to existing switchTab()
 ═══════════════════════════════════════ */
 function mobileNavSwitch(tab) {
-  // Call the existing desktop switchTab directly
-  if (typeof switchTab === 'function') switchTab(tab);
+  // Manually hide all panels (mirrors switchTab logic, failsafe)
+  var panels = ['analyse-main', 'history-panel', 'compare-panel', 'frameworks-panel', 'about-panel'];
+  panels.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
 
-  // Sync all mobile nav button active states
+  // Show the target panel
+  var targetId = tab === 'analyse' ? 'analyse-main' : tab + '-panel';
+  var target = document.getElementById(targetId);
+  if (target) {
+    target.classList.remove('hidden');
+    // Scroll to top of content
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Also call the original switchTab to keep desktop tabs in sync
+  if (typeof switchTab === 'function') {
+    try { switchTab(tab); } catch(e) {}
+  }
+
+  // Trigger special renders
+  if (tab === 'history' && typeof renderHistory === 'function') renderHistory();
+  if (tab === 'frameworks' && typeof renderFrameworks === 'function') renderFrameworks();
+
+  // Sync mobile nav active states
   ['analyse', 'history', 'compare', 'frameworks'].forEach(function(t) {
     var el = document.getElementById('mob-nav-' + t);
     if (el) el.classList.toggle('active', t === tab);
   });
-  // Always deactivate the chat button when switching content tabs
   var chatBtn = document.getElementById('mob-nav-chat');
   if (chatBtn) chatBtn.classList.remove('active');
-  // Close AI chat panel if open
-  closeMobileChat();
+
+  // Close chat if open
+  if (typeof closeMobileChat === 'function') closeMobileChat();
 }
 
 /* ═══════════════════════════════════════
