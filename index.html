@@ -882,6 +882,60 @@ body {
   /* Close button */
   body.light-theme .mob-chat-header button { color: #4A5568; }
 
+  /* ── LIGHT THEME: INLINE-STYLE NEON OVERRIDES (sample docs, badges, buttons) ── */
+  /* These target elements that use hardcoded inline style="color:#BDFF00" etc.     */
+  /* !important is required because inline styles have higher specificity            */
+
+  /* ANALYSE buttons in sample docs (neon lime bg + black text → works on dark,
+     but on light the neon lime bg is still lime which is fine; the issue is the
+     neon text variant used elsewhere) */
+  body.light-theme [style*="color:#BDFF00"],
+  body.light-theme [style*="color: #BDFF00"] {
+    color: #5a8a00 !important;
+  }
+  body.light-theme [style*="border-color:#BDFF00"],
+  body.light-theme [style*="border-color: #BDFF00"],
+  body.light-theme [style*="border:1px solid rgba(189,255,0"],
+  body.light-theme [style*="border: 1px solid rgba(189,255,0"] {
+    border-color: rgba(90,138,0,0.35) !important;
+  }
+  /* Neon lime backgrounds used for tag chips (e.g. KYC, AML tags) */
+  body.light-theme [style*="background:rgba(189,255,0"],
+  body.light-theme [style*="background: rgba(189,255,0"] {
+    background: rgba(90,138,0,0.10) !important;
+  }
+  /* pill-live "● LIVE AI" badge */
+  body.light-theme .pill-live {
+    background: rgba(90,138,0,0.10) !important;
+    color: #5a8a00 !important;
+    border-color: rgba(90,138,0,0.28) !important;
+  }
+  /* Section label with neon emoji/text in sample docs header */
+  body.light-theme [style*="color:#BDFF00"] {
+    color: #5a8a00 !important;
+  }
+  /* Analyse button (neon lime solid bg is fine visually; keep bg, fix text if needed) */
+  body.light-theme button[style*="background:rgba(189,255,0"],
+  body.light-theme button[style*="background: rgba(189,255,0"] {
+    background: rgba(90,138,0,0.12) !important;
+    color: #5a8a00 !important;
+    border-color: rgba(90,138,0,0.30) !important;
+  }
+  /* Warning gold on light — #FFD700 is invisible on white */
+  body.light-theme [style*="color:#FFD700"],
+  body.light-theme [style*="color: #FFD700"] {
+    color: #9a6f00 !important;
+  }
+  body.light-theme [style*="background:rgba(255,215,0"],
+  body.light-theme [style*="background: rgba(255,215,0"] {
+    background: rgba(184,134,11,0.10) !important;
+  }
+  body.light-theme [style*="border:1px solid rgba(255,215,0"],
+  body.light-theme [style*="border: 1px solid rgba(255,215,0"],
+  body.light-theme [style*="border-color:rgba(255,215,0"] {
+    border-color: rgba(184,134,11,0.30) !important;
+  }
+
   /* ── PHASE 3: COMPARE DOCS ── */
 
   /* Upload grid */
@@ -4274,18 +4328,19 @@ function downloadSampleDoc(docId) {
    MOBILE NAVIGATION — bridges to existing switchTab()
 ═══════════════════════════════════════ */
 function mobileNavSwitch(tab) {
-  // Use the existing desktop switchTab function
+  // Call the existing desktop switchTab directly
   if (typeof switchTab === 'function') switchTab(tab);
 
-  // Update mobile nav active states
-  var navItems = ['analyse', 'history', 'compare', 'frameworks'];
-  navItems.forEach(function(t) {
+  // Sync all mobile nav button active states
+  ['analyse', 'history', 'compare', 'frameworks'].forEach(function(t) {
     var el = document.getElementById('mob-nav-' + t);
     if (el) el.classList.toggle('active', t === tab);
   });
-  // Deactivate chat button when switching tabs
+  // Always deactivate the chat button when switching content tabs
   var chatBtn = document.getElementById('mob-nav-chat');
   if (chatBtn) chatBtn.classList.remove('active');
+  // Close AI chat panel if open
+  closeMobileChat();
 }
 
 /* ═══════════════════════════════════════
@@ -4338,20 +4393,8 @@ function submitMobileChat() {
   if (analyseBtn) analyseBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// Sync mobile nav active state when desktop tabs are switched
-(function() {
-  var origSwitchTab = window.switchTab;
-  if (typeof origSwitchTab === 'function') {
-    window.switchTab = function(tab) {
-      origSwitchTab(tab);
-      var navItems = ['analyse', 'history', 'compare', 'frameworks'];
-      navItems.forEach(function(t) {
-        var el = document.getElementById('mob-nav-' + t);
-        if (el) el.classList.toggle('active', t === tab);
-      });
-    };
-  }
-})();
+// Mobile nav is now handled directly via mobileNavSwitch() above.
+// No wrapper needed — mobileNavSwitch calls switchTab() directly.
 </script>
 
 </body></html>
