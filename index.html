@@ -555,7 +555,267 @@ body {
     .compare-metrics { grid-template-columns: repeat(2,1fr); }
     #bottom-three-col { grid-template-columns: 1fr !important; }
     #sample-docs-list { grid-template-columns: 1fr !important; }
+
+    /* ── MOBILE ENHANCEMENTS ── */
+    /* Add bottom padding so content isn't hidden behind bottom nav */
+    body { padding-bottom: 72px; }
+
+    /* Hide desktop tab bar on mobile — navigation handled by bottom nav */
+    .tabs { display: none; }
+
+    /* Edition switcher hidden on mobile — handled by bottom nav */
+    .edition-switcher { display: none; }
+
+    /* Compact header on mobile */
+    .header { padding: 10px 16px; }
+
+    /* Mobile welcome banner — shown only on mobile */
+    #mobile-welcome { display: block; }
+
+    /* Mobile AI chat float — shown only on mobile */
+    #mobile-ai-chat { display: flex; }
+
+    /* Mobile bottom nav — shown only on mobile */
+    #mobile-bottom-nav { display: flex; }
+
+    /* Reduce sample docs grid to single col */
+    #sample-docs-list { grid-template-columns: 1fr !important; }
+
+    /* Tighten analyse button for mobile */
+    .analyse-btn { font-size: 14px; padding: 13px 18px; }
+
+    /* Results header stacks on mobile */
+    .results-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+
+    /* Metrics grid 2-col on mobile */
+    .metrics { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   }
+
+  /* ── MOBILE-ONLY ELEMENTS (hidden on desktop) ── */
+  #mobile-welcome { display: none; }
+  #mobile-ai-chat { display: none; }
+  #mobile-bottom-nav { display: none; }
+
+  /* ── MOBILE BOTTOM NAV STYLES ── */
+  #mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background: rgba(16, 19, 25, 0.92);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 200;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+  }
+  .mob-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: #8B949E;
+    min-width: 52px;
+    border: none;
+    background: transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mob-nav-item.active {
+    color: #BDFF00;
+    background: rgba(189, 255, 0, 0.08);
+  }
+  .mob-nav-item:active { transform: scale(0.92); }
+  .mob-nav-item .material-symbols-outlined { font-size: 22px; }
+  .mob-nav-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  /* ── MOBILE WELCOME STYLES ── */
+  #mobile-welcome {
+    padding: 0 0 12px 0;
+    margin-bottom: 4px;
+  }
+  .mob-welcome-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #BDFF00;
+    margin-bottom: 4px;
+  }
+  .mob-welcome-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #E6EDF3;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 3px;
+  }
+  .mob-welcome-sub {
+    font-size: 13px;
+    color: #8B949E;
+    line-height: 1.4;
+  }
+
+  /* ── MOBILE AI CHAT FLOAT STYLES ── */
+  #mobile-ai-chat {
+    position: fixed;
+    bottom: 72px;
+    left: 0;
+    width: 100%;
+    z-index: 150;
+    padding: 0 12px 8px 12px;
+    flex-direction: column;
+    pointer-events: none;
+  }
+  #mobile-ai-chat.chat-visible { pointer-events: auto; }
+  #mobile-ai-chat-panel {
+    background: rgba(13, 17, 23, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(189, 255, 0, 0.25);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 -4px 32px rgba(0,0,0,0.5);
+    transform: translateY(110%);
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  #mobile-ai-chat.chat-visible #mobile-ai-chat-panel { transform: translateY(0); }
+  .mob-chat-header {
+    background: rgba(189, 255, 0, 0.08);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .mob-chat-pulse {
+    width: 8px; height: 8px;
+    background: #BDFF00;
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .mob-chat-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .mob-chat-bubble {
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .mob-chat-avatar {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: #BDFF00;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .mob-chat-avatar .material-symbols-outlined { font-size: 16px; color: #080B10; }
+  .mob-chat-text {
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px 12px 12px 12px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #E6EDF3;
+    line-height: 1.5;
+    flex: 1;
+  }
+  .mob-chat-suggestions {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .mob-chat-suggestion {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    font-size: 11px;
+    color: #8B949E;
+    cursor: pointer;
+    transition: all 0.12s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .mob-chat-suggestion:hover,
+  .mob-chat-suggestion:active { color: #BDFF00; border-color: rgba(189,255,0,0.4); }
+  .mob-chat-input-row {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(8,11,16,0.8);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+    padding: 8px 12px;
+    transition: border-color 0.15s;
+  }
+  .mob-chat-input-row:focus-within { border-color: #BDFF00; }
+  .mob-chat-input {
+    flex: 1; background: transparent; border: none; outline: none;
+    font-size: 13px; color: #E6EDF3;
+    font-family: 'Manrope', sans-serif;
+  }
+  .mob-chat-input::placeholder { color: rgba(139,148,158,0.5); }
+  .mob-chat-send {
+    background: transparent; border: none; cursor: pointer;
+    color: #BDFF00; display: flex; align-items: center;
+    transition: transform 0.12s;
+  }
+  .mob-chat-send:active { transform: scale(0.88); }
+  .mob-chat-send .material-symbols-outlined { font-size: 20px; }
+
+  /* ── MOBILE RISK ALERT BADGES (horizontal scroll row) ── */
+  #mobile-risk-badges {
+    display: none;
+  }
+  @media (max-width: 640px) {
+    #mobile-risk-badges { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 8px; }
+    #mobile-risk-badges::-webkit-scrollbar { display: none; }
+  }
+  .mob-risk-badge {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .mob-risk-badge.bearish { background: rgba(255,59,48,0.12); border: 1px solid rgba(255,59,48,0.28); color: #FF3B30; }
+  .mob-risk-badge.warning { background: rgba(255,215,0,0.12); border: 1px solid rgba(255,215,0,0.28); color: #FFD700; }
+  .mob-risk-badge.bullish { background: rgba(189,255,0,0.10); border: 1px solid rgba(189,255,0,0.25); color: #BDFF00; }
+
+  /* Light theme overrides for mobile elements */
+  body.light-theme #mobile-bottom-nav {
+    background: rgba(255, 255, 255, 0.95);
+    border-top-color: #E4E8EF;
+  }
+  body.light-theme .mob-nav-item { color: #4A5568; }
+  body.light-theme .mob-nav-item.active { color: #7AB800; background: rgba(122,184,0,0.10); }
+  body.light-theme #mobile-ai-chat-panel {
+    background: rgba(255,255,255,0.97);
+    border-color: rgba(122,184,0,0.35);
+  }
+  body.light-theme .mob-chat-header { background: rgba(122,184,0,0.08); }
+  body.light-theme .mob-chat-text { background: rgba(0,0,0,0.04); color: #0F1623; }
+  body.light-theme .mob-chat-input-row { background: #F1F3F7; border-color: #E4E8EF; }
+  body.light-theme .mob-chat-input { color: #0F1623; }
+  body.light-theme .mob-chat-send { color: #7AB800; }
+  body.light-theme .mob-welcome-title { color: #0F1623; }
+  body.light-theme .mob-welcome-sub { color: #4A5568; }
 
   /* ── PHASE 3: COMPARE DOCS ── */
 
@@ -729,6 +989,29 @@ body {
      ANALYSE TAB
 ═══════════════════════════════════════════════════════ -->
 <div class="container" id="analyse-main">
+
+  <!-- MOBILE WELCOME SECTION (hidden on desktop) -->
+  <div id="mobile-welcome">
+    <p class="mob-welcome-label">RegIntel V2.0</p>
+    <h2 class="mob-welcome-title">Command Center</h2>
+    <p class="mob-welcome-sub">RBI · SEBI · IRDAI Compliance Intelligence</p>
+  </div>
+
+  <!-- MOBILE RISK ALERT BADGES (hidden on desktop) -->
+  <div id="mobile-risk-badges">
+    <div class="mob-risk-badge bearish">
+      <span class="material-symbols-outlined" style="font-size:14px;">warning</span>
+      High Penalty Risk
+    </div>
+    <div class="mob-risk-badge warning">
+      <span class="material-symbols-outlined" style="font-size:14px;">privacy_tip</span>
+      DPDP Implications
+    </div>
+    <div class="mob-risk-badge bullish">
+      <span class="material-symbols-outlined" style="font-size:14px;">verified</span>
+      KYC Active
+    </div>
+  </div>
 
   <!-- INPUT PANEL -->
   <div id="input-panel">
@@ -3857,6 +4140,153 @@ function downloadSampleDoc(docId) {
   };
 })();
 
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     MOBILE AI CHAT FLOAT (hidden on desktop)
+═══════════════════════════════════════════════════════ -->
+<div id="mobile-ai-chat">
+  <div id="mobile-ai-chat-panel">
+    <div class="mob-chat-header">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="mob-chat-pulse"></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#BDFF00;">Ask RegIntel Assistant</span>
+      </div>
+      <button onclick="closeMobileChat()" style="background:transparent;border:none;cursor:pointer;color:#8B949E;display:flex;align-items:center;">
+        <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+      </button>
+    </div>
+    <div class="mob-chat-body">
+      <div class="mob-chat-bubble">
+        <div class="mob-chat-avatar">
+          <span class="material-symbols-outlined">smart_toy</span>
+        </div>
+        <div class="mob-chat-text">I've analysed the RBI Master Direction. Want me to map obligations to your compliance team?</div>
+      </div>
+      <div class="mob-chat-suggestions">
+        <button class="mob-chat-suggestion" onclick="insertMobileChatQuery('Map to teams')">Map to teams</button>
+        <button class="mob-chat-suggestion" onclick="insertMobileChatQuery('Board summary')">Board summary</button>
+        <button class="mob-chat-suggestion" onclick="insertMobileChatQuery('Show penalties')">Show penalties</button>
+      </div>
+      <div class="mob-chat-input-row">
+        <input class="mob-chat-input" id="mobile-chat-input" type="text" placeholder="Type follow-up query..."/>
+        <button class="mob-chat-send" onclick="submitMobileChat()">
+          <span class="material-symbols-outlined">send</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MOBILE BOTTOM NAVIGATION BAR (hidden on desktop)
+═══════════════════════════════════════════════════════ -->
+<nav id="mobile-bottom-nav" role="navigation" aria-label="Main navigation">
+  <button class="mob-nav-item active" id="mob-nav-analyse" onclick="mobileNavSwitch('analyse')" aria-label="Analyse">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">upload_file</span>
+    <span class="mob-nav-label">Analyse</span>
+  </button>
+  <button class="mob-nav-item" id="mob-nav-history" onclick="mobileNavSwitch('history')" aria-label="History">
+    <span class="material-symbols-outlined">history</span>
+    <span class="mob-nav-label">History</span>
+  </button>
+  <button class="mob-nav-item" id="mob-nav-compare" onclick="mobileNavSwitch('compare')" aria-label="Compare">
+    <span class="material-symbols-outlined">difference</span>
+    <span class="mob-nav-label">Compare</span>
+  </button>
+  <button class="mob-nav-item" id="mob-nav-frameworks" onclick="mobileNavSwitch('frameworks')" aria-label="Frameworks">
+    <span class="material-symbols-outlined">account_tree</span>
+    <span class="mob-nav-label">Frameworks</span>
+  </button>
+  <button class="mob-nav-item" id="mob-nav-chat" onclick="toggleMobileChat()" aria-label="AI Assistant">
+    <span class="material-symbols-outlined">smart_toy</span>
+    <span class="mob-nav-label">Ask AI</span>
+  </button>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════
+   MOBILE NAVIGATION — bridges to existing switchTab()
+═══════════════════════════════════════ */
+function mobileNavSwitch(tab) {
+  // Use the existing desktop switchTab function
+  if (typeof switchTab === 'function') switchTab(tab);
+
+  // Update mobile nav active states
+  var navItems = ['analyse', 'history', 'compare', 'frameworks'];
+  navItems.forEach(function(t) {
+    var el = document.getElementById('mob-nav-' + t);
+    if (el) el.classList.toggle('active', t === tab);
+  });
+  // Deactivate chat button when switching tabs
+  var chatBtn = document.getElementById('mob-nav-chat');
+  if (chatBtn) chatBtn.classList.remove('active');
+}
+
+/* ═══════════════════════════════════════
+   MOBILE AI CHAT FLOAT
+═══════════════════════════════════════ */
+function toggleMobileChat() {
+  var chatEl = document.getElementById('mobile-ai-chat');
+  var chatBtn = document.getElementById('mob-nav-chat');
+  if (!chatEl) return;
+  var isVisible = chatEl.classList.contains('chat-visible');
+  if (isVisible) {
+    chatEl.classList.remove('chat-visible');
+    if (chatBtn) chatBtn.classList.remove('active');
+  } else {
+    chatEl.classList.add('chat-visible');
+    if (chatBtn) chatBtn.classList.add('active');
+    setTimeout(function() {
+      var inp = document.getElementById('mobile-chat-input');
+      if (inp) inp.focus();
+    }, 320);
+  }
+}
+
+function closeMobileChat() {
+  var chatEl = document.getElementById('mobile-ai-chat');
+  if (chatEl) chatEl.classList.remove('chat-visible');
+  var chatBtn = document.getElementById('mob-nav-chat');
+  if (chatBtn) chatBtn.classList.remove('active');
+}
+
+function insertMobileChatQuery(text) {
+  var inp = document.getElementById('mobile-chat-input');
+  if (inp) { inp.value = text; inp.focus(); }
+}
+
+function submitMobileChat() {
+  var inp = document.getElementById('mobile-chat-input');
+  if (!inp || !inp.value.trim()) return;
+  // Paste the mobile chat query into the desktop doc-text textarea so the
+  // existing AI pipeline can handle it, then clear the input
+  var docText = document.getElementById('doc-text');
+  if (docText && !docText.value.trim()) {
+    docText.value = inp.value.trim();
+    if (typeof updateCharCount === 'function') updateCharCount();
+  }
+  inp.value = '';
+  closeMobileChat();
+  // Scroll to analyse button on mobile
+  var analyseBtn = document.getElementById('analyse-btn');
+  if (analyseBtn) analyseBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Sync mobile nav active state when desktop tabs are switched
+(function() {
+  var origSwitchTab = window.switchTab;
+  if (typeof origSwitchTab === 'function') {
+    window.switchTab = function(tab) {
+      origSwitchTab(tab);
+      var navItems = ['analyse', 'history', 'compare', 'frameworks'];
+      navItems.forEach(function(t) {
+        var el = document.getElementById('mob-nav-' + t);
+        if (el) el.classList.toggle('active', t === tab);
+      });
+    };
+  }
+})();
 </script>
 
 </body></html>
